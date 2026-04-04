@@ -15,6 +15,24 @@ export interface ChangelogEntry {
 
 export const changelog: ChangelogEntry[] = [
   {
+    version: '1.0.3',
+    date: '2026-04-04',
+    changes: [
+      {
+        type: 'feature',
+        text: 'Owners can now open a dedicated analytics dashboard for concierge usage, top questions, and guest engagement',
+      },
+      {
+        type: 'improvement',
+        text: 'Analytics now refresh automatically and show live trend cards, language mix, and recommendation traction without heavy charts',
+      },
+      {
+        type: 'fix',
+        text: 'Guest analytics storage now keeps only anonymized question metadata so owners get insight without exposing personal data',
+      },
+    ],
+  },
+  {
     version: '1.0.2',
     date: '2026-04-04',
     changes: [

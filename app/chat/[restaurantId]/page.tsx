@@ -307,6 +307,7 @@ export default function RestaurantChatPage() {
   const audioRef = useRef<HTMLAudioElement | null>(null)
   const audioUrlRef = useRef<string | null>(null)
   const latestMessageRef = useRef<ChatMessage[]>([])
+  const conversationIdRef = useRef<string | null>(null)
   const greetingSentRef = useRef(false)
   const voiceReadyRef = useRef(false)
   const isHoldingToTalkRef = useRef(false)
@@ -527,6 +528,7 @@ export default function RestaurantChatPage() {
       setIsLoadingRestaurant(true)
       setErrorMessage('')
       greetingSentRef.current = false
+      conversationIdRef.current = null
       latestMessageRef.current = []
       setMessages([])
       setLatestSubtitle('')
@@ -602,6 +604,8 @@ export default function RestaurantChatPage() {
             'Content-Type': 'application/json',
           },
           body: JSON.stringify({
+            conversationId: conversationIdRef.current,
+            language,
             messages: trimInitialGreeting(
               latestMessageRef.current,
               activeRestaurant.name,
@@ -609,6 +613,7 @@ export default function RestaurantChatPage() {
               language
             ),
             restaurant: activeRestaurant,
+            tableNumber,
           }),
           signal: AbortSignal.timeout(12000),
         })
@@ -618,6 +623,7 @@ export default function RestaurantChatPage() {
         }
 
         const data = (await response.json()) as {
+          conversationId?: string
           reply?: string
         }
 
@@ -625,6 +631,10 @@ export default function RestaurantChatPage() {
 
         if (!content) {
           throw new Error('Empty assistant response')
+        }
+
+        if (data.conversationId) {
+          conversationIdRef.current = data.conversationId
         }
 
         return content

@@ -1,5 +1,7 @@
 import { NextResponse } from 'next/server'
 import OpenAI from 'openai'
+import { persistConversationAnalytics } from '@/lib/analytics'
+import type { ConversationMessage } from '@/lib/admin/types'
 import { getServerEnv } from '@/lib/server-env'
 
 type ChatRole = 'assistant' | 'user'
@@ -29,9 +31,15 @@ interface RestaurantInput {
 }
 
 interface ChatRequestBody {
+  conversationId?: string
+  language?: string
   messages?: ChatMessageInput[]
   restaurant?: RestaurantInput
+  tableNumber?: string
 }
+
+const UUID_PATTERN =
+  /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i
 
 function getMenuItems(menu: RestaurantInput['menu_json']) {
   if (Array.isArray(menu)) {
@@ -102,6 +110,7 @@ export async function POST(request: Request) {
     const body = (await request.json()) as ChatRequestBody
     const restaurant = body.restaurant
     const messages = sanitizeMessages(body.messages)
+    const conversationId = body.conversationId?.trim() || crypto.randomUUID()
 
     if (!restaurant?.name || !restaurant.soul_md || !restaurant.menu_json) {
       return NextResponse.json(
@@ -145,7 +154,42 @@ export async function POST(request: Request) {
       throw new Error('Empty assistant response')
     }
 
-    return NextResponse.json({ reply })
+    const lastUserMessage = [...messages]
+      .reverse()
+      .find((message) => message.role === 'user')
+
+    if (
+      restaurant.id &&
+      UUID_PATTERN.test(restaurant.id) &&
+      lastUserMessage?.content
+    ) {
+      const conversationMessages: ConversationMessage[] = [
+        ...messages,
+        {
+          role: 'assistant',
+          content: reply,
+        },
+      ]
+
+      void persistConversationAnalytics({
+        conversationId,
+        tableNumber: body.tableNumber,
+        language: body.language,
+        questionText: lastUserMessage.content,
+        responsePreview: reply,
+        restaurant: {
+          id: restaurant.id,
+        },
+        messages: conversationMessages,
+      }).catch((analyticsError) => {
+        console.error(
+          'Unable to persist conversation analytics:',
+          analyticsError
+        )
+      })
+    }
+
+    return NextResponse.json({ conversationId, reply })
   } catch (error) {
     return NextResponse.json(
       {

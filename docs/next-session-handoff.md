@@ -48,16 +48,19 @@ Related docs:
 - Gustia now includes an owner admin section at `/admin` that authenticates through Supabase Auth, auto-claims the matching owner record, and reads or updates restaurant data through owner-scoped Supabase access
 - the owner flow now includes a public landing page on `/`, a dedicated `/admin/login` screen, Supabase email/password auth, Google OAuth through Supabase Auth, and first-login owner/restaurant auto-provisioning when the Supabase owner migration has been applied
 - the public production domain is now live at `https://www.gustia.wine`
-- the latest production deployment is `dpl_FzNTKtpWkXdKeBPBPPLuWR9uten3`, verified on `https://www.gustia.wine` and `https://gustia.wine`
-- the full documented workspace was pushed to `origin/main` in commit `2295105` (`chore(release): gustia production launch`)
+- the latest production deployment is `dpl_HFVX9hrH4DhF3kr7qLEktiUCjBpo`, verified on `https://www.gustia.wine`
+- the latest release commit on `origin/main` is `1a0e359` (`chore(release): ai menu photo import`)
 - the guest chat now uses OpenAI TTS for concierge voice replies through `/api/tts`, with browser speech fallback if API synthesis or playback fails
 - the owner menu editor now includes an `Upload Photo` flow backed by `/api/menu/parse`, where OpenAI `gpt-4o` extracts menu items from uploaded menu images or PDFs before owner review and save
 - the owner dashboard now includes `/admin/changelog`, backed by `lib/changelog.ts` and `/api/changelog`, with a latest-version badge in the admin navigation
-- the current build now passes `npm run type-check`, `npm run lint`, and `npm run build`, and the new `/api/changelog` route was smoke-checked locally from a production start
-- local runtime smoke reached `/api/tts`, but the current OpenAI account returned a quota `429`, so natural voice playback still needs live verification after billing/quota is restored
-- the AI menu import flow was verified through `npm run type-check`, `npm run lint`, and `npm run build`, but live parsing still needs an authenticated owner session plus available OpenAI quota for a real upload test
+- the owner dashboard now includes `/admin/analytics`, backed by `/api/admin/analytics`, with live conversation counts, top questions, language mix, peak usage windows, and recommendation trends
+- `/api/chat` now persists full conversation snapshots plus anonymized rows in `conversation_analytics`, so owner analytics can refresh from real guest usage without storing guest identities
+- the current release passed `npm run type-check`, `npm run lint`, `npm run build`, and `npm run test` before production deploy
+- production smoke verified `200` responses on `/`, `/chat/demo`, `/admin/login`, `/admin/billing/success`, `/admin/billing/canceled`, and `/api/health`, with `/admin` redirecting correctly to `/admin/login`
+- production `/api/tts` was re-verified after the billing update and now responds successfully with `audio/mpeg`
+- the AI menu import flow is deployed, but live parsing still needs an authenticated owner session and a real menu upload test in production
 - `/deploy` should now default to pushing `main` to GitHub and letting Vercel auto-deploy; direct CLI deploys are fallback-only
-- after the GitHub push, a fresh auto-deploy was not yet visible via the Vercel CLI polling window, so the GitHub-to-Vercel integration should be rechecked if that automation is expected to be immediate
+- after the GitHub push for `1a0e359`, the connected auto-deploy still did not appear promptly, so production was shipped through the documented Vercel CLI fallback path
 - Gustia now has a repo-local `.agent/workflows/deploy.md` adapted from Freestyla for GitHub + Vercel releases; use it instead of the older generic deploy workflow
 - Gustia now includes `docs/session-log.md` for chronological session notes alongside the baseline-focused `docs/progress-log.md`, and `/deploy` should treat those plus patch notes as a release gate
 - normal final answers should summarize the work and verification without enumerating edited files unless the user explicitly asks for paths
@@ -69,7 +72,10 @@ Related docs:
 - remove or archive sample artifacts that stop representing the real baseline
 - document any new integration or workflow change in the patch notes, progress log, session log, handoff, commands, env reference, and deploy docs when relevant
 - keep `/deploy` and `docs/DEPLOY_CHECKLIST.md` aligned with the current reporting contract so deploy summaries stay concise and non-redundant
-- live-smoke the new `/admin/menu` photo import with a real owner account and a real menu PDF once OpenAI quota is confirmed healthy
+- live-smoke the new `/admin/menu` photo import with a real owner account and a real menu PDF in production
+- apply the `conversation_analytics` SQL changes from `docs/reference/supabase-owner-auth-migration.sql` in the live Supabase project before expecting language and recommendation analytics in production
+- live-smoke `/admin/analytics` with a real owner account after the SQL update so the dashboard is validated against real concierge traffic
+- verify `/api/chat` end-to-end against the live OpenAI account now that API billing is working again
 - apply `docs/reference/supabase-owner-auth-migration.sql` in the live Supabase project before treating the new owner auth path as production-ready
 - verify Supabase dashboard auth settings still allow both email/password and Google OAuth, with `/auth/callback` added to the allowed redirect URLs
 - if admin reads fail after deploy, check that `owners`, `restaurants.owner_id`, and the RLS policies from the migration are present before debugging the app code

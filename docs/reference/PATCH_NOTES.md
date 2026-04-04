@@ -35,6 +35,18 @@ Related docs:
 - use this file for release history, `docs/progress-log.md` for durable baseline truth, and `docs/session-log.md` for session chronology
 - until formal semantic versioning starts, date-keyed entries are acceptable
 
+## 2026-04-04 - AI Menu Photo Import Released to Production
+
+- **DEPLOY**: Released the AI menu photo import to production on `https://www.gustia.wine` in deployment `dpl_HFVX9hrH4DhF3kr7qLEktiUCjBpo`.
+- **VERIFY**: Re-ran `type-check`, `lint`, `build`, and `test` before release, then smoke-checked the key live routes on production.
+- **OPENAI**: Confirmed production `/api/tts` now returns live `audio/mpeg` again after the OpenAI billing update, resolving the earlier quota-blocked TTS verification state.
+
+## 2026-04-04 - Owner Analytics Dashboard
+
+- **ADMIN**: Added `/admin/analytics` with live owner metrics for conversation volume, engagement, language mix, peak traffic windows, top questions, and recommendation trends.
+- **DATA**: Extended `/api/chat` to persist conversation snapshots plus anonymized Q&A metadata into `conversation_analytics`, keeping guest identities out of the analytics layer by design.
+- **API**: Added `/api/admin/analytics` so the owner dashboard can poll fresh analytics data every 30 seconds without a heavy chart dependency.
+
 ## 2026-04-04 - AI Menu Photo Import
 
 - **ADMIN**: Added an `Upload Photo` flow in `/admin/menu` so owners can upload one or more menu pages as PDF, JPG, PNG, or WebP instead of typing every item manually.

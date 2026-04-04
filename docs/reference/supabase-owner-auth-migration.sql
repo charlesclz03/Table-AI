@@ -50,6 +50,25 @@ create index if not exists restaurants_owner_id_idx
 create index if not exists conversations_restaurant_id_idx
   on public.conversations (restaurant_id);
 
+create table if not exists public.conversation_analytics (
+  id uuid primary key default gen_random_uuid(),
+  restaurant_id uuid not null references public.restaurants (id) on delete cascade,
+  conversation_id uuid references public.conversations (id) on delete cascade,
+  question_text text not null,
+  response_preview text,
+  language text,
+  created_at timestamp with time zone not null default now()
+);
+
+create index if not exists conversation_analytics_restaurant_id_idx
+  on public.conversation_analytics (restaurant_id);
+
+create index if not exists conversation_analytics_conversation_id_idx
+  on public.conversation_analytics (conversation_id);
+
+create index if not exists conversation_analytics_created_at_idx
+  on public.conversation_analytics (created_at desc);
+
 update public.restaurants as restaurants
 set owner_id = owners.id
 from public.owners as owners
@@ -60,6 +79,7 @@ where restaurants.owner_id is null
 alter table public.owners enable row level security;
 alter table public.restaurants enable row level security;
 alter table public.conversations enable row level security;
+alter table public.conversation_analytics enable row level security;
 
 drop policy if exists owners_own on public.owners;
 create policy owners_own
@@ -115,6 +135,37 @@ create policy conversations_public_insert
 on public.conversations
 for insert
 with check (true);
+
+drop policy if exists conversation_analytics_owner_select on public.conversation_analytics;
+create policy conversation_analytics_owner_select
+on public.conversation_analytics
+for select
+using (
+  restaurant_id in (
+    select id
+    from public.restaurants
+    where owner_id = auth.uid()
+  )
+);
+
+drop policy if exists conversation_analytics_owner_update on public.conversation_analytics;
+create policy conversation_analytics_owner_update
+on public.conversation_analytics
+for update
+using (
+  restaurant_id in (
+    select id
+    from public.restaurants
+    where owner_id = auth.uid()
+  )
+)
+with check (
+  restaurant_id in (
+    select id
+    from public.restaurants
+    where owner_id = auth.uid()
+  )
+);
 
 do $$
 begin

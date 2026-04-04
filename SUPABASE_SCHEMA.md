@@ -24,8 +24,9 @@ That script:
 2. Backfills owners from existing Supabase Auth users.
 3. Adds `public.restaurants.owner_id`.
 4. Backfills `restaurants.owner_id` by matching existing restaurant emails to owner emails.
-5. Enables RLS on `owners`, `restaurants`, `conversations`, and `analytics` when present.
-6. Applies owner-scoped policies for admin reads and writes.
+5. Creates `public.conversation_analytics` for anonymized owner insights.
+6. Enables RLS on `owners`, `restaurants`, `conversations`, and analytics tables when present.
+7. Applies owner-scoped policies for admin reads and writes.
 
 ## Expected Tables
 
@@ -64,8 +65,19 @@ That script:
 - `messages`
 - `created_at`
 
+`public.conversation_analytics`
+
+- `id`
+- `restaurant_id`
+- `conversation_id`
+- `question_text`
+- `response_preview`
+- `language`
+- `created_at`
+
 ## Notes
 
 - The `owners.id = auth.users.id` link is intentional. It makes `auth.uid()` line up with the owner row and keeps the RLS policies simple and correct.
+- `public.conversation_analytics` is intentionally metadata-only so the owner dashboard can show usage trends without storing guest identities.
 - If the `analytics` table does not exist yet, the migration skips its policy block safely.
 - The Prisma schema in this repo still covers the generic starter auth/subscription models; Gustia restaurant data remains managed in Supabase SQL.

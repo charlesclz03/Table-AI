@@ -88,6 +88,73 @@ export interface DashboardStats {
   recentConversations: ConversationPreview[]
 }
 
+export type AdminAnalyticsRange = '7' | '30' | 'all'
+
+export interface AdminAnalyticsRecord {
+  id: string
+  restaurant_id: string
+  conversation_id?: string | null
+  question_text?: string | null
+  response_preview?: string | null
+  language?: string | null
+  created_at?: string | null
+}
+
+export interface AdminQuestionStat {
+  text: string
+  count: number
+  conversationShare: number
+}
+
+export interface AdminUsagePoint {
+  date: string
+  label: string
+  count: number
+}
+
+export interface AdminLanguageStat {
+  language: string
+  label: string
+  count: number
+  share: number
+}
+
+export interface AdminDishStat {
+  name: string
+  count: number
+}
+
+export interface AdminPeakUsage {
+  hourLabel: string
+  hour: number | null
+  dayLabel: string
+  day: string | null
+}
+
+export interface AdminEngagementMetrics {
+  followUpRate: number
+  recommendationRate: number
+  avgGuestMessages: number
+}
+
+export interface AdminAnalyticsPayload {
+  range: AdminAnalyticsRange
+  totals: {
+    selected: number
+    previousPeriod: number
+    last7Days: number
+    last30Days: number
+  }
+  avgMessagesPerConversation: number
+  peakUsage: AdminPeakUsage
+  languageDistribution: AdminLanguageStat[]
+  topQuestions: AdminQuestionStat[]
+  usageByDay: AdminUsagePoint[]
+  popularDishes: AdminDishStat[]
+  engagement: AdminEngagementMetrics
+  generatedAt: string
+}
+
 export interface BillingInvoiceSummary {
   id: string
   created: number

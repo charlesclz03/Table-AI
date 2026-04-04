@@ -64,6 +64,7 @@ Expected fields in `restaurants`:
 ## Admin Pages
 
 - `/admin`: weekly conversation count, top questions, subscription status, recent conversations
+- `/admin/analytics`: owner analytics dashboard with 7d / 30d / all-time filters, usage trends, top questions, language mix, and recommendation traction
 - `/admin/menu`: CRUD editor for `menu_json.items`
 - `/admin/quiz`: edit the 7 onboarding answers stored in `quiz_answers`
 - `/admin/qr`: QR preview and download/share/print tools for `/chat/{restaurantId}?table=T{n}`
@@ -74,3 +75,4 @@ Expected fields in `restaurants`:
 - owner auth protection is implemented with Supabase Auth cookies plus SSR middleware refresh
 - owner data isolation is expected to be enforced through Supabase RLS on `owners`, `restaurants`, `conversations`, and `analytics` where present
 - guest-safe restaurant reads are intentionally routed through the app server so restaurant tables do not need public `select` policies
+- guest chat analytics storage should remain anonymized by design and only persist sanitized question text, response preview, language, timestamps, and conversation linkage

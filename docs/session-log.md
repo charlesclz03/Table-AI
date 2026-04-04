@@ -37,12 +37,28 @@ Related docs:
 
 ## Entries
 
+### 2026-04-04 - Owner Analytics Dashboard
+
+- added `conversation_analytics` support to the Supabase migration docs plus owner-scoped analytics aggregation for conversations, engagement, peak usage windows, language mix, and recommendation trends
+- extended `/api/chat` so successful live replies now persist the full conversation snapshot and an anonymized Q&A analytics row keyed by conversation id
+- built `/api/admin/analytics` and `/admin/analytics` with range filters, a lightweight SVG usage chart, auto-refresh polling, and a new analytics entry in the owner navigation
+- verification planned for `npm run lint`, `npm run type-check`, and `npm run build` after the implementation sweep
+
+### 2026-04-04 - Production Release and OpenAI Verification
+
+- released the AI menu photo import to production in commit `1a0e359` (`chore(release): ai menu photo import`) and deployed `dpl_HFVX9hrH4DhF3kr7qLEktiUCjBpo` to `https://www.gustia.wine`
+- ran `npm run type-check`, `npm run lint`, `npm run build`, and `npm run test` as the final release gate before pushing `main`
+- verified production `200` responses on `/`, `/chat/demo`, `/admin/login`, `/admin/billing/success`, `/admin/billing/canceled`, and `/api/health`, with `/admin` redirecting correctly to the login screen
+- re-verified production `/api/tts` after the OpenAI billing update and confirmed it now returns `200` with `audio/mpeg`, so the previous quota-related TTS failure is resolved
+- GitHub auto-deploy still did not surface promptly after the push, so the documented Vercel CLI fallback path was used for the production release
+
 ### 2026-04-04 - AI Menu Photo Import
 
 - added an authenticated `app/api/menu/parse` route that accepts multipart PDF/image uploads, sends each file through OpenAI `gpt-4o`, normalizes the structured extraction, and dedupes repeated items across pages
 - built a new owner-facing photo upload workflow inside `/admin/menu` with drag-and-drop, file previews, editable parsed rows, AI notes, and save-through to the existing Supabase-backed menu endpoint
 - kept the manual menu editor intact behind a mode switch so owners can still fall back to direct entry when parsing fails or prices need extra cleanup
-- verified `npm run type-check`, `npm run lint`, and `npm run build` all pass; live end-to-end parsing still depends on an authenticated owner session plus active OpenAI quota
+- verified `npm run type-check`, `npm run lint`, and `npm run build` all pass; live end-to-end parsing still depends on an authenticated owner session and a real upload smoke test
+
 ### 2026-04-04 - Supabase Owner Auth Migration
 
 - replaced the owner admin's active auth path with Supabase Auth routes for email/password login, signup, logout, Google OAuth, and an SSR callback exchange
@@ -57,6 +73,7 @@ Related docs:
 - built `/admin/changelog` with a glassmorphism release feed grouped by date and wired a latest-version badge into the admin navigation
 - added a changelog template and release runbook guidance so future releases update the owner-facing feed before GitHub push and Vercel auto-deploy
 - verified `npm run lint`, `npm run type-check`, and `npm run build` all pass, then smoke-checked `GET /api/changelog` locally from a production start
+
 ### 2026-04-04 - OpenAI TTS Reply Upgrade
 
 - added an `app/api/tts` route that uses the existing OpenAI server env wiring to synthesize concierge reply audio with the `tts-1-hd` model and `onyx` voice

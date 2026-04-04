@@ -41,9 +41,10 @@ Related docs:
 - Gustia public legal pages now include product-specific privacy and terms copy with shared premium styling, pricing details, and a support contact path for restaurant owners
 - Gustia billing now includes a hosted Stripe Checkout setup CTA, success/cancel states, and dedicated result pages for the founding-offer flow
 - Gustia customer chat now routes GPT-4o mini calls through a server API with restaurant context and automatic demo fallback on failures
-- Gustia concierge voice replies now use an OpenAI TTS server route with browser speech fallback for smoother audio playback on guest devices
+- Gustia concierge voice replies now use an OpenAI TTS server route with browser speech fallback for smoother audio playback on guest devices, and production `/api/tts` has been re-verified successfully after the OpenAI billing update
 - Gustia owner menu management now supports AI-assisted menu photo import, including multilingual OpenAI parsing, review-before-save, multi-file upload, and deduped save-back into `restaurants.menu_json`
 - Gustia owner admin now includes a dedicated changelog page and navigation badge so restaurant owners can track shipped releases from inside `/admin`
+- Gustia owner admin now includes a dedicated analytics page with live conversation counts, top questions, peak usage windows, language mix, and recommendation tracking powered by anonymized chat metadata
 - Gustia owner admin auth now uses Supabase Auth for email/password and Google OAuth, with owner bootstrap tied to `owners.id = auth.users.id` and `restaurants.owner_id`
 - Gustia owner-facing admin reads and writes now target owner-scoped Supabase access, while guest restaurant profile reads are served through an app route so strict restaurant RLS can stay in place
 - Gustia is now live on the public production domain `https://www.gustia.wine`
