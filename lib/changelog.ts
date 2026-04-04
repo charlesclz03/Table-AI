@@ -15,6 +15,20 @@ export interface ChangelogEntry {
 
 export const changelog: ChangelogEntry[] = [
   {
+    version: '1.0.5',
+    date: '2026-04-04',
+    changes: [
+      {
+        type: 'improvement',
+        text: 'Landing and owner-facing brand polish now reads consistently as Gustia across tracked app copy and release notes',
+      },
+      {
+        type: 'fix',
+        text: 'The app now ships a branded browser tab icon so production no longer shows a missing favicon request on first load',
+      },
+    ],
+  },
+  {
     version: '1.0.4',
     date: '2026-04-04',
     changes: [

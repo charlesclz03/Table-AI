@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <defs>
+    <linearGradient id="gustiaGradient" x1="10%" x2="90%" y1="10%" y2="90%">
+      <stop offset="0%" stop-color="#f2c57d" />
+      <stop offset="55%" stop-color="#b45a2d" />
+      <stop offset="100%" stop-color="#5e1623" />
+    </linearGradient>
+  </defs>
+  <rect width="64" height="64" rx="18" fill="#120f12" />
+  <path
+    d="M20 18h16c7.18 0 12 4.55 12 11.1c0 6.18-4.37 10.55-10.95 10.95H30v6h14v6H30c-6.18 0-10-3.63-10-9.2zm10 6v10h6.2c3.73 0 5.8-1.82 5.8-4.95S39.93 24 36.2 24z"
+    fill="url(#gustiaGradient)"
+  />
+</svg>

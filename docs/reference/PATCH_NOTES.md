@@ -35,6 +35,11 @@ Related docs:
 - use this file for release history, `docs/progress-log.md` for durable baseline truth, and `docs/session-log.md` for session chronology
 - until formal semantic versioning starts, date-keyed entries are acceptable
 
+## 2026-04-04 - Residual Brand Cleanup
+
+- **BRAND**: Removed the last tracked pre-launch product-name references so repo source and docs now read consistently as Gustia.
+- **DOCS**: Rewrote the naming-council note into a clean final-decision record instead of leaving stale aliases in place.
+
 ## 2026-04-04 - Theme Voice Preview Onboarding
 
 - **CHAT**: Added localized AI voice previews to the onboarding theme step so guests can hear each concierge personality before entering the chat.

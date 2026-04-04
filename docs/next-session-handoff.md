@@ -48,14 +48,15 @@ Related docs:
 - Gustia now includes an owner admin section at `/admin` that authenticates through Supabase Auth, auto-claims the matching owner record, and reads or updates restaurant data through owner-scoped Supabase access
 - the owner flow now includes a public landing page on `/`, a dedicated `/admin/login` screen, Supabase email/password auth, Google OAuth through Supabase Auth, and first-login owner/restaurant auto-provisioning when the Supabase owner migration has been applied
 - the public production domain is now live at `https://www.gustia.wine`
-- the latest production deployment is `dpl_HFVX9hrH4DhF3kr7qLEktiUCjBpo`, verified on `https://www.gustia.wine`
-- the latest release commit on `origin/main` is `1a0e359` (`chore(release): ai menu photo import`)
+- check Vercel for the current production deployment id before debugging a live incident, because `/deploy` can advance production after this handoff was last edited
+- check `origin/main` for the current release commit before debugging release-specific regressions
 - the guest chat now uses OpenAI TTS for concierge voice replies through `/api/tts`, with browser speech fallback if API synthesis or playback fails
 - the guest onboarding theme step now previews localized AI greetings with per-theme OpenAI voices, a separate confirm button, and text-only fallback if preview audio is unavailable
 - the owner menu editor now includes an `Upload Photo` flow backed by `/api/menu/parse`, where OpenAI `gpt-4o` extracts menu items from uploaded menu images or PDFs before owner review and save
 - the owner dashboard now includes `/admin/changelog`, backed by `lib/changelog.ts` and `/api/changelog`, with a latest-version badge in the admin navigation
 - the owner dashboard now includes `/admin/analytics`, backed by `/api/admin/analytics`, with live conversation counts, top questions, language mix, peak usage windows, and recommendation trends
 - `/api/chat` now persists full conversation snapshots plus anonymized rows in `conversation_analytics`, so owner analytics can refresh from real guest usage without storing guest identities
+- tracked app/docs branding is now clean of residual pre-launch product-name references, and the app ships a branded browser tab icon
 - the current release passed `npm run type-check`, `npm run lint`, `npm run build`, and `npm run test` before production deploy
 - production smoke verified `200` responses on `/`, `/chat/demo`, `/admin/login`, `/admin/billing/success`, `/admin/billing/canceled`, and `/api/health`, with `/admin` redirecting correctly to `/admin/login`
 - production `/api/tts` was re-verified after the billing update and now responds successfully with `audio/mpeg`

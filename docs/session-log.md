@@ -37,6 +37,11 @@ Related docs:
 
 ## Entries
 
+### 2026-04-04 - Residual Brand Cleanup
+
+- removed the last tracked pre-launch product-name references from repo docs so the source now reads consistently as Gustia
+- collapsed the naming decision note into a short final archive instead of preserving stale aliases in the workspace
+
 ### 2026-04-04 - Theme Voice Preview Onboarding
 
 - added shared theme metadata in `lib/themes.ts` so each onboarding theme now carries its own OpenAI voice, localized greeting copy, personality text, and sphere motion profile
