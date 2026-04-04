@@ -52,3 +52,4 @@ Related docs:
 - push release branch and tags: `git push origin main --follow-tags`
 - pull Vercel production env/project settings: `npx vercel pull --yes --environment=production`
 - deploy directly to Vercel production: `npx vercel --prod --yes`
+- fast production release flow: `git push origin main` then `npx vercel pull --yes --environment=production` then `npx vercel --prod --yes`

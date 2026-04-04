@@ -35,7 +35,7 @@ Related docs:
 1. Read `AGENTS.md`
 2. Follow `.agent/workflows/deploy.md`
 3. Run the verification commands in `docs/runbooks/verification.md`
-4. Push `main` to GitHub after all required checks pass and let Vercel auto-deploy; use direct Vercel CLI deploys only as a fallback
+4. Push `main` to GitHub after all required checks pass, then run the Vercel production deploy immediately from the same clean workspace
 
 ## Required Verification
 
@@ -112,9 +112,9 @@ Release is not ready if the code changed but the canonical docs still describe t
 - `http://localhost:3000/auth/callback` should be allowed for local verification
 - run `docs/reference/supabase-owner-auth-migration.sql` before deploying code that expects `owners` and `restaurants.owner_id`
 
-## GitHub Release Path
+## Standard Release Path
 
-Use this as the default path when Vercel auto-deploys from the GitHub repository:
+Use this as the default path:
 
 ```bash
 git add .
@@ -122,9 +122,18 @@ git commit -m "chore(release): <summary>"
 git push origin main
 ```
 
+Immediately after the push, deploy production:
+
+```powershell
+& "C:/Program Files/nodejs/npx.cmd" vercel pull --yes --environment=production
+& "C:/Program Files/nodejs/npx.cmd" vercel --prod --yes
+```
+
+Do not wait on GitHub-connected auto-deploy before running the Vercel deploy.
+
 ## Direct Vercel CLI Path
 
-Use this path only when GitHub auto-deploy is unavailable, intentionally bypassed for a hotfix, or you explicitly need a manual release from the local workspace:
+Use this path for `/deploy vercel` or when production needs a manual redeploy from a release-ready workspace:
 
 ```powershell
 & "C:/Program Files/nodejs/npx.cmd" vercel pull --yes --environment=production
@@ -140,6 +149,8 @@ Immediately after release, verify:
 - `/admin` loads
 - affected user flows work without runtime errors
 - Vercel logs do not show new critical failures
+
+Prefer fast smoke checks and only add slower manual verification when the release changed a sensitive flow.
 
 ## Rollback Rule
 

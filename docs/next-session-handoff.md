@@ -47,6 +47,7 @@ Related docs:
 - Gustia now has a canonical `docs/reference/PATCH_NOTES.md` file for release-level history, in addition to progress and session logs
 - Gustia now includes an owner admin section at `/admin` that authenticates through Supabase Auth, auto-claims the matching owner record, and reads or updates restaurant data through owner-scoped Supabase access
 - the owner flow now includes a public landing page on `/`, a dedicated `/admin/login` screen, Supabase email/password auth, Google OAuth through Supabase Auth, and first-login owner/restaurant auto-provisioning when the Supabase owner migration has been applied
+- the public landing page on `/` is now a mobile-first parallax tutorial for restaurant owners, with a fixed azulejos backdrop, four setup steps, guest-flow preview, and the locked activation-first pricing language
 - the public production domain is now live at `https://www.gustia.wine`
 - check Vercel for the current production deployment id before debugging a live incident, because `/deploy` can advance production after this handoff was last edited
 - check `origin/main` for the current release commit before debugging release-specific regressions
@@ -61,8 +62,8 @@ Related docs:
 - production smoke verified `200` responses on `/`, `/chat/demo`, `/admin/login`, `/admin/billing/success`, `/admin/billing/canceled`, and `/api/health`, with `/admin` redirecting correctly to `/admin/login`
 - production `/api/tts` was re-verified after the billing update and now responds successfully with `audio/mpeg`
 - the AI menu import flow is deployed, but live parsing still needs an authenticated owner session and a real menu upload test in production
-- `/deploy` should now default to pushing `main` to GitHub and letting Vercel auto-deploy; direct CLI deploys are fallback-only
-- after the GitHub push for `1a0e359`, the connected auto-deploy still did not appear promptly, so production was shipped through the documented Vercel CLI fallback path
+- `/deploy` should now run the fast release path: update the canonical session docs, push `main`, then immediately run the Vercel production deploy
+- do not wait on GitHub-connected Vercel auto-deploy as part of the normal release path unless a future session intentionally changes that contract
 - Gustia now has a repo-local `.agent/workflows/deploy.md` adapted from Freestyla for GitHub + Vercel releases; use it instead of the older generic deploy workflow
 - Gustia now includes `docs/session-log.md` for chronological session notes alongside the baseline-focused `docs/progress-log.md`, and `/deploy` should treat those plus patch notes as a release gate
 - normal final answers should summarize the work and verification without enumerating edited files unless the user explicitly asks for paths

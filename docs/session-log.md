@@ -37,6 +37,18 @@ Related docs:
 
 ## Entries
 
+### 2026-04-04 - Owner Tutorial Landing Redesign
+
+- replaced the homepage with a full-bleed, mobile-first owner journey that now reads as a vertical setup tutorial instead of a generic marketing page
+- added Framer Motion parallax and reveal animation, anchored by a fixed azulejos background and per-section color overlays for hero, setup steps, guest preview, pricing, testimonials, and start CTA
+- updated the homepage pricing language to `Activation: EUR 99`, then `EUR 49/month` or `EUR 470/year`, with the annual savings and 14-day guarantee called out explicitly
+- verification includes `npm run build`; visual mobile verification still depends on a browser smoke pass
+
+### 2026-04-04 - Deploy Workflow Simplified
+
+- updated the repo deploy workflow so `/deploy` now prioritizes fast release execution: sync the canonical session docs, push GitHub, and immediately run the Vercel production deploy
+- removed the expectation that release sessions should sit and wait to see whether GitHub-connected auto-deploy fires before shipping
+
 ### 2026-04-04 - Residual Brand Cleanup
 
 - removed the last tracked pre-launch product-name references from repo docs so the source now reads consistently as Gustia

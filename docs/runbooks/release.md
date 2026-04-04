@@ -15,7 +15,7 @@ Status:
 
 Source of truth scope:
 
-- release-note preparation, version tagging, and auto-deploy sequencing
+- release-note preparation, version tagging, and fast production deploy sequencing
 
 Last updated:
 
@@ -37,7 +37,8 @@ Related docs:
 5. Commit the release with the version in the message, for example `git commit -m "chore(release): v1.0.1"`.
 6. Create or move the Git tag for that release, for example `git tag v1.0.1`.
 7. Push the branch and tags to GitHub with `git push origin main --follow-tags`.
-8. Let Vercel auto-deploy from GitHub, then verify the affected production flows.
+8. Immediately run the Vercel production deploy from the same clean workspace.
+9. Verify the affected production flows.
 
 ## Supabase Owner Auth Gate
 
@@ -52,3 +53,4 @@ If the release changes owner auth or owner-scoped data access:
 - use `.agent/workflows/deploy.md` as the broader release gate
 - treat the owner changelog as a required release artifact, not optional polish
 - if a release changes the process itself, update this runbook and the deploy workflow in the same session
+- do not wait on GitHub-connected auto-deploy as part of the normal `/deploy` path

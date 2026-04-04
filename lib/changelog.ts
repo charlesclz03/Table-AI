@@ -15,6 +15,24 @@ export interface ChangelogEntry {
 
 export const changelog: ChangelogEntry[] = [
   {
+    version: '1.0.6',
+    date: '2026-04-04',
+    changes: [
+      {
+        type: 'feature',
+        text: 'The public homepage now walks restaurant owners through Gustia with a four-step setup tutorial from menu import to guest usage',
+      },
+      {
+        type: 'improvement',
+        text: 'The landing page now uses a fixed azulejos backdrop, richer section color overlays, and smooth parallax reveals for a more premium mobile story',
+      },
+      {
+        type: 'improvement',
+        text: 'Pricing on the homepage now clearly presents Activation at EUR 99, then EUR 49 per month or EUR 470 per year with the 14-day guarantee',
+      },
+    ],
+  },
+  {
     version: '1.0.5',
     date: '2026-04-04',
     changes: [

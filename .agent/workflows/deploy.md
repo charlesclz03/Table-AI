@@ -1,5 +1,5 @@
 ---
-description: Prepare Gustia for a safe GitHub + Vercel release with repo-specific checks, push flow, and rollback guidance.
+description: Prepare Gustia for a fast GitHub + Vercel release with repo-specific checks, docs sync, and immediate production deploy.
 ---
 
 # /deploy - Gustia Release Workflow
@@ -10,7 +10,7 @@ $ARGUMENTS
 
 ## Purpose
 
-Use this workflow before pushing Gustia to GitHub or releasing to Vercel.
+Use this workflow before pushing Gustia to GitHub and releasing to Vercel.
 
 This workflow is adapted from the stricter Freestyla release discipline, but only keeps commands and checks that actually exist in this repo.
 
@@ -27,7 +27,7 @@ This workflow is adapted from the stricter Freestyla release discipline, but onl
 /deploy rollback
 ```
 
-- `/deploy` or `/deploy production`: run the full release checklist, commit and push `main`, then let Vercel auto-deploy from GitHub
+- `/deploy` or `/deploy production`: run the full release checklist, update the canonical docs for the session, push `main`, then deploy production immediately through Vercel
 - `/deploy check`: verification only, no push or deploy
 - `/deploy github`: verify, then push `main`
 - `/deploy vercel`: verify, then deploy through Vercel
@@ -139,9 +139,9 @@ If the release changed these contracts, update them in the same session:
 
 ## Phase 4 - Deploy
 
-### GitHub Path
+### Standard Production Path
 
-Use this as the default production path when the Vercel project auto-deploys from GitHub:
+Use this as the default production path:
 
 ```bash
 git add .
@@ -149,9 +149,16 @@ git commit -m "chore(release): <summary>"
 git push origin main
 ```
 
+Then deploy production immediately from the same clean workspace:
+
+```powershell
+& "C:/Program Files/nodejs/npx.cmd" vercel pull --yes --environment=production
+& "C:/Program Files/nodejs/npx.cmd" vercel --prod --yes
+```
+
 ### Vercel CLI Path
 
-Use this only when GitHub auto-deploy is unavailable, intentionally bypassed for a hotfix, or you explicitly need a manual Vercel release from the local workspace:
+Use this when `/deploy vercel` is requested or when production needs to be redeployed from an already prepared workspace:
 
 ```powershell
 & "C:/Program Files/nodejs/npx.cmd" vercel pull --yes --environment=production
@@ -160,8 +167,11 @@ Use this only when GitHub auto-deploy is unavailable, intentionally bypassed for
 
 ### Selection Rule
 
-- Default to the GitHub push path for `/deploy` when `main` is the intended release branch and the Vercel project is connected to GitHub
-- Treat the Vercel CLI path as a fallback or emergency path, not the normal release flow
+- Default to: verify, update the release docs, push GitHub, then run the Vercel CLI production deploy immediately
+- Do not wait around for GitHub-connected Vercel auto-deploy to trigger
+- Do not poll Vercel for long periods before deploying unless the user explicitly asks for that slower path
+- Treat GitHub auto-deploy as a bonus, not as a required gate for `/deploy`
+- Keep the local workspace clean before the Vercel deploy so production matches the pushed GitHub state
 
 ---
 
@@ -175,6 +185,7 @@ Immediately after deploy:
 - Check `/admin`
 - Confirm Stripe success/cancel routes still render
 - Confirm the health-sensitive flows affected by the current release
+- Prefer quick HTTP smoke checks over slow manual waiting unless the release specifically changed a fragile user flow
 
 ### Minimum Post-Deploy Checks
 
@@ -185,6 +196,7 @@ Immediately after deploy:
 - Any release-specific feature works in production
 
 Monitor actively for at least the first 5 to 15 minutes after release.
+Only do this extended monitoring when the release risk justifies it.
 
 ---
 

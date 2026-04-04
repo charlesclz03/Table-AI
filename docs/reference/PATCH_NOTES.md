@@ -35,6 +35,17 @@ Related docs:
 - use this file for release history, `docs/progress-log.md` for durable baseline truth, and `docs/session-log.md` for session chronology
 - until formal semantic versioning starts, date-keyed entries are acceptable
 
+## 2026-04-04 - Deploy Workflow Simplified
+
+- **DEPLOY**: Changed `/deploy` so the normal production path is now verify, sync the session docs, push GitHub, and immediately run the Vercel production deploy.
+- **SPEED**: Removed the expectation that release sessions should wait around for GitHub-connected Vercel auto-deploy to trigger before shipping.
+
+## 2026-04-04 - Owner Tutorial Landing Redesign
+
+- **LANDING**: Rebuilt `/` into a mobile-first vertical tutorial for restaurant owners, centered on the four-step setup journey from menu import through guest usage.
+- **MOTION**: Added Framer Motion scroll reveals plus layered parallax so the azulejos backdrop stays constant while each colored section shifts tone.
+- **PRICING**: Reframed the homepage pricing around `Activation: EUR 99`, then `EUR 49/month` or `EUR 470/year`, with the annual savings and 14-day guarantee surfaced clearly.
+
 ## 2026-04-04 - Residual Brand Cleanup
 
 - **BRAND**: Removed the last tracked pre-launch product-name references so repo source and docs now read consistently as Gustia.
