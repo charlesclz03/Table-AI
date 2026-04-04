@@ -37,6 +37,12 @@ Related docs:
 
 ## Entries
 
+### 2026-04-04 - Legal Pages and Footer Alignment
+
+- replaced the placeholder `/privacy` and `/terms` pages with TableIA-specific legal copy and a shared glassmorphism legal shell
+- aligned public support contact details to `support@tableia.com`
+- expanded the homepage footer labels to `Privacy Policy` and `Terms of Service`
+
 ### 2026-04-04 - File-List Reporting Removed
 
 - added a repo-level reporting rule in `AGENTS.md` so normal final answers do not enumerate edited files by default

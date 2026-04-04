@@ -306,10 +306,10 @@ export default function HomePage() {
         <p>TableIA for restaurant owners</p>
         <div className="flex flex-wrap items-center gap-4">
           <Link href="/privacy" className="transition hover:text-white">
-            Privacy
+            Privacy Policy
           </Link>
           <Link href="/terms" className="transition hover:text-white">
-            Terms
+            Terms of Service
           </Link>
           <Link href="/contact" className="transition hover:text-white">
             Contact

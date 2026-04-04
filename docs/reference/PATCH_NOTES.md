@@ -41,6 +41,12 @@ Related docs:
 - **DEPLOY**: Hardened `.agent/workflows/deploy.md` and the deployment checklist so releases must explicitly sync the relevant docs set rather than relying on a vague reminder.
 - **DOCS**: Synchronized the canonical docs hub, handoff, progress log, session log, root README, commands, env, verification, and local-development references around the new documentation contract.
 
+## 2026-04-04 - Legal Pages Refined for TableIA
+
+- **LEGAL**: Replaced the placeholder privacy and terms pages with TableIA-specific legal copy covering restaurant data, chat logs, Supabase-backed storage, no data resale, service scope, pricing, payment terms, cancellation, and liability limits.
+- **UX**: Added a shared glassmorphism legal shell with a back-to-home link and consistent legal/support navigation.
+- **CONTENT**: Updated public legal and contact touchpoints to use `support@tableia.com` and expanded the landing page footer labels to the full legal page names.
+
 ## 2026-04-04 - Reply Memory Workflow Removed
 
 - **AGENTS**: Removed the mandatory reply-memory logging rule so sessions can finish normally with a direct report to the user.

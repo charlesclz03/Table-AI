@@ -12,10 +12,10 @@ export default function ContactPage() {
         walk through the guest experience together.
       </p>
       <Link
-        href="mailto:hello@tableia.co"
+        href="mailto:support@tableia.com"
         className="inline-flex rounded-full border border-white/10 bg-black/20 px-5 py-3 text-sm font-semibold text-white transition hover:bg-black/30"
       >
-        hello@tableia.co
+        support@tableia.com
       </Link>
     </div>
   )

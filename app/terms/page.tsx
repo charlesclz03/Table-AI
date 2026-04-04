@@ -1,18 +1,105 @@
+import type { Metadata } from 'next'
+import Link from 'next/link'
+import { LegalPageShell, LegalSection } from '@/app/legal/legal-shell'
+
+export const metadata: Metadata = {
+  title: 'Terms of Service',
+  description: 'The terms that apply to restaurant use of TableIA.',
+}
+
 export default function TermsPage() {
   return (
-    <div className="mx-auto max-w-3xl space-y-6 rounded-[32px] border border-white/10 bg-white/6 px-6 py-10 text-white backdrop-blur">
-      <p className="text-[11px] uppercase tracking-[0.34em] text-amber-200/70">
-        Terms
-      </p>
-      <h1 className="text-4xl font-semibold">Terms of service</h1>
-      <p className="text-sm leading-7 text-white/72">
-        These terms should explain how restaurant owners use TableIA, what the
-        service includes, and where responsibility starts and ends for setup,
-        menu accuracy, and billing.
-      </p>
-      <p className="text-sm leading-7 text-white/72">
-        Replace this placeholder with your final approved terms before launch.
-      </p>
-    </div>
+    <LegalPageShell
+      eyebrow="Terms"
+      title="Terms of Service"
+      summary="These terms govern restaurant access to TableIA, including service scope, pricing, billing, cancellation, customer responsibilities, and liability limits."
+      updatedOn="April 4, 2026"
+    >
+      <LegalSection title="1. Service description">
+        <p>
+          TableIA provides an AI concierge service for restaurants. The service
+          is designed to help guests discover menu items, ask questions about
+          dishes and drinks, and receive restaurant-specific guidance through a
+          chat interface.
+        </p>
+        <p>
+          TableIA is a software service. It supports restaurant operations but
+          does not replace the restaurant&apos;s own responsibility for menu
+          accuracy, hospitality, food safety, or regulatory compliance.
+        </p>
+      </LegalSection>
+
+      <LegalSection title="2. Pricing and payment terms">
+        <p>
+          Unless otherwise agreed in writing, TableIA pricing is a one-time
+          setup fee of 299 EUR plus a recurring subscription of 49 EUR per
+          month.
+        </p>
+        <p>
+          Subscription billing may be offered on a monthly or annual basis and
+          is charged in advance for the selected billing cycle. The setup fee is
+          billed separately when the service is activated.
+        </p>
+        <p>
+          Restaurants are responsible for keeping payment details valid and up
+          to date. Unpaid or failed charges may result in suspension of access
+          until the account is brought current.
+        </p>
+      </LegalSection>
+
+      <LegalSection title="3. Cancellation">
+        <p>
+          Restaurants may cancel the subscription at any time. Cancellation
+          stops future renewals, and access generally remains available until
+          the end of the current paid billing period unless otherwise stated in
+          a written agreement.
+        </p>
+        <p>
+          Setup fees are non-refundable once implementation work has started,
+          except where required by law.
+        </p>
+      </LegalSection>
+
+      <LegalSection title="4. Restaurant responsibilities">
+        <p>
+          Each restaurant is responsible for providing accurate and current menu
+          details, pricing, allergens, availability, and business information.
+          TableIA relies on restaurant-provided information to generate helpful
+          responses.
+        </p>
+        <p>
+          The restaurant remains responsible for reviewing its content and for
+          making sure the service is used in a way that fits its operations,
+          brand standards, and legal obligations.
+        </p>
+      </LegalSection>
+
+      <LegalSection title="5. Limitation of liability">
+        <p>
+          TableIA is provided on an as-available basis. While we aim for a
+          reliable service, we do not guarantee uninterrupted operation, perfect
+          accuracy, or error-free outputs in every case.
+        </p>
+        <p>
+          To the maximum extent allowed by law, TableIA will not be liable for
+          indirect, incidental, special, or consequential damages, or for loss
+          of revenue, profits, data, or business opportunity arising from use of
+          the service.
+        </p>
+      </LegalSection>
+
+      <LegalSection title="6. Contact">
+        <p>
+          Questions about these terms can be sent to{' '}
+          <Link
+            href="mailto:support@tableia.com"
+            className="font-medium text-amber-100 transition hover:text-white"
+          >
+            support@tableia.com
+          </Link>
+          .
+        </p>
+      </LegalSection>
+    </LegalPageShell>
   )
 }
