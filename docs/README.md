@@ -19,7 +19,7 @@ Source of truth scope:
 
 Last updated:
 
-- 2026-03-24
+- 2026-04-04
 
 Related docs:
 
@@ -36,14 +36,15 @@ Related docs:
 
 ## Session Persistence Notes
 
-- `AGENTS.md` contains the required reply-memory rule for active Codex sessions in this repo.
-- `brainlast10replies.MD` is the rolling transcript file that external automations can monitor.
-- `scripts/brainlast10replies.mjs` is the canonical logger used to append `Bidi` and `Codex` turns.
+- `docs/session-log.md` is the canonical session-by-session operational log.
+- `docs/reference/PATCH_NOTES.md` is the canonical release-history log.
 
 ## Canonical Role Map
 
 - repo overview: `README.md`
 - current handoff: `docs/next-session-handoff.md`
+- release history: `docs/reference/PATCH_NOTES.md`
+- session history: `docs/session-log.md`
 - shipped history: `docs/progress-log.md`
 - immediate backlog: `docs/next-steps.md`
 - architecture map: `docs/architecture/system-map.md`

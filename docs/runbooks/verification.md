@@ -19,7 +19,7 @@ Source of truth scope:
 
 Last updated:
 
-- 2026-03-24
+- 2026-04-04
 
 Related docs:
 
@@ -32,3 +32,16 @@ Related docs:
 - `npm run test`
 - `npm run test:e2e`
 - `npm run build`
+
+## Release Documentation Checks
+
+Before a real release, confirm the documentation matches the shipped code and workflow:
+
+- `docs/reference/PATCH_NOTES.md`
+- `docs/progress-log.md`
+- `docs/session-log.md`
+- `docs/next-session-handoff.md`
+- `docs/DEPLOY_CHECKLIST.md`
+- `docs/reference/commands.md`
+- `docs/reference/env-vars.md` when env requirements changed
+- `README.md` and any touched product/spec docs when the user-facing surface changed

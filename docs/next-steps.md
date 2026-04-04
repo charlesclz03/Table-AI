@@ -19,7 +19,7 @@ Source of truth scope:
 
 Last updated:
 
-- 2026-03-24
+- 2026-04-04
 
 Related docs:
 
@@ -28,7 +28,7 @@ Related docs:
 
 ## Immediate Backlog
 
-- keep the starter docs synchronized with the new portfolio documentation operating system
+- keep patch notes, handoff, progress log, session log, and other canonical docs synchronized whenever product or workflow truth changes
 - remove or archive example artifacts when they no longer reflect the baseline starter
 - tighten verification automation if new integrations or workflows are added
 - align the owner admin auth model with the product spec if Supabase Auth + RLS becomes mandatory

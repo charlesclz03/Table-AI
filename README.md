@@ -8,14 +8,18 @@ Customers scan a QR code, choose language and theme, and talk to a restaurant-sp
 
 The repo now contains:
 
+- owner-facing Lisbon-style landing page on `/`
 - customer chat flow under `/chat/[restaurantId]`
 - language and wine-theme onboarding
 - dark glassmorphism mobile UI
 - owner admin dashboard under `/admin`
+- Google admin login through `/admin/login`
+- first-login restaurant auto-provisioning through Supabase when Google auth is configured
 - menu editor
 - onboarding quiz editor
 - QR poster studio
 - billing overview with Stripe portal entry
+- public privacy, terms, and contact pages
 
 The app currently builds successfully.
 
@@ -123,21 +127,27 @@ You will typically need configuration for:
 
 See:
 
+- `docs/README.md`
+- `docs/reference/PATCH_NOTES.md`
+- `docs/progress-log.md`
+- `docs/session-log.md`
+- `docs/next-session-handoff.md`
 - `docs/reference/env-vars.md`
 - `docs/runbooks/local-development.md`
 - `docs/reference/commands.md`
 
 ## Important Docs
 
-- `SPEC.md`
+- `docs/README.md`
+- `docs/reference/PATCH_NOTES.md`
+- `docs/next-session-handoff.md`
+- `docs/progress-log.md`
+- `docs/session-log.md`
 - `docs/SPEC.md`
 - `docs/UI_DESIGN.md`
 - `docs/UX_FLOW.md`
 - `docs/V1_LIVE_INTERACTION.md`
 - `docs/FEATURE_ASSESSMENT.md`
-- `PRICING_DECISION.md`
-- `PROJECT_STATUS.md`
-- `SESSION_SUMMARY.md`
 
 ## Current Known Gaps
 
@@ -146,6 +156,7 @@ See:
 - menu photo upload and AI parsing are still pending
 - live owner analytics are still limited
 - one existing React hook warning remains in `app/chat/[restaurantId]/page.tsx`
+- local Google login verification still depends on valid Google OAuth env vars and Supabase service-role access
 
 ## Recommended Next Steps
 

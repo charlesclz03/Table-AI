@@ -19,7 +19,7 @@ Source of truth scope:
 
 Last updated:
 
-- 2026-03-24
+- 2026-04-04
 
 Related docs:
 
@@ -37,3 +37,5 @@ Related docs:
 
 - optional integrations stay inert until their required env vars are present
 - use `npm run onboarding:suggest` to preview onboarding recommendations locally
+- to test owner Google login locally, configure `NEXTAUTH_URL`, `NEXTAUTH_SECRET`, `GOOGLE_CLIENT_ID`, and `GOOGLE_CLIENT_SECRET`
+- to test first-login restaurant creation, also configure `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY`, and `SUPABASE_SERVICE_ROLE_KEY`

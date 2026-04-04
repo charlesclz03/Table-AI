@@ -94,18 +94,38 @@ npm run test:e2e
 
 ---
 
-## Phase 3 - Documentation Sync
+## Phase 3 - Documentation Sync Contract
 
-Before release, keep the deploy docs aligned with the actual workflow:
+Before release, update every canonical doc that the current change set made stale.
 
-- `AGENTS.md`
+### Required Release-Tracking Docs
+
+These should be reviewed on every meaningful release:
+
+- `docs/reference/PATCH_NOTES.md`
+- `docs/progress-log.md`
+- `docs/session-log.md`
+- `docs/next-session-handoff.md`
+
+### Update When Relevant
+
+If the release changed these contracts, update them in the same session:
+
+- `docs/README.md`
+- `README.md`
 - `docs/DEPLOY_CHECKLIST.md`
 - `docs/reference/commands.md`
 - `docs/runbooks/verification.md`
-- `docs/progress-log.md` if release discipline changed materially
-- `docs/next-session-handoff.md` if the next operator needs updated release context
+- `docs/reference/env-vars.md`
+- `docs/runbooks/local-development.md`
+- `docs/SPEC.md`
+- any touched product or architecture doc that would otherwise describe old behavior
 
-If you changed the release process, update the docs in the same session.
+### Release Rule
+
+- Do not treat documentation sync as optional polish
+- If code changed and the canonical docs still describe the previous reality, release is not ready
+- If the release process changed, update `.agent/workflows/deploy.md` and `docs/DEPLOY_CHECKLIST.md` in the same session
 
 ---
 
@@ -187,9 +207,8 @@ After rollback:
 When reporting a completed `/deploy`, include:
 
 - verification commands run
+- whether the required documentation sync was completed
 - whether GitHub was pushed
 - whether Vercel was deployed
 - production or preview URL
 - any blockers or rollback notes
-
-If the user asks for file paths only, return file paths only.

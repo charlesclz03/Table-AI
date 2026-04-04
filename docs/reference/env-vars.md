@@ -19,7 +19,7 @@ Source of truth scope:
 
 Last updated:
 
-- 2026-03-24
+- 2026-04-04
 
 Related docs:
 
@@ -36,3 +36,8 @@ Related docs:
 - OpenAI: `OPENAI_API_KEY`
 - InsForge: `INSFORGE_BASE_URL`, `INSFORGE_API_KEY`, `INSFORGE_TIMEOUT_MS`
 - optional admin allowlist: `SUPERADMIN_EMAILS`
+
+## Notes
+
+- Google admin login requires both `GOOGLE_CLIENT_ID` and `GOOGLE_CLIENT_SECRET`, plus the usual `NEXTAUTH_URL` and `NEXTAUTH_SECRET`.
+- First-login restaurant auto-provisioning depends on `SUPABASE_SERVICE_ROLE_KEY` in addition to the public Supabase URL and anon key.

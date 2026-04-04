@@ -37,6 +37,11 @@ Related docs:
 - e2e tests: `npm run test:e2e`
 - production build: `npm run build`
 
+## Documentation Tracking
+
+- release-history source of truth: `docs/reference/PATCH_NOTES.md`
+- deploy workflow contract: `.agent/workflows/deploy.md`
+
 ## Deployment Commands
 
 - inspect branch state: `git status --short`

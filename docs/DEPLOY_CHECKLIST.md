@@ -25,6 +25,7 @@ Related docs:
 
 - `AGENTS.md`
 - `.agent/workflows/deploy.md`
+- `docs/reference/PATCH_NOTES.md`
 - `docs/reference/commands.md`
 - `docs/runbooks/verification.md`
 
@@ -63,7 +64,30 @@ npm run test:e2e
 - `git fetch` has been run and branch state is understood
 - any `prisma/schema.prisma` change has a safe production migration plan
 - required Vercel environment variables are present
+- the relevant docs set has been synchronized for this release
 - secrets are not logged, committed, or pasted into docs
+
+## Required Documentation Sync
+
+Before release, update the docs that were made stale by the current change set. The minimum release-tracking set is:
+
+- `docs/reference/PATCH_NOTES.md`
+- `docs/progress-log.md`
+- `docs/session-log.md`
+- `docs/next-session-handoff.md`
+
+Update these as needed when their contract changed:
+
+- `docs/README.md`
+- `README.md`
+- `docs/reference/commands.md`
+- `docs/runbooks/verification.md`
+- `docs/reference/env-vars.md`
+- `docs/runbooks/local-development.md`
+- `docs/SPEC.md`
+- `docs/DEPLOY_CHECKLIST.md`
+
+Release is not ready if the code changed but the canonical docs still describe the old behavior.
 
 ## Required Vercel Environment Variables
 
@@ -114,3 +138,15 @@ Rollback immediately if:
 - a critical runtime error appears after release
 
 Use the previous known-good Git commit or previous successful Vercel deployment as the rollback target.
+
+## Deploy Reporting Contract
+
+When closing a deploy session, report:
+
+- which verification commands were run
+- whether the required documentation sync was completed
+- whether GitHub push and Vercel deploy happened
+- the resulting production or preview URL
+- any blocker or rollback note that matters operationally
+
+Do not enumerate edited files by default unless the user explicitly asks for paths.
