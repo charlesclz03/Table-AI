@@ -1,0 +1,29 @@
+{
+  "version": 1,
+  "skills": {
+    "audio-cog": {
+      "version": "1.0.6",
+      "installedAt": 1775188080194
+    },
+    "mobile-app-builder": {
+      "version": "1.0.0",
+      "installedAt": 1775188086824
+    },
+    "langgraph": {
+      "version": "1.0.0",
+      "installedAt": 1775188614343
+    },
+    "crewai": {
+      "version": "1.0.0",
+      "installedAt": 1775188634980
+    },
+    "frontend-design-3": {
+      "version": "0.1.0",
+      "installedAt": 1775188673074
+    },
+    "chatbot-builder": {
+      "version": "1.0.0",
+      "installedAt": 1775188675435
+    }
+  }
+}

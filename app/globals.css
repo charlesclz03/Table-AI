@@ -1,0 +1,35 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: dark;
+}
+
+html {
+  min-height: 100%;
+  background:
+    radial-gradient(circle at top, rgba(10, 132, 255, 0.18), transparent 40%),
+    linear-gradient(180deg, #05060a 0%, #09090b 100%);
+}
+
+body {
+  min-height: 100vh;
+  background: transparent;
+  color: #ffffff;
+}
+
+a {
+  color: inherit;
+}
+
+::selection {
+  background: rgba(50, 211, 255, 0.3);
+}
+
+.glass-card {
+  background: rgba(255, 255, 255, 0.03);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 16px;
+}

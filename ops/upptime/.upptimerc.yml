@@ -1,0 +1,10 @@
+owner: your-github-user
+repo: your-upptime-repo
+
+sites:
+  - name: Master Project Health
+    url: https://example.com/api/health
+  - name: Master Project Home
+    url: https://example.com/
+  - name: Master Project Dashboard
+    url: https://example.com/dashboard

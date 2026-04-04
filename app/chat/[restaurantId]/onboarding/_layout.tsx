@@ -1,0 +1,579 @@
+'use client'
+
+import {
+  createContext,
+  type ReactNode,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+} from 'react'
+import { useParams, useRouter, useSearchParams } from 'next/navigation'
+import { Sparkles } from 'lucide-react'
+import { cn } from '@/lib/utils'
+
+export const LANGUAGE_STORAGE_KEY = 'tableia-lang'
+export const THEME_STORAGE_KEY = 'tableia-theme'
+
+export const LANGUAGE_OPTIONS = [
+  { code: 'en', label: 'English', nativeLabel: 'English', flag: '🇺🇸' },
+  { code: 'fr', label: 'French', nativeLabel: 'Français', flag: '🇫🇷' },
+  { code: 'es', label: 'Spanish', nativeLabel: 'Español', flag: '🇪🇸' },
+  { code: 'it', label: 'Italian', nativeLabel: 'Italiano', flag: '🇮🇹' },
+  { code: 'pt', label: 'Portuguese', nativeLabel: 'Português', flag: '🇵🇹' },
+  { code: 'ru', label: 'Russian', nativeLabel: 'Русский', flag: '🇷🇺' },
+] as const
+
+export type LanguageCode = (typeof LANGUAGE_OPTIONS)[number]['code']
+
+export type ThemeKey = 'red' | 'white' | 'rose' | 'champagne' | 'green'
+
+export interface ThemeOption {
+  key: ThemeKey
+  label: string
+  subtitle: string
+  wineColor: string
+  highlightColor: string
+  glowColor: string
+  voiceCharacter: string
+  sparkle?: boolean
+}
+
+export const THEME_OPTIONS: ThemeOption[] = [
+  {
+    key: 'red',
+    label: 'Red Wine',
+    subtitle: 'Warm, deep, sophisticated',
+    wineColor: '#722F37',
+    highlightColor: '#9C4B58',
+    glowColor: '#722F37',
+    voiceCharacter: 'Warm, deep, sophisticated waiter',
+  },
+  {
+    key: 'white',
+    label: 'White Wine',
+    subtitle: 'Light, crisp, friendly',
+    wineColor: '#F7E7CE',
+    highlightColor: '#FFF5E8',
+    glowColor: '#F7E7CE',
+    voiceCharacter: 'Light, crisp, friendly sommelier',
+  },
+  {
+    key: 'rose',
+    label: 'Rose',
+    subtitle: 'Fresh, fruity, approachable',
+    wineColor: '#FFB6C1',
+    highlightColor: '#FFD7DF',
+    glowColor: '#FFB6C1',
+    voiceCharacter: 'Fresh, fruity, approachable host',
+  },
+  {
+    key: 'champagne',
+    label: 'Champagne',
+    subtitle: 'Bright, premium, celebratory',
+    wineColor: '#F5E6C8',
+    highlightColor: '#FFF8E9',
+    glowColor: '#F5E6C8',
+    voiceCharacter: "Bright, celebratory, premium maitre d'",
+    sparkle: true,
+  },
+  {
+    key: 'green',
+    label: 'Green Wine',
+    subtitle: 'Fresh, youthful, Portuguese',
+    wineColor: '#C9E4CA',
+    highlightColor: '#E6F8E6',
+    glowColor: '#90EE90',
+    voiceCharacter: 'Fresh, youthful, slightly sparkling Portuguese concierge',
+  },
+]
+
+export interface MenuItem {
+  id?: string
+  name: string
+  price?: number | string
+  category?: string
+  description?: string
+  allergens?: string[]
+  is_vegetarian?: boolean
+  is_vegan?: boolean
+}
+
+export interface RestaurantProfile {
+  id: string
+  name: string
+  soul_md: string
+  menu_json: MenuItem[] | { items?: MenuItem[] }
+  rules_md?: string
+  subscription_status?: string
+}
+
+export const DEMO_MENU: MenuItem[] = [
+  {
+    id: '1',
+    name: 'Acorda de Marisco',
+    price: 18,
+    category: 'mains',
+    description: 'Bread soup with seafood, garlic, cilantro, and poached egg',
+    allergens: ['gluten', 'shellfish', 'egg'],
+    is_vegetarian: false,
+  },
+  {
+    id: '2',
+    name: 'Migas Alentejanas',
+    price: 12,
+    category: 'mains',
+    description: 'Bread and garlic mash with fried eggs and olives',
+    allergens: ['gluten', 'egg'],
+    is_vegetarian: true,
+  },
+  {
+    id: '3',
+    name: 'Cataplana de Porco Preto',
+    price: 16,
+    category: 'mains',
+    description: 'Slow-cooked black pork with clams and chourico',
+    allergens: ['shellfish'],
+    is_vegetarian: false,
+  },
+  {
+    id: '4',
+    name: 'Percebes',
+    price: 28,
+    category: 'starters',
+    description: 'Gooseneck barnacles, rare and precious',
+    allergens: ['shellfish'],
+    is_vegetarian: false,
+  },
+  {
+    id: '5',
+    name: 'Acorda de Legumes',
+    price: 10,
+    category: 'mains',
+    description: 'Vegetarian vegetable bread soup',
+    allergens: ['gluten'],
+    is_vegetarian: true,
+  },
+  {
+    id: '6',
+    name: 'Herdade do Esporao Reserva 2019',
+    price: 28,
+    category: 'wine',
+    description: 'Alentejo red wine, full-bodied',
+    allergens: [],
+    is_vegetarian: true,
+  },
+]
+
+export const DEMO_RESTAURANT: RestaurantProfile = {
+  id: 'demo-o-celeiro',
+  name: 'O Celeiro',
+  soul_md:
+    "Warm, local, knowledgeable about Alentejo cuisine. Speak like a proud local who loves the region's food. Keep responses short and voice-friendly.",
+  menu_json: DEMO_MENU,
+  subscription_status: 'demo',
+}
+
+type OnboardingStep = 'language' | 'theme'
+
+interface OnboardingContextValue {
+  restaurantId: string
+  tableNumber: string
+  restaurantName: string
+  lang: LanguageCode | null
+  theme: ThemeKey | null
+  setLang: (lang: LanguageCode) => void
+  setTheme: (theme: ThemeKey) => void
+}
+
+interface OnboardingShellProps {
+  step: OnboardingStep
+  children: ReactNode
+}
+
+interface WineSphereProps {
+  themeKey: ThemeKey
+  speaking?: boolean
+  selected?: boolean
+  size?: 'sm' | 'md' | 'lg' | 'xl'
+  className?: string
+}
+
+const OnboardingContext = createContext<OnboardingContextValue | null>(null)
+
+export function getThemeOption(themeKey: ThemeKey | null | undefined) {
+  return (
+    THEME_OPTIONS.find((option) => option.key === themeKey) ?? THEME_OPTIONS[0]
+  )
+}
+
+export function getLanguageOption(code: LanguageCode | null | undefined) {
+  return (
+    LANGUAGE_OPTIONS.find((option) => option.code === code) ??
+    LANGUAGE_OPTIONS[0]
+  )
+}
+
+export function buildChatPath(restaurantId: string, tableNumber: string) {
+  return `/chat/${encodeURIComponent(restaurantId)}?table=${encodeURIComponent(tableNumber)}`
+}
+
+export function buildOnboardingPath(
+  restaurantId: string,
+  step: OnboardingStep,
+  tableNumber: string
+) {
+  return `/chat/${encodeURIComponent(restaurantId)}/onboarding/${step}?table=${encodeURIComponent(
+    tableNumber
+  )}`
+}
+
+function isThemeKey(value: string | null): value is ThemeKey {
+  return THEME_OPTIONS.some((option) => option.key === value)
+}
+
+function isLanguageCode(value: string | null): value is LanguageCode {
+  return LANGUAGE_OPTIONS.some((option) => option.code === value)
+}
+
+function readStoredLanguage() {
+  if (typeof window === 'undefined') {
+    return null
+  }
+
+  const value = window.sessionStorage.getItem(LANGUAGE_STORAGE_KEY)
+  return isLanguageCode(value) ? value : null
+}
+
+function readStoredTheme() {
+  if (typeof window === 'undefined') {
+    return null
+  }
+
+  const value = window.sessionStorage.getItem(THEME_STORAGE_KEY)
+  return isThemeKey(value) ? value : null
+}
+
+export async function fetchRestaurantProfile(
+  restaurantId: string
+): Promise<RestaurantProfile> {
+  if (restaurantId === 'demo') {
+    return DEMO_RESTAURANT
+  }
+
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
+  const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+
+  if (!supabaseUrl || !supabaseAnonKey) {
+    return {
+      ...DEMO_RESTAURANT,
+      id: restaurantId,
+    }
+  }
+
+  try {
+    const response = await fetch(
+      `${supabaseUrl}/rest/v1/restaurants?id=eq.${encodeURIComponent(
+        restaurantId
+      )}&select=id,name,soul_md,rules_md,menu_json,subscription_status`,
+      {
+        headers: {
+          apikey: supabaseAnonKey,
+          Authorization: `Bearer ${supabaseAnonKey}`,
+          'Content-Type': 'application/json',
+        },
+        cache: 'no-store',
+      }
+    )
+
+    if (!response.ok) {
+      throw new Error('Restaurant lookup failed')
+    }
+
+    const data = (await response.json()) as RestaurantProfile[]
+
+    return data[0] ?? { ...DEMO_RESTAURANT, id: restaurantId }
+  } catch {
+    return {
+      ...DEMO_RESTAURANT,
+      id: restaurantId,
+    }
+  }
+}
+
+export function SphereAnimationStyles() {
+  return (
+    <style jsx global>{`
+      @keyframes wineWave {
+        0%,
+        100% {
+          transform: translateX(0) translateY(0) rotate(0deg);
+          clip-path: inset(50% 0 0 0 round 999px);
+        }
+        50% {
+          transform: translateX(-3%) translateY(-2px) rotate(-1deg);
+          clip-path: inset(45% 0 0 0 round 999px);
+        }
+      }
+
+      @keyframes spherePulse {
+        0%,
+        100% {
+          transform: scale(1);
+        }
+        50% {
+          transform: scale(1.05);
+        }
+      }
+
+      @keyframes glowPulse {
+        0%,
+        100% {
+          opacity: 0.24;
+        }
+        50% {
+          opacity: 0.5;
+        }
+      }
+
+      @keyframes shimmerSweep {
+        0% {
+          transform: translateX(-140%) rotate(-18deg);
+          opacity: 0;
+        }
+        40% {
+          opacity: 0.2;
+        }
+        100% {
+          transform: translateX(160%) rotate(-18deg);
+          opacity: 0;
+        }
+      }
+
+      @keyframes fadeSlideIn {
+        0% {
+          opacity: 0;
+          transform: translateY(18px);
+        }
+        100% {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+    `}</style>
+  )
+}
+
+export function WineSphere({
+  themeKey,
+  speaking = false,
+  selected = false,
+  size = 'lg',
+  className,
+}: WineSphereProps) {
+  const theme = getThemeOption(themeKey)
+  const sizeClasses = {
+    sm: 'h-24 w-24',
+    md: 'h-28 w-28',
+    lg: 'h-40 w-40',
+    xl: 'h-52 w-52',
+  } satisfies Record<NonNullable<WineSphereProps['size']>, string>
+
+  return (
+    <div
+      className={cn(
+        'relative isolate flex items-center justify-center',
+        sizeClasses[size],
+        className
+      )}
+      style={{
+        animation: speaking ? undefined : 'spherePulse 3s ease-in-out infinite',
+      }}
+    >
+      <div
+        className="absolute inset-[-12%] rounded-full blur-2xl"
+        style={{
+          background: `radial-gradient(circle, ${theme.glowColor}88 0%, transparent 72%)`,
+          animation: speaking
+            ? 'glowPulse 1.4s ease-in-out infinite'
+            : 'glowPulse 3s ease-in-out infinite',
+        }}
+      />
+
+      {selected ? (
+        <div
+          className="absolute inset-[-7%] rounded-full border-2"
+          style={{
+            borderColor: `${theme.glowColor}`,
+            boxShadow: `0 0 0 4px ${theme.glowColor}22, 0 0 32px ${theme.glowColor}66`,
+          }}
+        />
+      ) : null}
+
+      <div
+        className="absolute inset-0 rounded-full border bg-white/10 backdrop-blur-[20px]"
+        style={{
+          borderColor: 'rgba(255,255,255,0.22)',
+          boxShadow:
+            'inset 0 1px 0 rgba(255,255,255,0.24), inset 0 -14px 24px rgba(255,255,255,0.04), 0 28px 60px rgba(0,0,0,0.3)',
+        }}
+      />
+
+      <div className="absolute inset-[8%] overflow-hidden rounded-full">
+        <div
+          className="absolute inset-x-0 bottom-0 h-[52%]"
+          style={{
+            background: `linear-gradient(180deg, ${theme.highlightColor} 0%, ${theme.wineColor} 100%)`,
+            boxShadow: `inset 0 10px 28px rgba(255,255,255,0.18), 0 0 24px ${theme.glowColor}66`,
+          }}
+        >
+          <div
+            className="absolute -top-3 left-[-12%] h-8 w-[124%] rounded-[999px]"
+            style={{
+              background: `linear-gradient(180deg, rgba(255,255,255,0.4) 0%, ${theme.highlightColor} 38%, ${theme.wineColor} 100%)`,
+              animation: speaking
+                ? 'wineWave 1.6s ease-in-out infinite'
+                : 'wineWave 5s ease-in-out infinite',
+            }}
+          />
+        </div>
+
+        {theme.sparkle ? (
+          <div className="pointer-events-none absolute inset-0">
+            <span className="absolute left-[22%] top-[34%] h-2 w-2 rounded-full bg-white/70" />
+            <span className="absolute left-[58%] top-[24%] h-1.5 w-1.5 rounded-full bg-white/55" />
+            <span className="absolute left-[70%] top-[42%] h-1 w-1 rounded-full bg-white/60" />
+          </div>
+        ) : null}
+      </div>
+
+      <div
+        className="absolute inset-[10%] rounded-full"
+        style={{
+          border: '1px solid rgba(255,255,255,0.24)',
+          background:
+            'radial-gradient(circle at 30% 20%, rgba(255,255,255,0.42), rgba(255,255,255,0.08) 42%, transparent 58%)',
+        }}
+      />
+
+      <div className="absolute left-[18%] top-[16%] h-[18%] w-[18%] rounded-full bg-white/35 blur-sm" />
+
+      <div
+        className="pointer-events-none absolute inset-y-[14%] left-[-22%] w-[46%] rounded-full bg-white/15 blur-md"
+        style={{
+          animation: 'shimmerSweep 6s linear infinite',
+        }}
+      />
+    </div>
+  )
+}
+
+export function useOnboardingFlow() {
+  const value = useContext(OnboardingContext)
+
+  if (!value) {
+    throw new Error('useOnboardingFlow must be used inside OnboardingShell')
+  }
+
+  return value
+}
+
+export function OnboardingShell({ step, children }: OnboardingShellProps) {
+  const params = useParams<{ restaurantId: string }>()
+  const searchParams = useSearchParams()
+  const router = useRouter()
+
+  const restaurantId =
+    params?.restaurantId ?? searchParams.get('restaurantId') ?? 'demo'
+  const tableNumber = searchParams.get('table')?.trim() || 'T1'
+
+  const [restaurantName, setRestaurantName] = useState('Loading restaurant...')
+  const [lang, setLangState] = useState<LanguageCode | null>(null)
+  const [theme, setThemeState] = useState<ThemeKey | null>(null)
+  const [isReady, setIsReady] = useState(false)
+
+  useEffect(() => {
+    let cancelled = false
+
+    void fetchRestaurantProfile(restaurantId).then((restaurant) => {
+      if (!cancelled) {
+        setRestaurantName(restaurant.name)
+      }
+    })
+
+    return () => {
+      cancelled = true
+    }
+  }, [restaurantId])
+
+  useEffect(() => {
+    const nextLang = readStoredLanguage()
+    const nextTheme = readStoredTheme()
+
+    setLangState(nextLang)
+    setThemeState(nextTheme)
+    setIsReady(true)
+  }, [])
+
+  useEffect(() => {
+    if (!isReady) {
+      return
+    }
+
+    if (step === 'theme' && !lang) {
+      router.replace(buildOnboardingPath(restaurantId, 'language', tableNumber))
+    }
+  }, [isReady, lang, restaurantId, router, step, tableNumber])
+
+  const value = useMemo<OnboardingContextValue>(
+    () => ({
+      restaurantId,
+      tableNumber,
+      restaurantName,
+      lang,
+      theme,
+      setLang: (nextLang) => {
+        setLangState(nextLang)
+      },
+      setTheme: (nextTheme) => {
+        setThemeState(nextTheme)
+      },
+    }),
+    [lang, restaurantId, restaurantName, tableNumber, theme]
+  )
+
+  return (
+    <OnboardingContext.Provider value={value}>
+      <div className="min-h-screen overflow-hidden bg-[#040508] text-white">
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(245,158,11,0.16),_transparent_32%),radial-gradient(circle_at_bottom,_rgba(114,47,55,0.22),_transparent_38%),linear-gradient(180deg,_#0c0a09_0%,_#05060a_52%,_#020304_100%)]" />
+
+        <div className="relative mx-auto flex min-h-screen w-full max-w-md flex-col px-5 pb-8 pt-6">
+          <header className="rounded-[30px] border border-white/10 bg-white/6 px-4 py-4 backdrop-blur">
+            <p className="text-[11px] uppercase tracking-[0.34em] text-amber-200/70">
+              TableIA Concierge
+            </p>
+            <div className="mt-3 flex items-center justify-between gap-3">
+              <div>
+                <h1 className="text-xl font-semibold text-white">
+                  {restaurantName}
+                </h1>
+                <p className="mt-1 text-sm text-white/60">
+                  Table {tableNumber}
+                </p>
+              </div>
+              <div className="flex h-11 w-11 items-center justify-center rounded-full border border-white/10 bg-black/20 text-amber-100/90">
+                <Sparkles className="h-5 w-5" />
+              </div>
+            </div>
+          </header>
+
+          <main className="flex flex-1 flex-col justify-center">
+            {children}
+          </main>
+        </div>
+
+        <SphereAnimationStyles />
+      </div>
+    </OnboardingContext.Provider>
+  )
+}

@@ -1,0 +1,7 @@
+.next
+coverage
+node_modules
+playwright-report
+test-results
+audit_reports
+next-env.d.ts
