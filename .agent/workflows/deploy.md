@@ -104,6 +104,7 @@ Before release, update every canonical doc that the current change set made stal
 
 These should be reviewed on every meaningful release:
 
+- `lib/changelog.ts`
 - `docs/reference/PATCH_NOTES.md`
 - `docs/progress-log.md`
 - `docs/session-log.md`
@@ -118,6 +119,7 @@ If the release changed these contracts, update them in the same session:
 - `docs/DEPLOY_CHECKLIST.md`
 - `docs/reference/commands.md`
 - `docs/runbooks/verification.md`
+- `docs/runbooks/release.md`
 - `docs/reference/env-vars.md`
 - `docs/runbooks/local-development.md`
 - `docs/SPEC.md`
@@ -128,6 +130,7 @@ If the release changed these contracts, update them in the same session:
 - Do not treat documentation sync as optional polish
 - If code changed and the canonical docs still describe the previous reality, release is not ready
 - If the release process changed, update `.agent/workflows/deploy.md` and `docs/DEPLOY_CHECKLIST.md` in the same session
+- If owners can see the change in product behavior, update `lib/changelog.ts` so `/admin/changelog` stays truthful
 
 ---
 

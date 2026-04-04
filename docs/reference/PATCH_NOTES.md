@@ -35,6 +35,12 @@ Related docs:
 - use this file for release history, `docs/progress-log.md` for durable baseline truth, and `docs/session-log.md` for session chronology
 - until formal semantic versioning starts, date-keyed entries are acceptable
 
+## 2026-04-04 - Owner Changelog Dashboard
+
+- **ADMIN**: Added a dedicated `/admin/changelog` page so restaurant owners can review released features, fixes, and improvements without leaving the dashboard.
+- **API**: Added `/api/changelog` backed by shared `lib/changelog.ts` data so the release feed has one canonical source of truth.
+- **RELEASE**: Added a changelog template plus a release runbook requirement to update owner-facing release notes before GitHub push and Vercel auto-deploy.
+
 ## 2026-04-04 - OpenAI Voice Output for Concierge Replies
 
 - **CHAT**: Replaced the primary browser speech-synthesis reply path with an OpenAI-backed `/api/tts` route so concierge voice replies sound smoother and more natural.

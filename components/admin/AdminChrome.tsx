@@ -3,6 +3,7 @@
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import {
+  ClipboardList,
   LayoutDashboard,
   MenuSquare,
   QrCode,
@@ -38,13 +39,26 @@ const navigation = [
     label: 'Billing',
     icon: Receipt,
   },
-] as const
+  {
+    href: '/admin/changelog',
+    label: 'Changelog',
+    icon: ClipboardList,
+  },
+] satisfies ReadonlyArray<{
+  href: string
+  label: string
+  icon: typeof LayoutDashboard
+}>
 
 interface AdminChromeProps {
   children: React.ReactNode
+  latestChangelogVersion?: string
 }
 
-export function AdminChrome({ children }: AdminChromeProps) {
+export function AdminChrome({
+  children,
+  latestChangelogVersion,
+}: AdminChromeProps) {
   const pathname = usePathname()
   const isLoginPage = pathname === '/admin/login'
 
@@ -68,6 +82,8 @@ export function AdminChrome({ children }: AdminChromeProps) {
           <div className="flex flex-wrap items-center gap-2">
             {navigation.map((item) => {
               const Icon = item.icon
+              const showBadge =
+                item.href === '/admin/changelog' && latestChangelogVersion
 
               return (
                 <Link
@@ -82,6 +98,11 @@ export function AdminChrome({ children }: AdminChromeProps) {
                 >
                   <Icon className="h-4 w-4" />
                   {item.label}
+                  {showBadge ? (
+                    <span className="rounded-full border border-violet-300/25 bg-violet-300/15 px-2 py-0.5 text-[10px] uppercase tracking-[0.18em] text-violet-100">
+                      v{latestChangelogVersion}
+                    </span>
+                  ) : null}
                 </Link>
               )
             })}

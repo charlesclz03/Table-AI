@@ -42,6 +42,7 @@ Related docs:
 - Gustia billing now includes a hosted Stripe Checkout setup CTA, success/cancel states, and dedicated result pages for the founding-offer flow
 - Gustia customer chat now routes GPT-4o mini calls through a server API with restaurant context and automatic demo fallback on failures
 - Gustia concierge voice replies now use an OpenAI TTS server route with browser speech fallback for smoother audio playback on guest devices
+- Gustia owner admin now includes a dedicated changelog page and navigation badge so restaurant owners can track shipped releases from inside `/admin`
 - Gustia is now live on the public production domain `https://www.gustia.wine`
 - Gustia now includes a direct Supabase SQL schema document and a Vercel deploy checklist covering env vars and Stripe webhook setup
 - Gustia deploy guidance now requires explicit synchronization of patch notes, handoff, progress/session logs, and other affected canonical docs before release

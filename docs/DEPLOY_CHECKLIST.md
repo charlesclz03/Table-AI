@@ -27,6 +27,7 @@ Related docs:
 - `.agent/workflows/deploy.md`
 - `docs/reference/PATCH_NOTES.md`
 - `docs/reference/commands.md`
+- `docs/runbooks/release.md`
 - `docs/runbooks/verification.md`
 
 ## Start Here
@@ -66,12 +67,14 @@ npm run test:e2e
 - required Vercel environment variables are present
 - the production domain remains `https://www.gustia.wine`
 - the relevant docs set has been synchronized for this release
+- `lib/changelog.ts` matches the latest owner-facing release notes when product behavior changed
 - secrets are not logged, committed, or pasted into docs
 
 ## Required Documentation Sync
 
 Before release, update the docs that were made stale by the current change set. The minimum release-tracking set is:
 
+- `lib/changelog.ts`
 - `docs/reference/PATCH_NOTES.md`
 - `docs/progress-log.md`
 - `docs/session-log.md`
@@ -82,6 +85,7 @@ Update these as needed when their contract changed:
 - `docs/README.md`
 - `README.md`
 - `docs/reference/commands.md`
+- `docs/runbooks/release.md`
 - `docs/runbooks/verification.md`
 - `docs/reference/env-vars.md`
 - `docs/runbooks/local-development.md`

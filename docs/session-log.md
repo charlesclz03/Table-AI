@@ -37,6 +37,12 @@ Related docs:
 
 ## Entries
 
+### 2026-04-04 - Owner Changelog Feature
+
+- added a shared `lib/changelog.ts` source plus `/api/changelog` so the owner release feed and future integrations read the same sorted release data
+- built `/admin/changelog` with a glassmorphism release feed grouped by date and wired a latest-version badge into the admin navigation
+- added a changelog template and release runbook guidance so future releases update the owner-facing feed before GitHub push and Vercel auto-deploy
+- verified `npm run lint`, `npm run type-check`, and `npm run build` all pass, then smoke-checked `GET /api/changelog` locally from a production start
 ### 2026-04-04 - OpenAI TTS Reply Upgrade
 
 - added an `app/api/tts` route that uses the existing OpenAI server env wiring to synthesize concierge reply audio with the `tts-1-hd` model and `onyx` voice

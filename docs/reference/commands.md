@@ -40,12 +40,15 @@ Related docs:
 ## Documentation Tracking
 
 - release-history source of truth: `docs/reference/PATCH_NOTES.md`
+- owner release-feed source of truth: `lib/changelog.ts`
 - deploy workflow contract: `.agent/workflows/deploy.md`
 
 ## Deployment Commands
 
 - inspect branch state: `git status --short`
 - sync remote state: `git fetch`
+- create release tag: `git tag v<version>`
 - push release branch: `git push origin main`
+- push release branch and tags: `git push origin main --follow-tags`
 - pull Vercel production env/project settings: `npx vercel pull --yes --environment=production`
 - deploy directly to Vercel production: `npx vercel --prod --yes`

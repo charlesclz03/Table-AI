@@ -1,0 +1,46 @@
+# Gustia Release Runbook
+
+Purpose:
+
+- define the owner-facing release-note flow alongside the GitHub and Vercel release path
+
+Audience:
+
+- maintainers
+- coding agents
+
+Status:
+
+- active
+
+Source of truth scope:
+
+- release-note preparation, version tagging, and auto-deploy sequencing
+
+Last updated:
+
+- 2026-04-04
+
+Related docs:
+
+- `.agent/workflows/deploy.md`
+- `docs/DEPLOY_CHECKLIST.md`
+- `docs/reference/PATCH_NOTES.md`
+- `docs/templates/CHANGELOG.md`
+
+## Release Flow
+
+1. Update `lib/changelog.ts` with the new version, date, and owner-facing release notes.
+2. Sync the release docs that changed, especially `docs/reference/PATCH_NOTES.md`, `docs/progress-log.md`, `docs/session-log.md`, and `docs/next-session-handoff.md`.
+3. Verify locally with `npm run lint`, `npm run build`, and `npm run type-check`.
+4. Confirm `/admin/changelog` renders the latest entry and the admin navigation badge shows the same version.
+5. Commit the release with the version in the message, for example `git commit -m "chore(release): v1.0.1"`.
+6. Create or move the Git tag for that release, for example `git tag v1.0.1`.
+7. Push the branch and tags to GitHub with `git push origin main --follow-tags`.
+8. Let Vercel auto-deploy from GitHub, then verify the affected production flows.
+
+## Notes
+
+- use `.agent/workflows/deploy.md` as the broader release gate
+- treat the owner changelog as a required release artifact, not optional polish
+- if a release changes the process itself, update this runbook and the deploy workflow in the same session

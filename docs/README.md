@@ -44,6 +44,7 @@ Related docs:
 - repo overview: `README.md`
 - current handoff: `docs/next-session-handoff.md`
 - release history: `docs/reference/PATCH_NOTES.md`
+- release runbook: `docs/runbooks/release.md`
 - session history: `docs/session-log.md`
 - shipped history: `docs/progress-log.md`
 - immediate backlog: `docs/next-steps.md`

@@ -19,6 +19,7 @@ The repo now contains:
 - onboarding quiz editor
 - QR poster studio
 - billing overview with Stripe portal entry
+- owner changelog feed in the admin dashboard
 - public privacy, terms, and contact pages
 - live production site on `https://www.gustia.wine`
 
@@ -73,6 +74,8 @@ Commercial model:
   QR preview, download, share, and print flow.
 - `/admin/billing`
   Billing status, invoices, and Stripe portal access.
+- `/admin/changelog`
+  Owner-facing release feed with versioned features, fixes, and improvements.
 
 ## How To Run
 
@@ -137,6 +140,7 @@ See:
 - `docs/next-session-handoff.md`
 - `docs/reference/env-vars.md`
 - `docs/runbooks/local-development.md`
+- `docs/runbooks/release.md`
 - `docs/reference/commands.md`
 
 ## Important Docs

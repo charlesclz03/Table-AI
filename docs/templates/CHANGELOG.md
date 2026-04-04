@@ -1,25 +1,25 @@
-# Changelog
+# Owner Changelog Template
 
-All notable changes to this starter should be recorded here.
+Use this template when adding a new owner-facing release note to `lib/changelog.ts`.
 
-## [Unreleased]
+## Entry Shape
 
-### Added
+```ts
+{
+  version: '1.0.1',
+  date: '2026-04-05',
+  changes: [
+    { type: 'feature', text: 'Short owner-facing feature summary' },
+    { type: 'fix', text: 'Short owner-facing bug fix summary' },
+    { type: 'improvement', text: 'Short owner-facing polish summary' },
+  ],
+}
+```
 
-- App Router starter shell under `app/`
-- `/api/onboarding/suggestions` shared backend route
-- InsForge-aware onboarding discovery and suggestion flow
-- Local onboarding suggestion script
-- Safe integration helpers for Prisma, NextAuth, Supabase, and Stripe
+## Rules
 
-### Changed
-
-- Replaced deprecated `next lint` usage with ESLint CLI
-- Normalized repo formatting to LF-friendly tooling
-- Updated onboarding skill to inspect docs before asking setup questions
-
-### Fixed
-
-- Repaired the broken `next.config.js` baseline
-- Restored a runnable build, test, and route scaffold
-- Removed stale product-specific audit assumptions from starter code and docs
+- use ISO dates: `YYYY-MM-DD`
+- keep the text owner-facing, concise, and outcome-focused
+- valid change types are only `feature`, `fix`, and `improvement`
+- add the new entry to `lib/changelog.ts`, then sync `docs/reference/PATCH_NOTES.md`
+- during release prep, confirm `/admin/changelog` shows the new version and the admin nav badge matches it
