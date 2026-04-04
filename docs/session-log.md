@@ -37,6 +37,13 @@ Related docs:
 
 ## Entries
 
+### 2026-04-04 - Theme Voice Preview Onboarding
+
+- added shared theme metadata in `lib/themes.ts` so each onboarding theme now carries its own OpenAI voice, localized greeting copy, personality text, and sphere motion profile
+- built a dedicated theme preview card plus a preview-and-confirm onboarding flow that plays theme-specific audio on tap, shows green validated and red not-selected pills, and preserves the existing session storage handoff into chat
+- extended `/api/tts` to accept a voice override while keeping the existing default voice path intact, and added a text-only fallback state when preview audio is unavailable
+- verified `npm run type-check`, `npm run lint`, and `npm run build` all pass after the onboarding and TTS changes
+
 ### 2026-04-04 - Owner Analytics Dashboard
 
 - added `conversation_analytics` support to the Supabase migration docs plus owner-scoped analytics aggregation for conversations, engagement, peak usage windows, language mix, and recommendation trends

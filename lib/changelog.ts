@@ -15,6 +15,24 @@ export interface ChangelogEntry {
 
 export const changelog: ChangelogEntry[] = [
   {
+    version: '1.0.4',
+    date: '2026-04-04',
+    changes: [
+      {
+        type: 'feature',
+        text: 'Guests can now preview each concierge theme with its own AI voice before entering chat',
+      },
+      {
+        type: 'improvement',
+        text: 'Theme onboarding now separates preview from confirmation, with localized greetings and clearer selection states',
+      },
+      {
+        type: 'fix',
+        text: 'Theme previews now fall back to text-only mode when OpenAI voice playback is unavailable instead of dropping the onboarding flow',
+      },
+    ],
+  },
+  {
     version: '1.0.3',
     date: '2026-04-04',
     changes: [

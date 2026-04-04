@@ -51,6 +51,7 @@ Related docs:
 - the latest production deployment is `dpl_HFVX9hrH4DhF3kr7qLEktiUCjBpo`, verified on `https://www.gustia.wine`
 - the latest release commit on `origin/main` is `1a0e359` (`chore(release): ai menu photo import`)
 - the guest chat now uses OpenAI TTS for concierge voice replies through `/api/tts`, with browser speech fallback if API synthesis or playback fails
+- the guest onboarding theme step now previews localized AI greetings with per-theme OpenAI voices, a separate confirm button, and text-only fallback if preview audio is unavailable
 - the owner menu editor now includes an `Upload Photo` flow backed by `/api/menu/parse`, where OpenAI `gpt-4o` extracts menu items from uploaded menu images or PDFs before owner review and save
 - the owner dashboard now includes `/admin/changelog`, backed by `lib/changelog.ts` and `/api/changelog`, with a latest-version badge in the admin navigation
 - the owner dashboard now includes `/admin/analytics`, backed by `/api/admin/analytics`, with live conversation counts, top questions, language mix, peak usage windows, and recommendation trends
@@ -73,6 +74,7 @@ Related docs:
 - document any new integration or workflow change in the patch notes, progress log, session log, handoff, commands, env reference, and deploy docs when relevant
 - keep `/deploy` and `docs/DEPLOY_CHECKLIST.md` aligned with the current reporting contract so deploy summaries stay concise and non-redundant
 - live-smoke the new `/admin/menu` photo import with a real owner account and a real menu PDF in production
+- live-smoke the onboarding theme voice previews on a real mobile device and confirm the per-theme voice mapping feels distinct enough in production
 - apply the `conversation_analytics` SQL changes from `docs/reference/supabase-owner-auth-migration.sql` in the live Supabase project before expecting language and recommendation analytics in production
 - live-smoke `/admin/analytics` with a real owner account after the SQL update so the dashboard is validated against real concierge traffic
 - verify `/api/chat` end-to-end against the live OpenAI account now that API billing is working again

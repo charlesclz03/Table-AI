@@ -35,6 +35,12 @@ Related docs:
 - use this file for release history, `docs/progress-log.md` for durable baseline truth, and `docs/session-log.md` for session chronology
 - until formal semantic versioning starts, date-keyed entries are acceptable
 
+## 2026-04-04 - Theme Voice Preview Onboarding
+
+- **CHAT**: Added localized AI voice previews to the onboarding theme step so guests can hear each concierge personality before entering the chat.
+- **UX**: Replaced the old one-tap theme handoff with a preview-and-confirm flow, including green validated pills for the active theme and red not-selected pills for the others.
+- **TTS**: Extended `/api/tts` to accept per-theme OpenAI voices and added a text-only fallback state when preview audio cannot be fetched or played.
+
 ## 2026-04-04 - AI Menu Photo Import Released to Production
 
 - **DEPLOY**: Released the AI menu photo import to production on `https://www.gustia.wine` in deployment `dpl_HFVX9hrH4DhF3kr7qLEktiUCjBpo`.

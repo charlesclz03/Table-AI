@@ -1,9 +1,11 @@
 import { NextResponse } from 'next/server'
 import OpenAI from 'openai'
+import { DEFAULT_TTS_VOICE, type OpenAITtsVoice } from '@/lib/themes'
 import { getServerEnv } from '@/lib/server-env'
 
 interface TtsRequestBody {
   text?: string
+  voice?: OpenAITtsVoice
 }
 
 export async function POST(request: Request) {
@@ -19,6 +21,7 @@ export async function POST(request: Request) {
 
     const body = (await request.json()) as TtsRequestBody
     const text = body.text?.trim()
+    const voice = body.voice?.trim() || DEFAULT_TTS_VOICE
 
     if (!text) {
       return NextResponse.json({ error: 'Text is required.' }, { status: 400 })
@@ -31,7 +34,7 @@ export async function POST(request: Request) {
     const response = await client.audio.speech.create(
       {
         model: 'tts-1-hd',
-        voice: 'onyx',
+        voice,
         input: text,
       },
       {

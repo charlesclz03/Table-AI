@@ -10,6 +10,13 @@ import {
 } from 'react'
 import { useParams, useRouter, useSearchParams } from 'next/navigation'
 import { Sparkles } from 'lucide-react'
+import {
+  DEFAULT_THEME_KEY,
+  THEME_OPTIONS,
+  getThemeOption,
+  type ThemeKey,
+  type ThemeOption,
+} from '@/lib/themes'
 import { cn } from '@/lib/utils'
 
 export const LANGUAGE_STORAGE_KEY = 'gustia-lang'
@@ -55,9 +62,9 @@ export const LANGUAGE_OPTIONS = [
 ] as const
 
 export type LanguageCode = (typeof LANGUAGE_OPTIONS)[number]['code']
-
-export type ThemeKey = 'red' | 'white' | 'rose' | 'champagne' | 'green'
 export type OnboardingProgressStep = 0 | 1 | 2
+export { THEME_OPTIONS, getThemeOption }
+export type { ThemeKey, ThemeOption }
 
 export const ONBOARDING_SLIDE_TRANSITION = {
   duration: 0.4,
@@ -69,66 +76,6 @@ export const ONBOARDING_SLIDE_STATES = {
   animate: { y: 0 },
   exit: { y: -100 },
 } as const
-
-export interface ThemeOption {
-  key: ThemeKey
-  label: string
-  subtitle: string
-  wineColor: string
-  highlightColor: string
-  glowColor: string
-  voiceCharacter: string
-  sparkle?: boolean
-}
-
-export const THEME_OPTIONS: ThemeOption[] = [
-  {
-    key: 'red',
-    label: 'Red Wine',
-    subtitle: 'Warm, deep, sophisticated',
-    wineColor: '#722F37',
-    highlightColor: '#9C4B58',
-    glowColor: '#722F37',
-    voiceCharacter: 'Warm, deep, sophisticated waiter',
-  },
-  {
-    key: 'white',
-    label: 'White Wine',
-    subtitle: 'Light, crisp, friendly',
-    wineColor: '#F7E7CE',
-    highlightColor: '#FFF5E8',
-    glowColor: '#F7E7CE',
-    voiceCharacter: 'Light, crisp, friendly sommelier',
-  },
-  {
-    key: 'rose',
-    label: 'Rose',
-    subtitle: 'Fresh, fruity, approachable',
-    wineColor: '#FFB6C1',
-    highlightColor: '#FFD7DF',
-    glowColor: '#FFB6C1',
-    voiceCharacter: 'Fresh, fruity, approachable host',
-  },
-  {
-    key: 'champagne',
-    label: 'Champagne',
-    subtitle: 'Bright, premium, celebratory',
-    wineColor: '#F5E6C8',
-    highlightColor: '#FFF8E9',
-    glowColor: '#F5E6C8',
-    voiceCharacter: "Bright, celebratory, premium maitre d'",
-    sparkle: true,
-  },
-  {
-    key: 'green',
-    label: 'Green Wine',
-    subtitle: 'Fresh, youthful, Portuguese',
-    wineColor: '#C9E4CA',
-    highlightColor: '#E6F8E6',
-    glowColor: '#90EE90',
-    voiceCharacter: 'Fresh, youthful, slightly sparkling Portuguese concierge',
-  },
-]
 
 export interface MenuItem {
   id?: string
@@ -243,12 +190,6 @@ interface WineSphereProps {
 }
 
 const OnboardingContext = createContext<OnboardingContextValue | null>(null)
-
-export function getThemeOption(themeKey: ThemeKey | null | undefined) {
-  return (
-    THEME_OPTIONS.find((option) => option.key === themeKey) ?? THEME_OPTIONS[0]
-  )
-}
 
 export function getLanguageOption(code: LanguageCode | null | undefined) {
   return (
@@ -436,8 +377,8 @@ export function WineSphere({
       )}
       style={{
         animation: speaking
-          ? 'sphereSpeak 0.9s ease-in-out infinite'
-          : 'spherePulse 3s ease-in-out infinite',
+          ? `sphereSpeak ${theme.motion.speakDuration}s ease-in-out infinite`
+          : `spherePulse ${theme.motion.pulseDuration}s ease-in-out infinite`,
       }}
     >
       <div
@@ -445,8 +386,9 @@ export function WineSphere({
         style={{
           background: `radial-gradient(circle, ${theme.glowColor}88 0%, transparent 72%)`,
           animation: speaking
-            ? 'glowPulse 1.4s ease-in-out infinite'
-            : 'glowPulse 3s ease-in-out infinite',
+            ? `glowPulse ${theme.motion.glowDuration}s ease-in-out infinite`
+            : `glowPulse ${theme.motion.pulseDuration}s ease-in-out infinite`,
+          transform: `scale(${theme.motion.accent === 'bubbles' ? 1.06 : 1})`,
         }}
       />
 
@@ -482,17 +424,47 @@ export function WineSphere({
             style={{
               background: `linear-gradient(180deg, rgba(255,255,255,0.4) 0%, ${theme.highlightColor} 38%, ${theme.wineColor} 100%)`,
               animation: speaking
-                ? 'wineWave 1.6s ease-in-out infinite'
-                : 'wineWave 5s ease-in-out infinite',
+                ? `wineWave ${theme.motion.waveDuration}s ease-in-out infinite`
+                : `wineWave ${theme.motion.waveDuration * 2.8}s ease-in-out infinite`,
             }}
           />
         </div>
+
+        {theme.motion.accent === 'crisp' ? (
+          <div className="pointer-events-none absolute inset-0">
+            <span className="absolute left-[18%] top-[22%] h-[2px] w-[26%] rounded-full bg-white/65 blur-[1px]" />
+            <span className="absolute right-[16%] top-[36%] h-[2px] w-[18%] rounded-full bg-white/45 blur-[1px]" />
+          </div>
+        ) : null}
+
+        {theme.motion.accent === 'blush' ? (
+          <div className="pointer-events-none absolute inset-0">
+            <span className="absolute left-[18%] top-[30%] h-3 w-3 rounded-full bg-white/26 blur-sm" />
+            <span className="absolute right-[20%] top-[20%] h-2.5 w-2.5 rounded-full bg-white/20 blur-sm" />
+          </div>
+        ) : null}
+
+        {theme.motion.accent === 'breeze' ? (
+          <div className="pointer-events-none absolute inset-0">
+            <span className="absolute left-[14%] top-[28%] h-[2px] w-[20%] rounded-full bg-white/40 blur-[1px]" />
+            <span className="absolute right-[18%] top-[34%] h-[2px] w-[16%] rounded-full bg-white/35 blur-[1px]" />
+            <span className="absolute left-[34%] top-[18%] h-[2px] w-[12%] rounded-full bg-white/30 blur-[1px]" />
+          </div>
+        ) : null}
 
         {theme.sparkle ? (
           <div className="pointer-events-none absolute inset-0">
             <span className="absolute left-[22%] top-[34%] h-2 w-2 rounded-full bg-white/70" />
             <span className="absolute left-[58%] top-[24%] h-1.5 w-1.5 rounded-full bg-white/55" />
             <span className="absolute left-[70%] top-[42%] h-1 w-1 rounded-full bg-white/60" />
+          </div>
+        ) : null}
+
+        {theme.motion.accent === 'bubbles' ? (
+          <div className="pointer-events-none absolute inset-0">
+            <span className="absolute bottom-[20%] left-[24%] h-2.5 w-2.5 rounded-full border border-white/45 bg-white/12" />
+            <span className="absolute bottom-[28%] right-[24%] h-2 w-2 rounded-full border border-white/40 bg-white/10" />
+            <span className="absolute bottom-[38%] right-[34%] h-1.5 w-1.5 rounded-full border border-white/35 bg-white/8" />
           </div>
         ) : null}
       </div>
@@ -511,9 +483,13 @@ export function WineSphere({
       <div
         className="pointer-events-none absolute inset-y-[14%] left-[-22%] w-[46%] rounded-full bg-white/15 blur-md"
         style={{
-          animation: 'shimmerSweep 6s linear infinite',
+          animation: `shimmerSweep ${theme.motion.shimmerDuration}s linear infinite`,
         }}
       />
+
+      {theme.motion.accent === 'velvet' ? (
+        <div className="pointer-events-none absolute inset-[16%] rounded-full border border-white/8" />
+      ) : null}
     </div>
   )
 }
@@ -589,7 +565,7 @@ export function OnboardingShell({
     const nextTheme = readStoredTheme()
 
     setLangState(nextLang)
-    setThemeState(nextTheme)
+    setThemeState(nextTheme ?? DEFAULT_THEME_KEY)
     setIsReady(true)
   }, [])
 

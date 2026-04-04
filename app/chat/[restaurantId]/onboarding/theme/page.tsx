@@ -1,8 +1,18 @@
 'use client'
 
-import { startTransition, useEffect, useRef, useState } from 'react'
+import {
+  startTransition,
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
+import { Check, Volume2, X } from 'lucide-react'
 import { useRouter } from 'next/navigation'
+import { ThemePreview } from '@/components/onboarding/ThemePreview'
+import { getThemeGreeting, getThemePersonality } from '@/lib/themes'
 import {
   buildChatPath,
   getThemeOption,
@@ -18,6 +28,7 @@ import {
 } from '../_layout'
 
 type ThemeStage = 'theme' | 'enter'
+type PreviewMode = 'idle' | 'audio' | 'text'
 
 function ThemeSelectionScreen({
   onProgressChange,
@@ -25,13 +36,62 @@ function ThemeSelectionScreen({
   onProgressChange: (progress: OnboardingProgressStep) => void
 }) {
   const router = useRouter()
-  const { restaurantId, tableNumber, restaurantName, setTheme, theme } =
+  const { restaurantId, tableNumber, restaurantName, setTheme, theme, lang } =
     useOnboardingFlow()
   const [stage, setStage] = useState<ThemeStage>('theme')
   const [previewTheme, setPreviewTheme] = useState<ThemeKey>(
     theme ?? THEME_OPTIONS[0].key
   )
+  const [previewMode, setPreviewMode] = useState<PreviewMode>('idle')
+  const [isPreviewLoading, setIsPreviewLoading] = useState(false)
+  const [isPreviewPlaying, setIsPreviewPlaying] = useState(false)
   const routeTimeoutRef = useRef<number | null>(null)
+  const audioRef = useRef<HTMLAudioElement | null>(null)
+  const audioUrlRef = useRef<string | null>(null)
+  const previewRequestIdRef = useRef(0)
+
+  const activeTheme = useMemo(
+    () => getThemeOption(previewTheme),
+    [previewTheme]
+  )
+  const greeting = useMemo(
+    () => getThemeGreeting(previewTheme, lang),
+    [lang, previewTheme]
+  )
+  const personality = useMemo(
+    () => getThemePersonality(previewTheme, lang),
+    [lang, previewTheme]
+  )
+
+  const releasePreviewAudio = useCallback(function releasePreviewAudio() {
+    const activeAudio = audioRef.current
+
+    if (activeAudio) {
+      activeAudio.onended = null
+      activeAudio.onerror = null
+      activeAudio.pause()
+      activeAudio.src = ''
+      audioRef.current = null
+    }
+
+    const activeUrl = audioUrlRef.current
+
+    if (activeUrl) {
+      URL.revokeObjectURL(activeUrl)
+      audioUrlRef.current = null
+    }
+  }, [])
+
+  const stopPreviewAudio = useCallback(
+    function stopPreviewAudio(nextMode: PreviewMode = 'idle') {
+      previewRequestIdRef.current += 1
+      releasePreviewAudio()
+      setIsPreviewLoading(false)
+      setIsPreviewPlaying(false)
+      setPreviewMode(nextMode)
+    },
+    [releasePreviewAudio]
+  )
 
   useEffect(() => {
     if (theme) {
@@ -48,16 +108,140 @@ function ThemeSelectionScreen({
       if (routeTimeoutRef.current) {
         window.clearTimeout(routeTimeoutRef.current)
       }
-    }
-  }, [])
 
-  function handleSelectTheme(nextTheme: ThemeKey) {
-    if (typeof window !== 'undefined') {
-      window.sessionStorage.setItem(THEME_STORAGE_KEY, nextTheme)
+      stopPreviewAudio()
+    }
+  }, [stopPreviewAudio])
+
+  const playThemePreview = useCallback(
+    async function playThemePreview(nextTheme: ThemeKey) {
+      const nextThemeOption = getThemeOption(nextTheme)
+      const nextGreeting = getThemeGreeting(nextTheme, lang)
+
+      setPreviewTheme(nextTheme)
+
+      if (typeof window === 'undefined' || !nextGreeting.trim()) {
+        stopPreviewAudio('text')
+        return
+      }
+
+      if (!window.navigator.onLine) {
+        stopPreviewAudio('text')
+        return
+      }
+
+      const requestId = previewRequestIdRef.current + 1
+      previewRequestIdRef.current = requestId
+
+      releasePreviewAudio()
+      setPreviewMode('audio')
+      setIsPreviewLoading(true)
+      setIsPreviewPlaying(false)
+
+      try {
+        const response = await fetch('/api/tts', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            text: nextGreeting,
+            voice: nextThemeOption.voice,
+          }),
+        })
+
+        if (!response.ok) {
+          throw new Error(`Theme preview failed with ${response.status}`)
+        }
+
+        const blob = await response.blob()
+
+        if (blob.size === 0) {
+          throw new Error('Theme preview returned empty audio')
+        }
+
+        const url = URL.createObjectURL(blob)
+        const audio = new Audio(url)
+        audio.preload = 'auto'
+        audio.setAttribute('playsinline', '')
+
+        if (requestId !== previewRequestIdRef.current) {
+          URL.revokeObjectURL(url)
+          return
+        }
+
+        audioRef.current = audio
+        audioUrlRef.current = url
+
+        const cleanupAudio = () => {
+          if (audioRef.current === audio) {
+            audioRef.current = null
+          }
+
+          if (audioUrlRef.current === url) {
+            URL.revokeObjectURL(url)
+            audioUrlRef.current = null
+          }
+        }
+
+        audio.onplay = () => {
+          if (requestId !== previewRequestIdRef.current) {
+            return
+          }
+
+          setIsPreviewLoading(false)
+          setIsPreviewPlaying(true)
+          setPreviewMode('audio')
+        }
+        audio.onended = () => {
+          cleanupAudio()
+
+          if (requestId !== previewRequestIdRef.current) {
+            return
+          }
+
+          setIsPreviewLoading(false)
+          setIsPreviewPlaying(false)
+          setPreviewMode('audio')
+        }
+        audio.onerror = () => {
+          cleanupAudio()
+
+          if (requestId !== previewRequestIdRef.current) {
+            return
+          }
+
+          stopPreviewAudio('text')
+        }
+
+        await audio.play()
+      } catch (error) {
+        console.error('Theme preview error:', error)
+
+        if (requestId === previewRequestIdRef.current) {
+          stopPreviewAudio('text')
+        }
+      }
+    },
+    [lang, releasePreviewAudio, stopPreviewAudio]
+  )
+
+  function handleHighlightTheme(nextTheme: ThemeKey) {
+    if (previewTheme === nextTheme) {
+      return
     }
 
+    stopPreviewAudio()
     setPreviewTheme(nextTheme)
-    setTheme(nextTheme)
+  }
+
+  function handleConfirmTheme() {
+    if (typeof window !== 'undefined') {
+      window.sessionStorage.setItem(THEME_STORAGE_KEY, previewTheme)
+    }
+
+    stopPreviewAudio()
+    setTheme(previewTheme)
     setStage('enter')
 
     routeTimeoutRef.current = window.setTimeout(() => {
@@ -66,8 +250,6 @@ function ThemeSelectionScreen({
       })
     }, 700)
   }
-
-  const activeTheme = getThemeOption(previewTheme)
 
   return (
     <AnimatePresence initial={false} mode="wait">
@@ -88,27 +270,25 @@ function ThemeSelectionScreen({
               Pick your sphere theme
             </h2>
             <p className="mt-3 text-sm leading-7 text-white/60">
-              Preview each personality, then tap once to enter the chat.
+              Tap a theme to hear its AI personality, then confirm when it feels
+              right.
             </p>
           </div>
 
-          <div className="mb-6 rounded-[34px] border border-white/10 bg-white/[0.05] px-5 py-6 text-center shadow-[0_24px_80px_rgba(0,0,0,0.26)] backdrop-blur-xl">
-            <WineSphere
-              themeKey={activeTheme.key}
-              selected
-              speaking
-              size="lg"
-              className="mx-auto"
-            />
-            <p className="mt-5 text-lg font-medium text-white">
-              {activeTheme.label}
-            </p>
-            <p className="mt-2 text-sm leading-6 text-white/55">
-              {activeTheme.subtitle}
-            </p>
-          </div>
+          <ThemePreview
+            theme={activeTheme}
+            greeting={greeting}
+            personality={personality}
+            isLoading={isPreviewLoading}
+            isPlaying={isPreviewPlaying}
+            previewMode={previewMode}
+            onReplay={() => {
+              void playThemePreview(previewTheme)
+            }}
+            onConfirm={handleConfirmTheme}
+          />
 
-          <div className="grid grid-cols-2 gap-3">
+          <div className="mt-6 grid grid-cols-2 gap-3">
             {THEME_OPTIONS.map((option, index) => {
               const isSelected = previewTheme === option.key
 
@@ -116,10 +296,12 @@ function ThemeSelectionScreen({
                 <motion.button
                   key={option.key}
                   type="button"
-                  onClick={() => handleSelectTheme(option.key)}
-                  onMouseEnter={() => setPreviewTheme(option.key)}
-                  onFocus={() => setPreviewTheme(option.key)}
-                  onPointerDown={() => setPreviewTheme(option.key)}
+                  onClick={() => {
+                    void playThemePreview(option.key)
+                  }}
+                  onMouseEnter={() => handleHighlightTheme(option.key)}
+                  onFocus={() => handleHighlightTheme(option.key)}
+                  onPointerDown={() => handleHighlightTheme(option.key)}
                   whileTap={{ scale: 0.98 }}
                   initial={{ y: 28 }}
                   animate={{ y: 0 }}
@@ -127,7 +309,7 @@ function ThemeSelectionScreen({
                     ...ONBOARDING_SLIDE_TRANSITION,
                     delay: index * 0.05,
                   }}
-                  className="flex min-h-[118px] min-w-[60px] flex-col rounded-[28px] border px-4 py-4 text-left shadow-[0_18px_48px_rgba(0,0,0,0.18)] backdrop-blur-xl transition"
+                  className="flex min-h-[136px] min-w-[60px] flex-col rounded-[28px] border px-4 py-4 text-left shadow-[0_18px_48px_rgba(0,0,0,0.18)] backdrop-blur-xl transition"
                   style={{
                     borderColor: isSelected
                       ? `${option.glowColor}80`
@@ -140,13 +322,32 @@ function ThemeSelectionScreen({
                       : '0 18px 48px rgba(0,0,0,0.18)',
                   }}
                 >
-                  <WineSphere
-                    themeKey={option.key}
-                    selected={isSelected}
-                    speaking={isSelected}
-                    size="sm"
-                    className="mx-auto"
-                  />
+                  <div className="flex items-start justify-between gap-3">
+                    <WineSphere
+                      themeKey={option.key}
+                      selected={isSelected}
+                      speaking={
+                        isSelected && (isPreviewLoading || isPreviewPlaying)
+                      }
+                      size="sm"
+                      className="mx-auto"
+                    />
+                    <span
+                      className={`inline-flex min-h-8 items-center gap-1 rounded-full border px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.12em] ${
+                        isSelected
+                          ? 'border-emerald-300/30 bg-emerald-300/15 text-emerald-50'
+                          : 'border-rose-300/30 bg-rose-400/12 text-rose-50'
+                      }`}
+                    >
+                      {isSelected ? (
+                        <Check className="h-3 w-3" />
+                      ) : (
+                        <X className="h-3 w-3" />
+                      )}
+                      {isSelected ? 'Validated' : 'Not selected'}
+                    </span>
+                  </div>
+
                   <div className="mt-4">
                     <p className="text-base font-medium text-white">
                       {option.label}
@@ -154,6 +355,11 @@ function ThemeSelectionScreen({
                     <p className="mt-1 text-sm text-white/48">
                       {option.subtitle}
                     </p>
+                  </div>
+
+                  <div className="mt-4 flex items-center gap-2 text-xs text-white/62">
+                    <Volume2 className="h-3.5 w-3.5" />
+                    <span>{option.voiceCharacter}</span>
                   </div>
                 </motion.button>
               )
