@@ -4,7 +4,7 @@ import type { AdminRestaurantRecord } from '@/lib/admin/types'
 import { ensureStripeCustomer } from '@/lib/billing/customer'
 import { getPublicEnv } from '@/lib/env'
 import { getStripeServerClient } from '@/lib/stripe'
-import { getSupabaseServerClient } from '@/lib/supabase/server'
+import { getSupabaseServerComponentClient } from '@/lib/supabase/server'
 
 const SETUP_FEE_AMOUNT = 29900
 const MONTHLY_SUBSCRIPTION_AMOUNT = 4900
@@ -23,7 +23,7 @@ async function persistStripeCustomerId(
     return
   }
 
-  const client = getSupabaseServerClient({ serviceRole: true })
+  const client = await getSupabaseServerComponentClient()
 
   if (!client) {
     throw new Error('Supabase is not configured.')

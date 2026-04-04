@@ -304,27 +304,10 @@ export async function fetchRestaurantProfile(
     return DEMO_RESTAURANT
   }
 
-  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
-  const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
-
-  if (!supabaseUrl || !supabaseAnonKey) {
-    return {
-      ...DEMO_RESTAURANT,
-      id: restaurantId,
-    }
-  }
-
   try {
     const response = await fetch(
-      `${supabaseUrl}/rest/v1/restaurants?id=eq.${encodeURIComponent(
-        restaurantId
-      )}&select=id,name,soul_md,rules_md,menu_json,subscription_status`,
+      `/api/restaurants/${encodeURIComponent(restaurantId)}`,
       {
-        headers: {
-          apikey: supabaseAnonKey,
-          Authorization: `Bearer ${supabaseAnonKey}`,
-          'Content-Type': 'application/json',
-        },
         cache: 'no-store',
       }
     )
@@ -333,9 +316,11 @@ export async function fetchRestaurantProfile(
       throw new Error('Restaurant lookup failed')
     }
 
-    const data = (await response.json()) as RestaurantProfile[]
+    const data = (await response.json()) as {
+      restaurant?: RestaurantProfile
+    }
 
-    return data[0] ?? { ...DEMO_RESTAURANT, id: restaurantId }
+    return data.restaurant ?? { ...DEMO_RESTAURANT, id: restaurantId }
   } catch {
     return {
       ...DEMO_RESTAURANT,

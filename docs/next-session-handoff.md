@@ -45,8 +45,8 @@ Related docs:
 - the documentation operating system is now installed and should be treated as the canonical navigation layer
 - this repo should stay representative of the best reusable baseline, not accumulate product-specific drift
 - Gustia now has a canonical `docs/reference/PATCH_NOTES.md` file for release-level history, in addition to progress and session logs
-- Gustia now includes an owner admin section at `/admin` that resolves the restaurant by NextAuth email and reads or updates restaurant data from Supabase
-- the owner flow now includes a public landing page on `/`, a dedicated `/admin/login` screen, and first-login restaurant auto-provisioning when Google + Supabase service-role envs are configured
+- Gustia now includes an owner admin section at `/admin` that authenticates through Supabase Auth, auto-claims the matching owner record, and reads or updates restaurant data through owner-scoped Supabase access
+- the owner flow now includes a public landing page on `/`, a dedicated `/admin/login` screen, Supabase email/password auth, Google OAuth through Supabase Auth, and first-login owner/restaurant auto-provisioning when the Supabase owner migration has been applied
 - the public production domain is now live at `https://www.gustia.wine`
 - the latest production deployment is `dpl_FzNTKtpWkXdKeBPBPPLuWR9uten3`, verified on `https://www.gustia.wine` and `https://gustia.wine`
 - the full documented workspace was pushed to `origin/main` in commit `2295105` (`chore(release): gustia production launch`)
@@ -67,4 +67,6 @@ Related docs:
 - remove or archive sample artifacts that stop representing the real baseline
 - document any new integration or workflow change in the patch notes, progress log, session log, handoff, commands, env reference, and deploy docs when relevant
 - keep `/deploy` and `docs/DEPLOY_CHECKLIST.md` aligned with the current reporting contract so deploy summaries stay concise and non-redundant
-- if the product wants true Supabase-auth-based owner isolation, migrate `/admin` from email-matched NextAuth access to Supabase Auth and apply the intended RLS policies on `restaurants`, `conversations`, and `analytics`
+- apply `docs/reference/supabase-owner-auth-migration.sql` in the live Supabase project before treating the new owner auth path as production-ready
+- verify Supabase dashboard auth settings still allow both email/password and Google OAuth, with `/auth/callback` added to the allowed redirect URLs
+- if admin reads fail after deploy, check that `owners`, `restaurants.owner_id`, and the RLS policies from the migration are present before debugging the app code

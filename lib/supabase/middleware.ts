@@ -28,6 +28,6 @@ export async function updateSupabaseSession(request: NextRequest) {
     return response
   }
 
-  await client.auth.getSession()
+  await client.auth.getUser()
   return response
 }

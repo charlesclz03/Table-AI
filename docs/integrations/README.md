@@ -6,7 +6,7 @@ This folder documents the direct dependencies, local pattern ports, and companio
 - `next-safe-action.md`: server action conventions for future mutations
 - `next-zod-route.md`: route handler conventions for JSON APIs
 - `onboarding-ingestion.md`: frontmatter-aware onboarding ingestion
-- `supabase-ssr.md`: optional Supabase SSR path alongside NextAuth
+- `supabase-ssr.md`: Gustia's Supabase SSR auth pattern for owner sessions, with notes about the remaining generic NextAuth starter surface
 - `stripe.md`: billing configuration and webhook testing guidance
 - `upptime.md`: companion monitoring scaffold for GitHub-native uptime
 - `openstatus.md`: companion monitoring scaffold for OpenStatus

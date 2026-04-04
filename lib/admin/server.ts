@@ -1,13 +1,14 @@
 import { redirect } from 'next/navigation'
+import type { User } from '@supabase/supabase-js'
 import { getPublicEnv } from '@/lib/env'
-import { auth } from '@/lib/auth'
-import { ensureRestaurantForOwner } from '@/lib/admin/owner-restaurant'
+import { ensureOwnerAccountForUser } from '@/lib/admin/owner-account'
 import { getStripeServerClient } from '@/lib/stripe'
-import { getSupabaseServerClient } from '@/lib/supabase/server'
+import { getSupabaseServerComponentClient } from '@/lib/supabase/server'
 import { ensureServerOnly } from '@/lib/server-only'
 import {
   EMPTY_QUIZ_ANSWERS,
   type AdminMenuItem,
+  type AdminOwnerRecord,
   type AdminQuizAnswers,
   type AdminRestaurantRecord,
   type BillingInvoiceSummary,
@@ -21,12 +22,87 @@ import {
 ensureServerOnly('lib/admin/server')
 
 interface AdminContext {
+  owner: AdminOwnerRecord | null
   restaurant: AdminRestaurantRecord | null
+  user: User
   userEmail: string
 }
 
-function getAdminSupabaseClient() {
-  return getSupabaseServerClient({ serviceRole: true })
+function getAdminUserName(user: User) {
+  const metadata = user.user_metadata
+
+  return (
+    (typeof metadata?.full_name === 'string' && metadata.full_name) ||
+    (typeof metadata?.name === 'string' && metadata.name) ||
+    (typeof metadata?.user_name === 'string' && metadata.user_name) ||
+    null
+  )
+}
+
+async function getAdminSupabaseClient() {
+  return getSupabaseServerComponentClient()
+}
+
+async function getAuthenticatedAdminUser() {
+  const client = await getAdminSupabaseClient()
+
+  if (!client) {
+    return {
+      client: null,
+      user: null,
+    }
+  }
+
+  const {
+    data: { user },
+    error,
+  } = await client.auth.getUser()
+
+  if (error || !user?.email) {
+    return {
+      client,
+      user: null,
+    }
+  }
+
+  return {
+    client,
+    user,
+  }
+}
+
+async function getAdminContextData() {
+  const { client, user } = await getAuthenticatedAdminUser()
+
+  if (!client || !user?.email) {
+    return null
+  }
+
+  const userEmail = user.email.trim().toLowerCase()
+  const ownerName = getAdminUserName(user)
+  const syncedAccount = await ensureOwnerAccountForUser({
+    userId: user.id,
+    email: userEmail,
+    ownerName,
+  })
+
+  const { data: restaurant, error: restaurantError } = await client
+    .from('restaurants')
+    .select('*')
+    .eq('owner_id', user.id)
+    .maybeSingle()
+
+  if (restaurantError) {
+    throw new Error(restaurantError.message)
+  }
+
+  return {
+    owner: syncedAccount.owner,
+    restaurant:
+      (restaurant as AdminRestaurantRecord | null) || syncedAccount.restaurant,
+    user,
+    userEmail,
+  }
 }
 
 function startOfCurrentWeek() {
@@ -174,21 +250,13 @@ function getMostAskedQuestions(conversations: ConversationRecord[]) {
 }
 
 export async function requireAdminContext(): Promise<AdminContext> {
-  const session = await auth()
-  const userEmail = session?.user?.email?.trim().toLowerCase()
-  const userName = session?.user?.name
+  const context = await getAdminContextData()
 
-  if (!userEmail) {
+  if (!context) {
     redirect('/admin/login')
   }
 
-  return {
-    restaurant: await ensureRestaurantForOwner({
-      email: userEmail,
-      ownerName: userName,
-    }),
-    userEmail,
-  }
+  return context
 }
 
 export async function requireAdminRestaurant() {
@@ -202,18 +270,13 @@ export async function requireAdminRestaurant() {
 }
 
 export async function getAdminRestaurantForRequest() {
-  const session = await auth()
-  const userEmail = session?.user?.email?.trim().toLowerCase()
-  const userName = session?.user?.name
+  const context = await getAdminContextData()
 
-  if (!userEmail) {
+  if (!context) {
     throw new Error('You must be signed in to manage the admin dashboard.')
   }
 
-  const restaurant = await ensureRestaurantForOwner({
-    email: userEmail,
-    ownerName: userName,
-  })
+  const restaurant = context.restaurant
 
   if (!restaurant) {
     throw new Error('No restaurant record was found for this account.')
@@ -225,7 +288,7 @@ export async function getAdminRestaurantForRequest() {
 export async function getDashboardStats(
   restaurantId: string
 ): Promise<DashboardStats> {
-  const client = getAdminSupabaseClient()
+  const client = await getAdminSupabaseClient()
 
   if (!client) {
     return {
@@ -265,7 +328,7 @@ export async function updateRestaurantMenu(
   restaurantId: string,
   menuItems: AdminMenuItem[]
 ) {
-  const client = getAdminSupabaseClient()
+  const client = await getAdminSupabaseClient()
 
   if (!client) {
     throw new Error('Supabase is not configured.')
@@ -292,7 +355,7 @@ export async function updateRestaurantQuiz(
   restaurantId: string,
   quizAnswers: AdminQuizAnswers
 ) {
-  const client = getAdminSupabaseClient()
+  const client = await getAdminSupabaseClient()
 
   if (!client) {
     throw new Error('Supabase is not configured.')

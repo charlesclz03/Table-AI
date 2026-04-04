@@ -13,8 +13,8 @@ The repo now contains:
 - language and wine-theme onboarding
 - dark glassmorphism mobile UI
 - owner admin dashboard under `/admin`
-- Google admin login through `/admin/login`
-- first-login restaurant auto-provisioning through Supabase when Google auth is configured
+- Supabase owner auth through `/admin/login` with email/password and Google OAuth
+- first-login owner and restaurant auto-provisioning through Supabase when the owner SQL migration and service-role env are configured
 - menu editor
 - onboarding quiz editor
 - QR poster studio
@@ -158,15 +158,13 @@ See:
 
 ## Current Known Gaps
 
-- admin auth still uses the repo's existing NextAuth flow instead of Supabase Auth
-- strict RLS owner isolation is not yet the primary enforcement path
 - menu photo upload and AI parsing are still pending
 - live owner analytics are still limited
-- local Google login verification still depends on valid Google OAuth env vars and Supabase service-role access
+- live verification for the new owner auth flow still depends on the Supabase owner SQL migration being applied plus valid Supabase Auth provider settings
 
 ## Recommended Next Steps
 
-1. Migrate owner auth to Supabase Auth if product-spec parity is required.
-2. Add strict RLS for `restaurants`, `conversations`, and analytics tables.
-3. Build menu photo upload and parsing.
-4. Expand analytics and owner insight surfaces.
+1. Apply `docs/reference/supabase-owner-auth-migration.sql` in the live Supabase project and verify the owner RLS policies against real accounts.
+2. Build menu photo upload and parsing.
+3. Expand analytics and owner insight surfaces.
+4. Remove or downgrade any leftover NextAuth-only starter references once the broader starter no longer needs them.

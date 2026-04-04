@@ -39,6 +39,7 @@ export interface AdminRestaurantRecord {
   id: string
   email: string
   name: string
+  owner_id?: string | null
   logo_url?: string | null
   soul_md?: string | null
   rules_md?: string | null
@@ -51,6 +52,13 @@ export interface AdminRestaurantRecord {
   setup_paid_at?: string | null
   billing_starts_at?: string | null
   qr_code_url?: string | null
+  created_at?: string | null
+}
+
+export interface AdminOwnerRecord {
+  id: string
+  email: string
+  name?: string | null
   created_at?: string | null
 }
 

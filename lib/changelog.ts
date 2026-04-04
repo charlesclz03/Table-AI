@@ -15,6 +15,24 @@ export interface ChangelogEntry {
 
 export const changelog: ChangelogEntry[] = [
   {
+    version: '1.0.1',
+    date: '2026-04-04',
+    changes: [
+      {
+        type: 'feature',
+        text: 'Owner admin now supports Supabase email/password login',
+      },
+      {
+        type: 'improvement',
+        text: 'Owner Google login now runs through Supabase Auth with safer session handling',
+      },
+      {
+        type: 'fix',
+        text: 'Owner restaurant access is now linked through owner accounts and RLS-ready ownership rules',
+      },
+    ],
+  },
+  {
     version: '1.0.0',
     date: '2026-04-04',
     changes: [

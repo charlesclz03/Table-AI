@@ -41,6 +41,12 @@ Related docs:
 - **API**: Added `/api/changelog` backed by shared `lib/changelog.ts` data so the release feed has one canonical source of truth.
 - **RELEASE**: Added a changelog template plus a release runbook requirement to update owner-facing release notes before GitHub push and Vercel auto-deploy.
 
+## 2026-04-04 - Supabase Owner Auth and RLS Migration
+
+- **AUTH**: Replaced the owner admin's NextAuth email-match flow with Supabase Auth sessions, including email/password login, Google OAuth, and a `/auth/callback` exchange path for SSR-safe cookies.
+- **DATA**: Added owner bootstrap logic that mirrors Supabase Auth users into `public.owners`, claims legacy restaurant rows by email, and links restaurants through `restaurants.owner_id`.
+- **SECURITY**: Moved guest restaurant profile reads behind an internal app route and added a canonical Supabase SQL migration for `owners`, `restaurants.owner_id`, and owner-scoped RLS policies.
+
 ## 2026-04-04 - OpenAI Voice Output for Concierge Replies
 
 - **CHAT**: Replaced the primary browser speech-synthesis reply path with an OpenAI-backed `/api/tts` route so concierge voice replies sound smoother and more natural.

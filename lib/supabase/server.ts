@@ -1,5 +1,6 @@
 import { createServerClient } from '@supabase/ssr'
 import type { SupabaseClient } from '@supabase/supabase-js'
+import { cookies } from 'next/headers'
 import { getPublicEnv } from '@/lib/env'
 import { getServerEnv } from '@/lib/server-env'
 import {
@@ -62,6 +63,24 @@ export function getSupabaseServerClient(options?: {
     auth: {
       autoRefreshToken: false,
       persistSession: false,
+    },
+  })
+}
+
+export async function getSupabaseServerComponentClient(options?: {
+  serviceRole?: boolean
+}) {
+  const cookieStore = await cookies()
+
+  return getSupabaseServerClient({
+    serviceRole: options?.serviceRole,
+    cookies: {
+      getAll: () =>
+        cookieStore.getAll().map((cookie) => ({
+          name: cookie.name,
+          value: cookie.value,
+        })),
+      setAll: () => undefined,
     },
   })
 }

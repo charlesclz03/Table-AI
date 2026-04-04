@@ -1,13 +1,38 @@
 import { redirect } from 'next/navigation'
-import { auth } from '@/lib/auth'
-import { AdminSignInButton } from '@/components/admin/AdminSignInButton'
+import { AdminAuthForm } from '@/components/admin/AdminAuthForm'
+import { getSupabaseServerComponentClient } from '@/lib/supabase/server'
 
-export default async function AdminLoginPage() {
-  const session = await auth()
+interface AdminLoginPageProps {
+  searchParams?: Promise<{
+    checkEmail?: string
+    error?: string
+    missing?: string
+  }>
+}
 
-  if (session?.user?.email) {
+export default async function AdminLoginPage({
+  searchParams,
+}: AdminLoginPageProps) {
+  const resolvedSearchParams = searchParams ? await searchParams : undefined
+  const client = await getSupabaseServerComponentClient()
+  const {
+    data: { user },
+  } = client ? await client.auth.getUser() : { data: { user: null } }
+
+  if (user?.email) {
     redirect('/admin')
   }
+
+  const noticeMessage =
+    resolvedSearchParams?.checkEmail === 'true'
+      ? 'Check your inbox to confirm the owner account before signing in.'
+      : null
+  const errorMessage =
+    typeof resolvedSearchParams?.error === 'string'
+      ? resolvedSearchParams.error
+      : resolvedSearchParams?.missing === 'restaurant'
+        ? 'We could not resolve a restaurant for this owner session yet.'
+        : null
 
   return (
     <div className="mx-auto flex min-h-screen w-full max-w-xl items-center justify-center px-4 py-12">
@@ -19,9 +44,9 @@ export default async function AdminLoginPage() {
           Welcome back to your dining room dashboard
         </h1>
         <p className="mt-4 text-sm leading-7 text-white/70">
-          Sign in with Google and we&apos;ll open your owner dashboard right
-          away. If this is your first visit, we&apos;ll create your restaurant
-          space automatically so you can start setting up the experience.
+          Log in with email and password or continue with Google. On the first
+          owner sign-in, Gustia links your Supabase Auth account to your
+          restaurant workspace so the admin stays isolated to your data.
         </p>
 
         <div className="mt-8 rounded-[28px] border border-white/10 bg-black/20 p-5">
@@ -33,7 +58,10 @@ export default async function AdminLoginPage() {
         </div>
 
         <div className="mt-8">
-          <AdminSignInButton />
+          <AdminAuthForm
+            errorMessage={errorMessage}
+            noticeMessage={noticeMessage}
+          />
         </div>
       </div>
     </div>

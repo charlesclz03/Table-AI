@@ -100,10 +100,17 @@ Release is not ready if the code changed but the canonical docs still describe t
 - `STRIPE_SECRET_KEY`
 - `NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY`
 - `NEXT_PUBLIC_SITE_URL`
-- `NEXTAUTH_SECRET`
-- `NEXTAUTH_URL`
 - `NEXT_PUBLIC_SUPABASE_URL`
 - `NEXT_PUBLIC_SUPABASE_ANON_KEY`
+- `SUPABASE_SERVICE_ROLE_KEY`
+
+## Required Supabase Auth Setup
+
+- email/password must be enabled for owner login
+- Google must be enabled in Supabase Auth if owner Google login should remain live
+- `https://www.gustia.wine/auth/callback` must be allowed as an auth redirect URL in production
+- `http://localhost:3000/auth/callback` should be allowed for local verification
+- run `docs/reference/supabase-owner-auth-migration.sql` before deploying code that expects `owners` and `restaurants.owner_id`
 
 ## GitHub Release Path
 

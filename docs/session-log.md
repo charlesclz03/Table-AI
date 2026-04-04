@@ -37,6 +37,14 @@ Related docs:
 
 ## Entries
 
+### 2026-04-04 - Supabase Owner Auth Migration
+
+- replaced the owner admin's active auth path with Supabase Auth routes for email/password login, signup, logout, Google OAuth, and an SSR callback exchange
+- moved admin restaurant resolution from NextAuth email matching to `owners` plus `restaurants.owner_id`, with service-role bootstrap limited to claiming or creating the owner-linked records
+- switched guest restaurant profile fetches to an internal app route so the restaurant table can use strict owner RLS without breaking `/chat/[restaurantId]`
+- added `docs/reference/supabase-owner-auth-migration.sql` plus updated product/docs references for the new owner auth and RLS contract
+- verification still needs a live Supabase project with the SQL migration applied before email/password login, Google OAuth, and owner-only data visibility can be exercised end-to-end
+
 ### 2026-04-04 - Owner Changelog Feature
 
 - added a shared `lib/changelog.ts` source plus `/api/changelog` so the owner release feed and future integrations read the same sorted release data

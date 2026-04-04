@@ -37,5 +37,6 @@ Related docs:
 
 - optional integrations stay inert until their required env vars are present
 - use `npm run onboarding:suggest` to preview onboarding recommendations locally
-- to test owner Google login locally, configure `NEXTAUTH_URL`, `NEXTAUTH_SECRET`, `GOOGLE_CLIENT_ID`, and `GOOGLE_CLIENT_SECRET`
-- to test first-login restaurant creation, also configure `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY`, and `SUPABASE_SERVICE_ROLE_KEY`
+- to test owner email/password login locally, configure `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY`, and `SUPABASE_SERVICE_ROLE_KEY`, then apply `docs/reference/supabase-owner-auth-migration.sql`
+- to test owner Google login locally, configure the same Supabase env vars and enable the Google provider in the Supabase dashboard with `http://localhost:3000/auth/callback` in the redirect allowlist
+- the repo still supports generic NextAuth-based starter flows, but Gustia owner admin no longer uses the NextAuth route

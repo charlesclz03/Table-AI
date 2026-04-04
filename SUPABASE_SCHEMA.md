@@ -1,60 +1,71 @@
-# Gustia - Supabase Schema
-**Date:** 2026-04-04
+# Gustia Supabase Schema
 
----
+Last updated: 2026-04-04
 
 ## Context
 
-This SQL is for the Gustia product tables in Supabase.
-The current Prisma schema in this repo still covers the starter's NextAuth and generic subscription tables.
+Gustia now uses Supabase Auth as the owner-admin identity layer.
 
-Run each statement below in the Supabase SQL Editor.
+- `auth.users` is the source of truth for owner identity
+- `public.owners` mirrors owner profile data and uses the same UUID as `auth.users.id`
+- `public.restaurants.owner_id` links each restaurant to the authenticated owner
+- owner reads and writes are expected to flow through Supabase RLS
+- public guest chat no longer depends on direct anon reads from `public.restaurants`; the app serves the safe restaurant payload through an internal route
 
----
+## Canonical SQL
 
-## SQL
+Run the migration in:
 
-### 1. Restaurants
+- `docs/reference/supabase-owner-auth-migration.sql`
 
-```sql
-CREATE TABLE restaurants (
-  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  name TEXT NOT NULL,
-  email TEXT UNIQUE,
-  soul_md TEXT,
-  rules_md TEXT,
-  menu_json JSONB DEFAULT '[]',
-  quiz_answers JSONB DEFAULT '{}',
-  stripe_customer_id TEXT,
-  subscription_status TEXT DEFAULT 'trial',
-  created_at TIMESTAMP WITH TIME ZONE DEFAULT now()
-);
-```
+That script:
 
-### 2. Conversations
+1. Creates `public.owners` with `id references auth.users(id)`.
+2. Backfills owners from existing Supabase Auth users.
+3. Adds `public.restaurants.owner_id`.
+4. Backfills `restaurants.owner_id` by matching existing restaurant emails to owner emails.
+5. Enables RLS on `owners`, `restaurants`, `conversations`, and `analytics` when present.
+6. Applies owner-scoped policies for admin reads and writes.
 
-```sql
-CREATE TABLE conversations (
-  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  restaurant_id UUID REFERENCES restaurants(id) ON DELETE CASCADE,
-  table_number TEXT,
-  messages JSONB DEFAULT '[]',
-  created_at TIMESTAMP WITH TIME ZONE DEFAULT now()
-);
-```
+## Expected Tables
 
-### 3. Enable RLS
+`public.owners`
 
-```sql
-ALTER TABLE restaurants ENABLE ROW LEVEL SECURITY;
-ALTER TABLE conversations ENABLE ROW LEVEL SECURITY;
-```
+- `id`
+- `email`
+- `name`
+- `created_at`
 
-### 4. Policies
+`public.restaurants`
 
-```sql
-CREATE POLICY "restaurants_public_read" ON restaurants FOR SELECT USING (true);
-CREATE POLICY "restaurants_auth_write" ON restaurants FOR INSERT WITH CHECK (true);
-CREATE POLICY "conversations_insert" ON conversations FOR INSERT WITH CHECK (true);
-CREATE POLICY "conversations_read" ON conversations FOR SELECT USING (true);
-```
+- `id`
+- `owner_id`
+- `email`
+- `name`
+- `logo_url`
+- `soul_md`
+- `rules_md`
+- `menu_json`
+- `quiz_answers`
+- `stripe_customer_id`
+- `stripe_subscription_id`
+- `subscription_status`
+- `plan_name`
+- `setup_paid_at`
+- `billing_starts_at`
+- `qr_code_url`
+- `created_at`
+
+`public.conversations`
+
+- `id`
+- `restaurant_id`
+- `table_number`
+- `messages`
+- `created_at`
+
+## Notes
+
+- The `owners.id = auth.users.id` link is intentional. It makes `auth.uid()` line up with the owner row and keeps the RLS policies simple and correct.
+- If the `analytics` table does not exist yet, the migration skips its policy block safely.
+- The Prisma schema in this repo still covers the generic starter auth/subscription models; Gustia restaurant data remains managed in Supabase SQL.

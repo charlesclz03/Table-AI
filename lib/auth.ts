@@ -8,7 +8,6 @@ import {
   type EnvGroupStatus,
   getServerEnv,
 } from '@/lib/server-env'
-import { ensureRestaurantForOwner } from '@/lib/admin/owner-restaurant'
 import { ensureServerOnly } from '@/lib/server-only'
 
 ensureServerOnly('lib/auth')
@@ -84,22 +83,6 @@ export function getAuthOptions(): NextAuthOptions {
       signIn: '/admin/login',
     },
     callbacks: {
-      async signIn({ user }) {
-        if (!user.email) {
-          return true
-        }
-
-        try {
-          await ensureRestaurantForOwner({
-            email: user.email,
-            ownerName: user.name,
-          })
-        } catch (error) {
-          console.error('Failed to provision owner restaurant', error)
-        }
-
-        return true
-      },
       async session({ session, user, token }) {
         if (session.user) {
           session.user.id =

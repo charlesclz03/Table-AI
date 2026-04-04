@@ -34,15 +34,17 @@ Related docs:
 
 - public guest chat reads restaurant data from Supabase `restaurants`
 - owner admin pages live under `/admin/*`
-- owner lookup currently maps the signed-in NextAuth Google email to `restaurants.email`
-- first-time owner Google logins automatically create a placeholder `restaurants` row when Supabase is configured
+- owner admin auth now uses Supabase Auth sessions, with both email/password and Google OAuth supported
+- first-time owner auth automatically creates or claims an `owners` row plus a Supabase `restaurants` row linked through `restaurants.owner_id`
 - restaurant content is stored in Supabase, not in the starter Prisma models
+- public guest chat fetches a server-curated restaurant payload instead of relying on direct anon table reads
 
 ## Restaurant Record
 
 Expected fields in `restaurants`:
 
 - `id`
+- `owner_id`
 - `email`
 - `name`
 - `logo_url`
@@ -69,6 +71,6 @@ Expected fields in `restaurants`:
 
 ## Current Boundaries
 
-- auth protection is implemented with the current NextAuth session layer
-- data isolation is enforced in the app layer by restaurant email matching
-- Supabase Auth + strict RLS parity with the product spec is still a follow-up step
+- owner auth protection is implemented with Supabase Auth cookies plus SSR middleware refresh
+- owner data isolation is expected to be enforced through Supabase RLS on `owners`, `restaurants`, `conversations`, and `analytics` where present
+- guest-safe restaurant reads are intentionally routed through the app server so restaurant tables do not need public `select` policies

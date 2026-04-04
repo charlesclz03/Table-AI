@@ -39,6 +39,14 @@ Related docs:
 7. Push the branch and tags to GitHub with `git push origin main --follow-tags`.
 8. Let Vercel auto-deploy from GitHub, then verify the affected production flows.
 
+## Supabase Owner Auth Gate
+
+If the release changes owner auth or owner-scoped data access:
+
+1. Verify the live Supabase project already has the required schema and RLS, or apply `docs/reference/supabase-owner-auth-migration.sql` first.
+2. Confirm Supabase Auth redirect URLs include `/auth/callback` for both local and production origins.
+3. Do not push application code that expects `owners` or `restaurants.owner_id` before that database state is live.
+
 ## Notes
 
 - use `.agent/workflows/deploy.md` as the broader release gate

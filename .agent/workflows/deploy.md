@@ -58,10 +58,13 @@ This workflow is adapted from the stricter Freestyla release discipline, but onl
   - `STRIPE_SECRET_KEY`
   - `NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY`
   - `NEXT_PUBLIC_SITE_URL`
-  - `NEXTAUTH_SECRET`
-  - `NEXTAUTH_URL`
   - `NEXT_PUBLIC_SUPABASE_URL`
   - `NEXT_PUBLIC_SUPABASE_ANON_KEY`
+  - `SUPABASE_SERVICE_ROLE_KEY`
+- Confirm Supabase Auth is configured for the intended owner login methods:
+  - email/password enabled
+  - Google enabled when owner Google login should stay live
+  - `/auth/callback` is allowed in production and local redirect URLs
 - Confirm the production domain still points at `https://www.gustia.wine`
 - Never print or commit secret values
 

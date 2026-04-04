@@ -1,6 +1,6 @@
 # Supabase SSR
 
-NextAuth remains the default auth path. Supabase SSR is optional and additive.
+Gustia owner admin now uses Supabase SSR as its primary auth path. The starter can still carry NextAuth for generic flows outside the owner admin surface.
 
 Helpers:
 
@@ -12,4 +12,4 @@ Recommended opt-in:
 
 1. Configure `NEXT_PUBLIC_SUPABASE_URL` and `NEXT_PUBLIC_SUPABASE_ANON_KEY`.
 2. Add a root `middleware.ts` that calls `updateSupabaseSession(request)`.
-3. Keep NextAuth as your primary session strategy unless the product explicitly moves to Supabase Auth.
+3. For owner auth, use Supabase cookie-backed sessions in server components and route handlers instead of trusting app-layer email matching.

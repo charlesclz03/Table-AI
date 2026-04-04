@@ -31,6 +31,6 @@ Related docs:
 - keep patch notes, handoff, progress log, session log, and other canonical docs synchronized whenever product or workflow truth changes
 - remove or archive example artifacts when they no longer reflect the baseline starter
 - tighten verification automation if new integrations or workflows are added
-- align the owner admin auth model with the product spec if Supabase Auth + RLS becomes mandatory
+- apply and verify the live Supabase owner-auth migration in production, including Auth provider redirects and RLS behavior
 - replace the current QR image service dependency with a first-party generator if offline or stricter control is required
 - fix the remaining `react-hooks/exhaustive-deps` warning in `app/chat/[restaurantId]/page.tsx`
