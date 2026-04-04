@@ -10,16 +10,17 @@ The repo now contains:
 
 - owner-facing Lisbon-style landing page on `/`
 - customer chat flow under `/chat/[restaurantId]`
-- language and wine-theme onboarding
+- language and orbital wine-theme onboarding
 - dark glassmorphism mobile UI
 - owner admin dashboard under `/admin`
 - Supabase owner auth through `/admin/login` with email/password and Google OAuth
 - first-login owner and restaurant auto-provisioning through Supabase when the owner SQL migration and service-role env are configured
-- menu editor
+- menu editor with AI menu photo import
 - onboarding quiz editor
 - QR poster studio
 - billing overview with Stripe portal entry
 - owner changelog feed in the admin dashboard
+- owner analytics dashboard in the admin area
 - public privacy, terms, and contact pages
 - live production site on `https://www.gustia.wine`
 
@@ -60,7 +61,7 @@ Commercial model:
 - `/chat/[restaurantId]/onboarding/language`
   Language selector.
 - `/chat/[restaurantId]/onboarding/theme`
-  Theme selector.
+  Orbital theme selector with swipe, directional sphere motion, and voice preview.
 
 ### Owner dashboard
 
@@ -143,6 +144,22 @@ See:
 - `docs/runbooks/release.md`
 - `docs/reference/commands.md`
 
+## Release Discipline
+
+Before `/deploy`, review the release diff and update every impacted doc in the same session.
+
+The minimum release-tracking set to review is:
+
+- `README.md`
+- `docs/README.md`
+- `lib/changelog.ts`
+- `docs/reference/PATCH_NOTES.md`
+- `docs/progress-log.md`
+- `docs/session-log.md`
+- `docs/next-session-handoff.md`
+
+If commands, env requirements, verification steps, product behavior, or workflow contracts changed, update the matching docs before release instead of leaving them stale.
+
 ## Important Docs
 
 - `docs/README.md`
@@ -158,13 +175,13 @@ See:
 
 ## Current Known Gaps
 
-- menu photo upload and AI parsing are still pending
-- live owner analytics are still limited
+- live production verification of the orbital onboarding swipe flow still needs a real-device pass
+- live owner analytics still depend on the production `conversation_analytics` SQL changes being applied
 - live verification for the new owner auth flow still depends on the Supabase owner SQL migration being applied plus valid Supabase Auth provider settings
 
 ## Recommended Next Steps
 
 1. Apply `docs/reference/supabase-owner-auth-migration.sql` in the live Supabase project and verify the owner RLS policies against real accounts.
-2. Build menu photo upload and parsing.
-3. Expand analytics and owner insight surfaces.
+2. Live-smoke the guest onboarding theme selector and voice previews on a real mobile device.
+3. Expand analytics and owner insight surfaces after the production SQL update.
 4. Remove or downgrade any leftover NextAuth-only starter references once the broader starter no longer needs them.

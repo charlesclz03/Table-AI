@@ -72,8 +72,10 @@ npm run test:e2e
 
 ## Required Documentation Sync
 
-Before release, update the docs that were made stale by the current change set. The minimum release-tracking set is:
+Before release, inspect the current diff and update every doc made stale by the change set. The minimum release-tracking set that must be reviewed on each meaningful release is:
 
+- `README.md`
+- `docs/README.md`
 - `lib/changelog.ts`
 - `docs/reference/PATCH_NOTES.md`
 - `docs/progress-log.md`
@@ -82,8 +84,6 @@ Before release, update the docs that were made stale by the current change set. 
 
 Update these as needed when their contract changed:
 
-- `docs/README.md`
-- `README.md`
 - `docs/reference/commands.md`
 - `docs/runbooks/release.md`
 - `docs/runbooks/verification.md`
@@ -92,7 +92,15 @@ Update these as needed when their contract changed:
 - `docs/SPEC.md`
 - `docs/DEPLOY_CHECKLIST.md`
 
-Release is not ready if the code changed but the canonical docs still describe the old behavior.
+Release is not ready if the code changed but any impacted doc still describes the old behavior.
+
+Apply these review rules during `/deploy`:
+
+1. Review the changed files and identify every impacted doc surface.
+2. Update `README.md` when product scope, user-facing behavior, setup, verification, deployment, or repo operating guidance changed.
+3. Update `docs/README.md` when the canonical doc map or read order changed.
+4. Update commands, env, verification, release, spec, and architecture docs whenever their described contract changed.
+5. In the final deploy report, state which docs were reviewed and which were updated.
 
 ## Required Vercel Environment Variables
 
@@ -169,6 +177,7 @@ When closing a deploy session, report:
 
 - which verification commands were run
 - whether the required documentation sync was completed
+- which docs were reviewed and which were updated
 - whether GitHub push and Vercel deploy happened
 - the resulting production or preview URL
 - any blocker or rollback note that matters operationally

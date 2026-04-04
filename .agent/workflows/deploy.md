@@ -101,12 +101,25 @@ npm run test:e2e
 
 ## Phase 3 - Documentation Sync Contract
 
-Before release, update every canonical doc that the current change set made stale.
+Before release, review the current diff and update every doc that the change set made stale.
+
+### Documentation Impact Review
+
+Do this explicitly before push or deploy:
+
+1. inspect the files changed in the release candidate
+2. identify which product, workflow, setup, command, env, architecture, or verification docs describe those surfaces
+3. update every impacted doc in the same session
+4. do not continue until each impacted doc is either updated or consciously confirmed still accurate
+
+Treat this as a release gate, not as optional cleanup.
 
 ### Required Release-Tracking Docs
 
 These should be reviewed on every meaningful release:
 
+- `README.md`
+- `docs/README.md`
 - `lib/changelog.ts`
 - `docs/reference/PATCH_NOTES.md`
 - `docs/progress-log.md`
@@ -118,7 +131,6 @@ These should be reviewed on every meaningful release:
 If the release changed these contracts, update them in the same session:
 
 - `docs/README.md`
-- `README.md`
 - `docs/DEPLOY_CHECKLIST.md`
 - `docs/reference/commands.md`
 - `docs/runbooks/verification.md`
@@ -131,9 +143,12 @@ If the release changed these contracts, update them in the same session:
 ### Release Rule
 
 - Do not treat documentation sync as optional polish
-- If code changed and the canonical docs still describe the previous reality, release is not ready
+- If code changed and any impacted doc still describes the previous reality, release is not ready
+- Root `README.md` must be updated whenever product scope, user-facing behavior, setup, verification, deployment, or repo operating guidance changed
+- `docs/README.md` must be updated whenever the canonical doc map or read order changed
 - If the release process changed, update `.agent/workflows/deploy.md` and `docs/DEPLOY_CHECKLIST.md` in the same session
 - If owners can see the change in product behavior, update `lib/changelog.ts` so `/admin/changelog` stays truthful
+- If commands, env requirements, or runbooks changed, update their matching docs in the same release instead of leaving them for later
 
 ---
 
@@ -228,6 +243,7 @@ When reporting a completed `/deploy`, include:
 
 - verification commands run
 - whether the required documentation sync was completed
+- which docs were reviewed and which docs were updated
 - whether GitHub was pushed
 - whether Vercel was deployed
 - production or preview URL

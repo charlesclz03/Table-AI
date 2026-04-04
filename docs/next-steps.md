@@ -28,7 +28,7 @@ Related docs:
 
 ## Immediate Backlog
 
-- keep patch notes, handoff, progress log, session log, and other canonical docs synchronized whenever product or workflow truth changes
+- keep README, patch notes, handoff, progress log, session log, and every other impacted canonical doc synchronized whenever product or workflow truth changes
 - remove or archive example artifacts when they no longer reflect the baseline starter
 - tighten verification automation if new integrations or workflows are added
 - apply and verify the live Supabase owner-auth migration in production, including Auth provider redirects and RLS behavior

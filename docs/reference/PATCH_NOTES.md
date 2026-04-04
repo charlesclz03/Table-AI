@@ -35,6 +35,18 @@ Related docs:
 - use this file for release history, `docs/progress-log.md` for durable baseline truth, and `docs/session-log.md` for session chronology
 - until formal semantic versioning starts, date-keyed entries are acceptable
 
+## 2026-04-04 - Deploy Docs Impact Gate Hardened
+
+- **DEPLOY**: Hardened `/deploy` so release prep now explicitly requires a changed-files review plus updates for every impacted doc before push or deploy.
+- **DOCS**: Elevated `README.md` and `docs/README.md` into the always-reviewed release-tracking set alongside patch notes, handoff, progress, and session logs.
+- **REPORTING**: Updated the deploy reporting contract so release summaries must state which docs were reviewed and which were actually updated.
+
+## 2026-04-04 - Orbital Theme Selector Refresh
+
+- **ONBOARDING**: Replaced the old theme card grid with a planet-style orbital selector centered on one large preview sphere plus rotating theme orbiters.
+- **MOTION**: Added swipe and arrow navigation, directional wine slosh on the center sphere, blurred side states, and four-dot selection tracking for a smoother game-like selection flow.
+- **STATE**: Kept the existing voice-preview fetch, session storage persistence, and enter-chat handoff intact while limiting the selector to the four active onboarding themes.
+
 ## 2026-04-04 - Deploy Workflow Simplified
 
 - **DEPLOY**: Changed `/deploy` so the normal production path is now verify, sync the session docs, push GitHub, and immediately run the Vercel production deploy.

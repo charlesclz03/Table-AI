@@ -54,6 +54,7 @@ Related docs:
 - check `origin/main` for the current release commit before debugging release-specific regressions
 - the guest chat now uses OpenAI TTS for concierge voice replies through `/api/tts`, with browser speech fallback if API synthesis or playback fails
 - the guest onboarding theme step now previews localized AI greetings with per-theme OpenAI voices, a separate confirm button, and text-only fallback if preview audio is unavailable
+- the guest onboarding theme step now uses an orbital planet-style selector with swipe and arrow navigation, blurred side states, and directional wine slosh on the center preview sphere
 - the owner menu editor now includes an `Upload Photo` flow backed by `/api/menu/parse`, where OpenAI `gpt-4o` extracts menu items from uploaded menu images or PDFs before owner review and save
 - the owner dashboard now includes `/admin/changelog`, backed by `lib/changelog.ts` and `/api/changelog`, with a latest-version badge in the admin navigation
 - the owner dashboard now includes `/admin/analytics`, backed by `/api/admin/analytics`, with live conversation counts, top questions, language mix, peak usage windows, and recommendation trends
@@ -64,6 +65,7 @@ Related docs:
 - production `/api/tts` was re-verified after the billing update and now responds successfully with `audio/mpeg`
 - the AI menu import flow is deployed, but live parsing still needs an authenticated owner session and a real menu upload test in production
 - `/deploy` should now run the fast release path: update the canonical session docs, push `main`, then immediately run the Vercel production deploy
+- `/deploy` now also requires an explicit changed-files documentation review so every impacted doc is updated or consciously confirmed current before push or deploy
 - do not wait on GitHub-connected Vercel auto-deploy as part of the normal release path unless a future session intentionally changes that contract
 - Gustia now has a repo-local `.agent/workflows/deploy.md` adapted from Freestyla for GitHub + Vercel releases; use it instead of the older generic deploy workflow
 - Gustia now includes `docs/session-log.md` for chronological session notes alongside the baseline-focused `docs/progress-log.md`, and `/deploy` should treat those plus patch notes as a release gate
@@ -75,9 +77,10 @@ Related docs:
 - keep `lib/changelog.ts` and the owner-facing `/admin/changelog` feed synchronized whenever a release-worthy product change ships
 - remove or archive sample artifacts that stop representing the real baseline
 - document any new integration or workflow change in the patch notes, progress log, session log, handoff, commands, env reference, and deploy docs when relevant
+- treat `README.md` and `docs/README.md` as part of the default release doc review whenever product scope, setup, commands, or operating guidance changed
 - keep `/deploy` and `docs/DEPLOY_CHECKLIST.md` aligned with the current reporting contract so deploy summaries stay concise and non-redundant
 - live-smoke the new `/admin/menu` photo import with a real owner account and a real menu PDF in production
-- live-smoke the onboarding theme voice previews on a real mobile device and confirm the per-theme voice mapping feels distinct enough in production
+- live-smoke the onboarding theme voice previews and new orbital swipe selector on a real mobile device, and confirm the per-theme voice mapping feels distinct enough in production
 - apply the `conversation_analytics` SQL changes from `docs/reference/supabase-owner-auth-migration.sql` in the live Supabase project before expecting language and recommendation analytics in production
 - live-smoke `/admin/analytics` with a real owner account after the SQL update so the dashboard is validated against real concierge traffic
 - verify `/api/chat` end-to-end against the live OpenAI account now that API billing is working again

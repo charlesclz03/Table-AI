@@ -2,6 +2,7 @@
 
 import { Check, Play, Volume2, WifiOff } from 'lucide-react'
 import { WineSphere } from '@/app/chat/[restaurantId]/onboarding/_layout'
+import { cn } from '@/lib/utils'
 import type { ThemeOption } from '@/lib/themes'
 
 type ThemePreviewMode = 'idle' | 'audio' | 'text'
@@ -15,6 +16,8 @@ interface ThemePreviewProps {
   previewMode: ThemePreviewMode
   onReplay: () => void
   onConfirm: () => void
+  showSphere?: boolean
+  className?: string
 }
 
 function getStatusCopy(previewMode: ThemePreviewMode, isPlaying: boolean) {
@@ -51,12 +54,19 @@ export function ThemePreview({
   previewMode,
   onReplay,
   onConfirm,
+  showSphere = true,
+  className,
 }: ThemePreviewProps) {
   const status = getStatusCopy(previewMode, isPlaying)
   const StatusIcon = status.icon
 
   return (
-    <div className="rounded-[34px] border border-white/10 bg-white/[0.05] px-5 py-6 text-center shadow-[0_24px_80px_rgba(0,0,0,0.26)] backdrop-blur-xl">
+    <div
+      className={cn(
+        'rounded-[34px] border border-white/10 bg-white/[0.05] px-5 py-6 text-center shadow-[0_24px_80px_rgba(0,0,0,0.26)] backdrop-blur-xl',
+        className
+      )}
+    >
       <div className="flex justify-center">
         <span
           className={`inline-flex min-h-9 items-center gap-2 rounded-full border px-4 py-2 text-xs font-medium tracking-[0.16em] uppercase ${status.className}`}
@@ -66,15 +76,21 @@ export function ThemePreview({
         </span>
       </div>
 
-      <WineSphere
-        themeKey={theme.key}
-        selected
-        speaking={isLoading || isPlaying}
-        size="lg"
-        className="mx-auto mt-5"
-      />
+      {showSphere ? (
+        <WineSphere
+          themeKey={theme.key}
+          selected
+          speaking={isLoading || isPlaying}
+          size="lg"
+          className="mx-auto mt-5"
+        />
+      ) : null}
 
-      <p className="mt-5 text-lg font-medium text-white">{theme.label}</p>
+      <p
+        className={`${showSphere ? 'mt-5' : 'mt-6'} text-lg font-medium text-white`}
+      >
+        {theme.label}
+      </p>
       <p className="mt-2 text-sm leading-6 text-white/55">{theme.subtitle}</p>
 
       <div className="mt-5 rounded-[24px] border border-white/10 bg-black/20 px-4 py-4 text-left">

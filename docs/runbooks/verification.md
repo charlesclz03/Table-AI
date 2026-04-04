@@ -37,6 +37,8 @@ Related docs:
 
 Before a real release, confirm the documentation matches the shipped code and workflow:
 
+- `README.md`
+- `docs/README.md`
 - `docs/reference/PATCH_NOTES.md`
 - `docs/progress-log.md`
 - `docs/session-log.md`
@@ -44,4 +46,4 @@ Before a real release, confirm the documentation matches the shipped code and wo
 - `docs/DEPLOY_CHECKLIST.md`
 - `docs/reference/commands.md`
 - `docs/reference/env-vars.md` when env requirements changed
-- `README.md` and any touched product/spec docs when the user-facing surface changed
+- any touched product, architecture, setup, workflow, or spec docs when their described surface changed

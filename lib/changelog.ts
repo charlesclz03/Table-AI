@@ -15,6 +15,20 @@ export interface ChangelogEntry {
 
 export const changelog: ChangelogEntry[] = [
   {
+    version: '1.0.8',
+    date: '2026-04-04',
+    changes: [
+      {
+        type: 'improvement',
+        text: 'Guest theme onboarding now uses a swipeable orbital selector with a central preview sphere and rotating theme planets',
+      },
+      {
+        type: 'improvement',
+        text: 'Switching concierge themes now feels smoother with directional wine slosh, blurred side states, and clearer next-theme navigation',
+      },
+    ],
+  },
+  {
     version: '1.0.7',
     date: '2026-04-04',
     changes: [

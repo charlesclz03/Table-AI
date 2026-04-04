@@ -42,6 +42,7 @@ Related docs:
 - release-history source of truth: `docs/reference/PATCH_NOTES.md`
 - owner release-feed source of truth: `lib/changelog.ts`
 - deploy workflow contract: `.agent/workflows/deploy.md`
+- `/deploy` doc-sync gate: review the diff and update every impacted doc, including `README.md` and `docs/README.md` when their contracts changed
 
 ## Deployment Commands
 

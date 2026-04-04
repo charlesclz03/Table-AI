@@ -42,7 +42,7 @@ Related docs:
 - Gustia billing now includes a hosted Stripe Checkout setup CTA, success/cancel states, and dedicated result pages for the founding-offer flow
 - Gustia customer chat now routes GPT-4o mini calls through a server API with restaurant context and automatic demo fallback on failures
 - Gustia concierge voice replies now use an OpenAI TTS server route with browser speech fallback for smoother audio playback on guest devices, and production `/api/tts` has been re-verified successfully after the OpenAI billing update
-- Gustia onboarding theme selection now previews localized AI greetings with distinct OpenAI voices, separate confirmation, and text-only fallback when preview audio is unavailable
+- Gustia onboarding theme selection now uses a swipeable orbital selector with rotating theme spheres, localized AI voice previews, separate confirmation, and text-only fallback when preview audio is unavailable
 - Gustia owner menu management now supports AI-assisted menu photo import, including multilingual OpenAI parsing, review-before-save, multi-file upload, and deduped save-back into `restaurants.menu_json`
 - Gustia owner admin now includes a dedicated changelog page and navigation badge so restaurant owners can track shipped releases from inside `/admin`
 - Gustia owner admin now includes a dedicated analytics page with live conversation counts, top questions, peak usage windows, language mix, and recommendation tracking powered by anonymized chat metadata
@@ -51,6 +51,7 @@ Related docs:
 - Gustia is now live on the public production domain `https://www.gustia.wine`
 - Gustia now includes a direct Supabase SQL schema document and a Vercel deploy checklist covering env vars and Stripe webhook setup
 - Gustia deploy guidance now requires explicit synchronization of patch notes, handoff, progress/session logs, and other affected canonical docs before release
+- Gustia `/deploy` now explicitly reviews the release diff and requires every impacted doc, including `README.md` and `docs/README.md` when relevant, to be updated or confirmed current before release
 - Gustia no longer requires repo-level reply-memory logging before final responses; sessions now end with a direct completion report
 - Gustia final reports are now summary-first by default, and `/deploy` reports documentation-sync status instead of a file-by-file artifact list
 - Gustia now includes a repo-specific `/deploy` workflow adapted from the Freestyla release process for GitHub push, Vercel deploy, rollback, and verification discipline

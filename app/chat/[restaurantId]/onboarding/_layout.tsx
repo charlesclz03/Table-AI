@@ -186,6 +186,8 @@ interface WineSphereProps {
   speaking?: boolean
   selected?: boolean
   size?: 'sm' | 'md' | 'lg' | 'xl'
+  sloshDirection?: 'left' | 'right' | null
+  sloshTrigger?: number
   className?: string
 }
 
@@ -349,6 +351,36 @@ export function SphereAnimationStyles() {
           opacity: 0.55;
         }
       }
+
+      @keyframes wineSloshLeft {
+        0% {
+          transform: translate3d(0, 0, 0) rotate(0deg);
+        }
+        32% {
+          transform: translate3d(-8%, -3px, 0) rotate(-5deg);
+        }
+        68% {
+          transform: translate3d(3%, 1px, 0) rotate(2deg);
+        }
+        100% {
+          transform: translate3d(0, 0, 0) rotate(0deg);
+        }
+      }
+
+      @keyframes wineSloshRight {
+        0% {
+          transform: translate3d(0, 0, 0) rotate(0deg);
+        }
+        32% {
+          transform: translate3d(8%, -3px, 0) rotate(5deg);
+        }
+        68% {
+          transform: translate3d(-3%, 1px, 0) rotate(-2deg);
+        }
+        100% {
+          transform: translate3d(0, 0, 0) rotate(0deg);
+        }
+      }
     `}</style>
   )
 }
@@ -358,6 +390,8 @@ export function WineSphere({
   speaking = false,
   selected = false,
   size = 'lg',
+  sloshDirection = null,
+  sloshTrigger = 0,
   className,
 }: WineSphereProps) {
   const theme = getThemeOption(themeKey)
@@ -367,6 +401,15 @@ export function WineSphere({
     lg: 'h-40 w-40',
     xl: 'h-52 w-52',
   } satisfies Record<NonNullable<WineSphereProps['size']>, string>
+  const sloshAnimationName =
+    sloshDirection === 'left'
+      ? 'wineSloshLeft'
+      : sloshDirection === 'right'
+        ? 'wineSloshRight'
+        : null
+  const liquidAnimation = sloshAnimationName
+    ? `${sloshAnimationName} 0.4s ease-out 1`
+    : undefined
 
   return (
     <div
@@ -413,21 +456,32 @@ export function WineSphere({
 
       <div className="absolute inset-[8%] overflow-hidden rounded-full">
         <div
+          key={`liquid-${themeKey}-${sloshDirection ?? 'idle'}-${sloshTrigger}`}
           className="absolute inset-x-0 bottom-0 h-[52%]"
           style={{
             background: `linear-gradient(180deg, ${theme.highlightColor} 0%, ${theme.wineColor} 100%)`,
             boxShadow: `inset 0 10px 28px rgba(255,255,255,0.18), 0 0 24px ${theme.glowColor}66`,
+            animation: liquidAnimation,
+            transformOrigin: 'center 85%',
           }}
         >
           <div
-            className="absolute -top-3 left-[-12%] h-8 w-[124%] rounded-[999px]"
+            className="absolute inset-0"
             style={{
-              background: `linear-gradient(180deg, rgba(255,255,255,0.4) 0%, ${theme.highlightColor} 38%, ${theme.wineColor} 100%)`,
-              animation: speaking
-                ? `wineWave ${theme.motion.waveDuration}s ease-in-out infinite`
-                : `wineWave ${theme.motion.waveDuration * 2.8}s ease-in-out infinite`,
+              animation: liquidAnimation,
+              transformOrigin: 'center 85%',
             }}
-          />
+          >
+            <div
+              className="absolute -top-3 left-[-12%] h-8 w-[124%] rounded-[999px]"
+              style={{
+                background: `linear-gradient(180deg, rgba(255,255,255,0.4) 0%, ${theme.highlightColor} 38%, ${theme.wineColor} 100%)`,
+                animation: speaking
+                  ? `wineWave ${theme.motion.waveDuration}s ease-in-out infinite`
+                  : `wineWave ${theme.motion.waveDuration * 2.8}s ease-in-out infinite`,
+              }}
+            />
+          </div>
         </div>
 
         {theme.motion.accent === 'crisp' ? (

@@ -37,6 +37,18 @@ Related docs:
 
 ## Entries
 
+### 2026-04-04 - Deploy Docs Impact Gate Hardened
+
+- tightened `.agent/workflows/deploy.md` and `docs/DEPLOY_CHECKLIST.md` so `/deploy` now explicitly reviews the changed files and blocks release until every impacted doc has been updated or confirmed current
+- promoted `README.md` and `docs/README.md` into the always-reviewed release-tracking set, instead of treating them as easy-to-forget optional follow-up docs
+- synchronized the release, verification, commands, and backlog docs so deploy reports now name which docs were reviewed and which were updated
+
+### 2026-04-04 - Orbital Theme Selector Refresh
+
+- replaced the theme onboarding card grid with a swipeable orbital selector built around one central preview sphere and four rotating theme orbiters
+- added directional wine slosh for the selected sphere, blurred side states, arrow controls, and four-dot navigation while keeping the existing voice preview plus confirm flow
+- verified `npm run build` passes and confirmed locally in a mobile-emulated browser that swipe changes themes and the selected theme still persists into chat via session storage
+
 ### 2026-04-04 - Owner Tutorial Landing Redesign
 
 - replaced the homepage with a full-bleed, mobile-first owner journey that now reads as a vertical setup tutorial instead of a generic marketing page

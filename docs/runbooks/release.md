@@ -31,7 +31,7 @@ Related docs:
 ## Release Flow
 
 1. Update `lib/changelog.ts` with the new version, date, and owner-facing release notes.
-2. Sync the release docs that changed, especially `docs/reference/PATCH_NOTES.md`, `docs/progress-log.md`, `docs/session-log.md`, and `docs/next-session-handoff.md`.
+2. Review the release diff and sync every impacted doc, always including `README.md`, `docs/README.md`, `docs/reference/PATCH_NOTES.md`, `docs/progress-log.md`, `docs/session-log.md`, and `docs/next-session-handoff.md`.
 3. Verify locally with `npm run lint`, `npm run build`, and `npm run type-check`.
 4. Confirm `/admin/changelog` renders the latest entry and the admin navigation badge shows the same version.
 5. Commit the release with the version in the message, for example `git commit -m "chore(release): v1.0.1"`.
@@ -54,3 +54,4 @@ If the release changes owner auth or owner-scoped data access:
 - treat the owner changelog as a required release artifact, not optional polish
 - if a release changes the process itself, update this runbook and the deploy workflow in the same session
 - do not wait on GitHub-connected auto-deploy as part of the normal `/deploy` path
+- `/deploy` should report which docs were reviewed and which were updated, not just that docs sync happened
