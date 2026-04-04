@@ -18,13 +18,13 @@ If the only goal is "what gets you to cash fastest from this exact portfolio," t
 My ranking is:
 
 1. `Web Agency`, but narrowed to a restaurant-first or local-SMB website sprint with strong upfront deposits
-2. `Table IA`, but only if you stop treating it like a `EUR 29/mo` SaaS and sell it as a paid pilot/setup offer first
+2. `Gustia`, but only if you stop treating it like a `EUR 29/mo` SaaS and sell it as a paid pilot/setup offer first
 3. `Momentum AI`, only if you decide to go back to remote B2B selling and accept a slower first-cash window
 
 The most honest split is:
 
 - Fastest path to `EUR 1,000` cash: `Web Agency`
-- Best differentiated restaurant wedge worth preserving: `Table IA`
+- Best differentiated restaurant wedge worth preserving: `Gustia`
 - Best longer-game B2B service thesis: `Momentum AI` / `Sigil AI`
 
 ## Method
@@ -56,7 +56,7 @@ Important assumption:
 | Rank | Project | Score | First realistic payment | Base 30-day cash | Verdict | Short read |
 | --- | --- | ---: | --- | ---: | --- | --- |
 | 1 | `Web Agency` | 81.3 | 3-10 days | `EUR 1,050` | Build now | Already has SOPs, contracts, proposals, niche prompts, and can be sold with deposits. |
-| 2 | `Table IA` | 74.3 | 7-14 days | `EUR 700` | Sell first, then build | Strong restaurant fit and differentiation, but current `EUR 29/mo` packaging is too cheap for emergency cash. |
+| 2 | `Gustia` | 74.3 | 7-14 days | `EUR 700` | Sell first, then build | Strong restaurant fit and differentiation, but current `EUR 29/mo` packaging is too cheap for emergency cash. |
 | 3 | `Momentum AI` | 59.5 | 14-30 days | `EUR 0-750` | Only pursue if a warm lead appears | Strong service thesis, but local Portugal and zero-risk POC structure slow month-1 cash. |
 | 4 | `Renda Facil - Contract generation` | 55.0 | 7-21 days | `EUR 185` | Only pursue if a warm lead appears | Real product and real pricing, but trust and legal sales friction are too high for emergency cash. |
 | 5 | `Sigil AI` | 54.8 | 21-45 days | `EUR 0` | Park for later | Strong company thesis, wrong timing for a one-month cash crunch from local outbound. |
@@ -83,7 +83,7 @@ Legend:
 | Project | CS | CL | FIT | BLD | CST | WTP | DEL | TRU | REP | Score |
 | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
 | `Web Agency` | 8.5 | 8.0 | 8.0 | 8.5 | 9.0 | 7.0 | 6.5 | 9.0 | 7.5 | 81.3 |
-| `Table IA` | 7.0 | 7.0 | 10.0 | 6.5 | 9.0 | 6.5 | 6.0 | 4.5 | 8.5 | 74.3 |
+| `Gustia` | 7.0 | 7.0 | 10.0 | 6.5 | 9.0 | 6.5 | 6.0 | 4.5 | 8.5 | 74.3 |
 | `Momentum AI` | 5.5 | 4.5 | 5.5 | 6.0 | 7.0 | 7.5 | 6.0 | 6.0 | 8.0 | 59.5 |
 | `Renda Facil - Contract generation` | 4.5 | 3.5 | 4.5 | 8.0 | 7.0 | 6.5 | 7.5 | 2.5 | 7.0 | 55.0 |
 | `Sigil AI` | 4.5 | 3.5 | 4.5 | 5.5 | 6.5 | 8.5 | 5.5 | 6.5 | 9.0 | 54.8 |
@@ -136,14 +136,14 @@ The winning version:
 - narrow it to restaurants and nearby local SMBs
 - show one niche-specific demo before asking for money
 - collect a large kickoff deposit
-- use the same lead list later to upsell `Table IA`
+- use the same lead list later to upsell `Gustia`
 
 Reality check:
 
 - This is the least glamorous answer in the top tier
 - it is also the one most likely to put real cash in your account before May 3
 
-### 2. `Table IA` - the best restaurant wedge, but the current pricing is wrong
+### 2. `Gustia` - the best restaurant wedge, but the current pricing is wrong
 
 Why it still ranks high:
 
@@ -168,7 +168,7 @@ The only version that works this month:
 
 My honest view:
 
-- `Table IA` is a stronger wedge than most of the portfolio
+- `Gustia` is a stronger wedge than most of the portfolio
 - but it becomes a real business this month only if you sell it like a service-first pilot, not like a cheap SaaS
 
 ### 3. `Momentum AI` - good business, wrong month
@@ -217,7 +217,7 @@ All projections below are for `cash collected by May 3, 2026`, not booked MRR.
 | Project | Offer assumption used for modeling | Needed to hit `EUR 1,000` | First payment window | Outreach assumption | Pessimistic | Base | Stretch | Failure mode that kills the plan |
 | --- | --- | --- | --- | --- | ---: | ---: | ---: | --- |
 | `Web Agency` | `EUR 750` website sprint, `70%` upfront deposit (`EUR 525`), optional maintenance later | `2` deposits | 3-10 days | `80` targeted contacts, `12` calls/meetings, `2-3` proposals | `EUR 525` | `EUR 1,050` | `EUR 1,575` | You go too broad and fail to collect deposits before building. |
-| `Table IA` | `EUR 350` paid pilot/setup plus later `EUR 49/mo` | `3` pilot fees | 7-14 days | `60` restaurant touches, `12` live demos, `2-4` serious follow-ups | `EUR 350` | `EUR 700` | `EUR 1,400` | You keep the `EUR 29/mo` pricing or pitch it as futuristic instead of practical. |
+| `Gustia` | `EUR 350` paid pilot/setup plus later `EUR 49/mo` | `3` pilot fees | 7-14 days | `60` restaurant touches, `12` live demos, `2-4` serious follow-ups | `EUR 350` | `EUR 700` | `EUR 1,400` | You keep the `EUR 29/mo` pricing or pitch it as futuristic instead of practical. |
 | `Momentum AI` | Keep the premium managed-service posture; if paid, assume `EUR 750-1,000` for first pilot/retainer | `1` fast pilot or `1` retainer | 14-30 days | `80-100` remote B2B targets, `8-10` conversations | `EUR 0` | `EUR 0-750` | `EUR 1,000` | Zero-risk POCs eat the month and convert too slowly. |
 | `Renda Facil - Contract generation` | Current repo pricing: `EUR 37` one-time basic or `EUR 6.99/property/month` | `27` basic sales | 7-21 days | cold landlord/agency outreach with no warm trust bridge | `EUR 0` | `EUR 185` | `EUR 518` | Buyers do not trust a legal workflow enough to purchase cold. |
 | `Sigil AI` | Premium retainer around `EUR 1,000/mo` after POC | `1` converted client | 21-45 days | remote founder/GTM outbound and POC qualification | `EUR 0` | `EUR 0` | `EUR 1,000` | You spend the month creating POCs without getting paid. |
@@ -238,7 +238,7 @@ All projections below are for `cash collected by May 3, 2026`, not booked MRR.
 
 ### The specific truths that matter most
 
-- `Table IA` at `EUR 29/mo` is not a real emergency-cash model.
+- `Gustia` at `EUR 29/mo` is not a real emergency-cash model.
 - `Renda Facil` is real, but trust-heavy and underpriced for emergency cash unless you already have a warm channel.
 - `Momentum AI` and `Sigil AI` are better when you are optimizing for ACV and long-term positioning, not local Portugal cash velocity.
 - `FlowForge - Freestyle` is already monetized, but its own docs say meaningful paid growth wants far more than your current budget.
@@ -270,11 +270,11 @@ Why:
 - already has operational assets in the repo
 - sells cleanly with deposits
 - uses your outbound ability immediately
-- lets you reuse the same lead pool later for `Table IA`
+- lets you reuse the same lead pool later for `Gustia`
 
 ### Fallback bet if the first stalls within 7-10 days
 
-`Table IA`, but only as a paid pilot/setup offer.
+`Gustia`, but only as a paid pilot/setup offer.
 
 Use it if:
 
@@ -312,10 +312,10 @@ If you want the most rational answer, it is this:
 
 - sell `Web Agency` now
 - use restaurants as the niche
-- use `Table IA` as the differentiator and second-layer upsell
+- use `Gustia` as the differentiator and second-layer upsell
 - do not spend April trying to force a consumer app or a premium B2B system to solve a local cash emergency
 
-If you insist on betting on the most emotionally alive idea in the set, `Table IA` is the one I would allow. But only with a hard rule:
+If you insist on betting on the most emotionally alive idea in the set, `Gustia` is the one I would allow. But only with a hard rule:
 
 - if you do not get at least `2` serious restaurant follow-ups or `1` paid pilot inside the first `7-10` days, stop and switch fully to the website offer
 
@@ -325,7 +325,7 @@ That is the most cash-honest way to preserve upside without gambling the month.
 
 ### Local repo evidence used
 
-- `Table IA/README.md`
+- `Gustia/README.md`
 - `Web Agency/README.md`
 - `Web Agency/WEB_AGENCY_MASTER_SOP.md`
 - `Renda Facil - Contract generation/docs/README.md`

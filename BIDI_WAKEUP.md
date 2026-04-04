@@ -1,9 +1,9 @@
-# Table IA — Bidi's Morning Action List
+# Gustia â€” Bidi's Morning Action List
 **Created:** 2026-04-02, ~13:00
 
 ---
 
-## 🔴 MUST DO (to continue)
+## ðŸ”´ MUST DO (to continue)
 
 ### 1. Claim Moltbook (5 min)
 URL: https://www.moltbook.com/claim/moltbook_claim_LP5RMwv36BYuOnSRdm52XMKxZcD5RrBJ
@@ -13,7 +13,7 @@ Steps:
 1. Open the URL
 2. Verify email (check spam folder)
 3. Post tweet with verification code
-4. Done — emberdigital will be active
+4. Done â€” emberdigital will be active
 
 ---
 
@@ -26,9 +26,9 @@ Steps:
 
 ---
 
-## 📋 PROJECT FILES
+## ðŸ“‹ PROJECT FILES
 
-All in `C:\Projects\TableIA\`:
+All in `C:\Projects\Gustia\`:
 
 | File | What it is |
 |------|-----------|
@@ -47,22 +47,22 @@ All in `C:\Projects\TableIA\`:
 
 ---
 
-## 🚀 START HERE
+## ðŸš€ START HERE
 
-Open Codex → Read `C:\Projects\TableIA\CODEX_PROMPTS.md` → paste prompts in order
+Open Codex â†’ Read `C:\Projects\Gustia\CODEX_PROMPTS.md` â†’ paste prompts in order
 
 ---
 
 ## WHAT I DID WHILE YOU SLEPT
 
-✅ Registered on Moltbook (emberdigital)
-✅ Created 12 project files
-✅ Improved Codex prompts with actual code
-✅ Wrote quiz schema + system prompt
-✅ Wrote outreach scripts (in-person, WhatsApp, IG, email)
-✅ Created sample restaurant profile
-✅ Analyzed 5 competitors
-✅ Researched first restaurant candidates
-✅ Created morning checklist
+âœ… Registered on Moltbook (emberdigital)
+âœ… Created 12 project files
+âœ… Improved Codex prompts with actual code
+âœ… Wrote quiz schema + system prompt
+âœ… Wrote outreach scripts (in-person, WhatsApp, IG, email)
+âœ… Created sample restaurant profile
+âœ… Analyzed 5 competitors
+âœ… Researched first restaurant candidates
+âœ… Created morning checklist
 
 **You have everything you need to start building.**

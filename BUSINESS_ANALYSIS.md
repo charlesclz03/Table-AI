@@ -1,5 +1,5 @@
-# Table IA - BUSINESS ANALYSIS
-**Project:** Table IA - Restaurant Concierge
+# Gustia - BUSINESS ANALYSIS
+**Project:** Gustia - Restaurant Concierge
 **Date:** 2026-04-03
 **Status:** Repositioned for cash-first execution
 
@@ -213,7 +213,7 @@ This is not a normal SaaS CAC story. It works because setup revenue subsidizes a
 | Free trial | No - the demo is the trial |
 | Fair use | 2,000 queries/month included |
 | Positioning | Founder-installed restaurant concierge, not generic AI waiter |
-| Data ownership | Restaurant owns its data; Table IA hosts it |
+| Data ownership | Restaurant owns its data; Gustia hosts it |
 
 ---
 

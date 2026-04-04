@@ -1,4 +1,4 @@
-# Competitive Analysis — Table IA
+# Competitive Analysis â€” Gustia
 **Date:** 2026-04-02
 
 ---
@@ -33,7 +33,7 @@
 
 ### Amora AI
 - **Price:** Unknown
-- **Focus:** Menu image → mobile ordering site in 60 seconds
+- **Focus:** Menu image â†’ mobile ordering site in 60 seconds
 - **Weakness:** Ordering-focused, not concierge
 
 ### AIDA
@@ -54,11 +54,11 @@
 
 | Competitor | Price | Voice | Text | Self-Serve | Lisbon Focus |
 |---|---|---|---|---|---|
-| Hostie AI | $399-599 | ✅ | ❌ | Unknown | ❌ |
-| ActiveMenus | ~$99 | ✅ | ❌ | Unknown | ❌ |
-| MenuQ | $$$ | ✅ | ✅ | Unknown | ❌ |
-| QRCodeKIT | $$ | ✅ | ✅ | Yes | ❌ |
-| **Table IA** | **€299 setup + €49/mo** | **✅** | **✅** | **Yes** | **Lisbon** |
+| Hostie AI | $399-599 | âœ… | âŒ | Unknown | âŒ |
+| ActiveMenus | ~$99 | âœ… | âŒ | Unknown | âŒ |
+| MenuQ | $$$ | âœ… | âœ… | Unknown | âŒ |
+| QRCodeKIT | $$ | âœ… | âœ… | Yes | âŒ |
+| **Gustia** | **â‚¬299 setup + â‚¬49/mo** | **âœ…** | **âœ…** | **Yes** | **Lisbon** |
 
 **Key differentiators:**
 1. **Much cheaper ongoing** than US competitors, while charging enough upfront to fund installation
@@ -72,15 +72,15 @@
 
 ## Threats
 
-1. **QRCodeKIT just launched** — AI chat for QR menus is exactly what we're doing
-2. **Amora AI** — 60-second setup is faster than our 5-min quiz
-3. **Hostie AI** — well-funded, 57 languages, established
+1. **QRCodeKIT just launched** â€” AI chat for QR menus is exactly what we're doing
+2. **Amora AI** â€” 60-second setup is faster than our 5-min quiz
+3. **Hostie AI** â€” well-funded, 57 languages, established
 
 ---
 
 ## Opportunities
 
-1. **No direct competitor in Portugal/Lisbon** — market is underserved
-2. **Relationship-first approach** — Portuguese restaurants respond to personal sales
-3. **Demo-first sales** — most competitors just have websites
-4. **Founder-installed offer** — setup fee matches the real onboarding work and feels more credible than ultra-cheap SaaS
+1. **No direct competitor in Portugal/Lisbon** â€” market is underserved
+2. **Relationship-first approach** â€” Portuguese restaurants respond to personal sales
+3. **Demo-first sales** â€” most competitors just have websites
+4. **Founder-installed offer** â€” setup fee matches the real onboarding work and feels more credible than ultra-cheap SaaS

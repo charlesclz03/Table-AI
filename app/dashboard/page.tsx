@@ -14,8 +14,8 @@ export default function DashboardPage() {
           Integration status at a glance
         </h1>
         <p className="max-w-2xl text-text-secondary">
-          TableIA keeps integrations observable as the product moves from demo
-          to live service. Currently {runtimeStatus.summary.configured} of{' '}
+          Gustia keeps integrations observable as the product moves from demo to
+          live service. Currently {runtimeStatus.summary.configured} of{' '}
           {runtimeStatus.summary.total} runtime checks are fully configured.
         </p>
       </div>

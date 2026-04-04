@@ -44,12 +44,17 @@ Related docs:
 - the repo is a repaired Next.js 15 SaaS starter with auth, Prisma, Supabase, Stripe, and onboarding suggestion scaffolding
 - the documentation operating system is now installed and should be treated as the canonical navigation layer
 - this repo should stay representative of the best reusable baseline, not accumulate product-specific drift
-- Table IA now has a canonical `docs/reference/PATCH_NOTES.md` file for release-level history, in addition to progress and session logs
-- Table IA now includes an owner admin section at `/admin` that resolves the restaurant by NextAuth email and reads or updates restaurant data from Supabase
+- Gustia now has a canonical `docs/reference/PATCH_NOTES.md` file for release-level history, in addition to progress and session logs
+- Gustia now includes an owner admin section at `/admin` that resolves the restaurant by NextAuth email and reads or updates restaurant data from Supabase
 - the owner flow now includes a public landing page on `/`, a dedicated `/admin/login` screen, and first-login restaurant auto-provisioning when Google + Supabase service-role envs are configured
-- the admin build passed `tsc`, targeted eslint, and `next build`; the remaining lint warning is in `app/chat/[restaurantId]/page.tsx` (`react-hooks/exhaustive-deps`)
-- Table IA now has a repo-local `.agent/workflows/deploy.md` adapted from Freestyla for GitHub + Vercel releases; use it instead of the older generic deploy workflow
-- Table IA now includes `docs/session-log.md` for chronological session notes alongside the baseline-focused `docs/progress-log.md`, and `/deploy` should treat those plus patch notes as a release gate
+- the public production domain is now live at `https://www.gustia.wine`
+- the latest production deployment is `dpl_FzNTKtpWkXdKeBPBPPLuWR9uten3`, verified on `https://www.gustia.wine` and `https://gustia.wine`
+- the guest chat now uses OpenAI TTS for concierge voice replies through `/api/tts`, with browser speech fallback if API synthesis or playback fails
+- the current chat build now passes `npm run type-check`, `npm run lint`, and `npm run build` after the OpenAI TTS reply upgrade
+- local runtime smoke reached `/api/tts`, but the current OpenAI account returned a quota `429`, so natural voice playback still needs live verification after billing/quota is restored
+- `/deploy` should now default to pushing `main` to GitHub and letting Vercel auto-deploy; direct CLI deploys are fallback-only
+- Gustia now has a repo-local `.agent/workflows/deploy.md` adapted from Freestyla for GitHub + Vercel releases; use it instead of the older generic deploy workflow
+- Gustia now includes `docs/session-log.md` for chronological session notes alongside the baseline-focused `docs/progress-log.md`, and `/deploy` should treat those plus patch notes as a release gate
 - normal final answers should summarize the work and verification without enumerating edited files unless the user explicitly asks for paths
 
 ## Exact Next Slice

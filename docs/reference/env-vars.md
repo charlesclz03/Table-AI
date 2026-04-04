@@ -39,5 +39,7 @@ Related docs:
 
 ## Notes
 
+- Production should set `NEXT_PUBLIC_SITE_URL` to `https://www.gustia.wine` so metadata, canonical URLs, and runtime helpers point at the live Gustia domain.
+- Production should set `NEXTAUTH_URL` to `https://www.gustia.wine` so auth redirects match the live domain.
 - Google admin login requires both `GOOGLE_CLIENT_ID` and `GOOGLE_CLIENT_SECRET`, plus the usual `NEXTAUTH_URL` and `NEXTAUTH_SECRET`.
 - First-login restaurant auto-provisioning depends on `SUPABASE_SERVICE_ROLE_KEY` in addition to the public Supabase URL and anon key.

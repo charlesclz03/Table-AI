@@ -77,7 +77,7 @@ declare global {
   }
 }
 
-const HEADPHONE_DISCLAIMER_KEY = 'tableia-headphone-disclaimer-dismissed'
+const HEADPHONE_DISCLAIMER_KEY = 'gustia-headphone-disclaimer-dismissed'
 
 const CHAT_COPY: Record<
   LanguageCode,
@@ -95,7 +95,7 @@ const CHAT_COPY: Record<
     placeholder: 'Ask about dishes, wine, or allergens...',
     subtitlesLabel: 'Live subtitles',
     helper:
-      'Voice uses the Web Speech API. If live AI or restaurant data is unavailable, this page switches to demo mode automatically.',
+      'Voice replies use OpenAI TTS with a browser fallback. If live AI or restaurant data is unavailable, this page switches to demo mode automatically.',
     questionPrompt: 'Your concierge replies will appear here.',
   },
   fr: {
@@ -104,7 +104,7 @@ const CHAT_COPY: Record<
     placeholder: 'Demandez un plat, un vin ou un allergene...',
     subtitlesLabel: 'Sous-titres en direct',
     helper:
-      'La voix utilise Web Speech API. Si les donnees live ne sont pas disponibles, la demo prend le relais.',
+      'La voix utilise OpenAI TTS avec un secours navigateur. Si les donnees live ne sont pas disponibles, la demo prend le relais.',
     questionPrompt: 'Les reponses du concierge apparaissent ici.',
   },
   es: {
@@ -113,7 +113,7 @@ const CHAT_COPY: Record<
     placeholder: 'Pregunta por platos, vinos o alergenos...',
     subtitlesLabel: 'Subtitulos en directo',
     helper:
-      'La voz usa Web Speech API. Si faltan los datos en vivo, la pagina cambia al modo demo.',
+      'La voz usa OpenAI TTS con respaldo del navegador. Si faltan los datos en vivo, la pagina cambia al modo demo.',
     questionPrompt: 'Las respuestas del concierge apareceran aqui.',
   },
   it: {
@@ -122,7 +122,7 @@ const CHAT_COPY: Record<
     placeholder: 'Chiedi di piatti, vini o allergeni...',
     subtitlesLabel: 'Sottotitoli live',
     helper:
-      'La voce usa Web Speech API. Se i dati live non sono disponibili, la pagina passa alla demo.',
+      'La voce usa OpenAI TTS con fallback del browser. Se i dati live non sono disponibili, la pagina passa alla demo.',
     questionPrompt: 'Le risposte del concierge appariranno qui.',
   },
   pt: {
@@ -131,7 +131,7 @@ const CHAT_COPY: Record<
     placeholder: 'Pergunte sobre pratos, vinhos ou alergios...',
     subtitlesLabel: 'Legendas ao vivo',
     helper:
-      'A voz usa Web Speech API. Se os dados reais falharem, a pagina muda para modo demo automaticamente.',
+      'A voz usa OpenAI TTS com fallback do navegador. Se os dados reais falharem, a pagina muda para modo demo automaticamente.',
     questionPrompt: 'As respostas do concierge aparecem aqui.',
   },
   ru: {
@@ -140,7 +140,7 @@ const CHAT_COPY: Record<
     placeholder: 'Sprashivaite o blyudakh, vine ili allergenakh...',
     subtitlesLabel: 'Subtitry',
     helper:
-      'Golos ispolzuet Web Speech API. Esli dannye nedostupny, stranitsa perekhodit v demo rezhim.',
+      'Golos ispolzuet OpenAI TTS s rezervnym brauzernym variantom. Esli dannye nedostupny, stranitsa perekhodit v demo rezhim.',
     questionPrompt: 'Otvety konsyerzha poyavyatsya zdes.',
   },
 }
@@ -304,6 +304,8 @@ export default function RestaurantChatPage() {
   const [isPreferenceGateReady, setIsPreferenceGateReady] = useState(false)
 
   const recognitionRef = useRef<SpeechRecognitionLike | null>(null)
+  const audioRef = useRef<HTMLAudioElement | null>(null)
+  const audioUrlRef = useRef<string | null>(null)
   const latestMessageRef = useRef<ChatMessage[]>([])
   const greetingSentRef = useRef(false)
   const voiceReadyRef = useRef(false)
@@ -366,6 +368,138 @@ export default function RestaurantChatPage() {
       setShowHeadphoneDisclaimer(false)
     },
     []
+  )
+
+  const stopVoicePlayback = useCallback(function stopVoicePlayback() {
+    if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
+      window.speechSynthesis.cancel()
+    }
+
+    const activeAudio = audioRef.current
+
+    if (activeAudio) {
+      activeAudio.onended = null
+      activeAudio.onerror = null
+      activeAudio.pause()
+      activeAudio.src = ''
+      audioRef.current = null
+    }
+
+    const activeUrl = audioUrlRef.current
+
+    if (activeUrl) {
+      URL.revokeObjectURL(activeUrl)
+      audioUrlRef.current = null
+    }
+
+    setIsSpeaking(false)
+  }, [])
+
+  const speakWithBrowserTts = useCallback(
+    function speakWithBrowserTts(text: string) {
+      if (
+        !voiceOutputEnabled ||
+        typeof window === 'undefined' ||
+        !('speechSynthesis' in window)
+      ) {
+        return false
+      }
+
+      stopVoicePlayback()
+
+      const utterance = new SpeechSynthesisUtterance(text)
+      utterance.lang = language ?? 'en'
+      utterance.onstart = () => setIsSpeaking(true)
+      utterance.onend = () => setIsSpeaking(false)
+      utterance.onerror = () => setIsSpeaking(false)
+      window.speechSynthesis.speak(utterance)
+
+      return true
+    },
+    [language, stopVoicePlayback, voiceOutputEnabled]
+  )
+
+  const speakAssistantReply = useCallback(
+    async function speakAssistantReply(text: string) {
+      if (
+        !voiceOutputEnabled ||
+        typeof window === 'undefined' ||
+        !text.trim()
+      ) {
+        return
+      }
+
+      stopVoicePlayback()
+
+      let fallbackTriggered = false
+
+      const fallbackToBrowserTts = (error?: unknown) => {
+        if (fallbackTriggered) {
+          return
+        }
+
+        fallbackTriggered = true
+        console.error('OpenAI TTS error:', error)
+        stopVoicePlayback()
+        speakWithBrowserTts(text)
+      }
+
+      try {
+        setIsSpeaking(true)
+
+        const response = await fetch('/api/tts', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ text }),
+        })
+
+        if (!response.ok) {
+          throw new Error(`TTS failed with ${response.status}`)
+        }
+
+        const blob = await response.blob()
+
+        if (blob.size === 0) {
+          throw new Error('TTS returned empty audio')
+        }
+
+        const url = URL.createObjectURL(blob)
+        const audio = new Audio(url)
+        audio.preload = 'auto'
+        audio.setAttribute('playsinline', '')
+
+        audioRef.current = audio
+        audioUrlRef.current = url
+
+        const cleanupAudio = () => {
+          if (audioRef.current === audio) {
+            audioRef.current = null
+          }
+
+          if (audioUrlRef.current === url) {
+            URL.revokeObjectURL(url)
+            audioUrlRef.current = null
+          }
+        }
+
+        audio.onplay = () => setIsSpeaking(true)
+        audio.onended = () => {
+          cleanupAudio()
+          setIsSpeaking(false)
+        }
+        audio.onerror = () => {
+          cleanupAudio()
+          fallbackToBrowserTts(new Error('Audio playback failed'))
+        }
+
+        await audio.play()
+      } catch (error) {
+        fallbackToBrowserTts(error)
+      }
+    },
+    [speakWithBrowserTts, stopVoicePlayback, voiceOutputEnabled]
   )
 
   useEffect(() => {
@@ -447,20 +581,10 @@ export default function RestaurantChatPage() {
     setMessages([greetingMessage])
     setLatestSubtitle(greetingMessage.content)
 
-    if (
-      voiceReadyRef.current &&
-      typeof window !== 'undefined' &&
-      'speechSynthesis' in window
-    ) {
-      const utterance = new SpeechSynthesisUtterance(greetingMessage.content)
-      utterance.lang = language
-      utterance.onstart = () => setIsSpeaking(true)
-      utterance.onend = () => setIsSpeaking(false)
-      utterance.onerror = () => setIsSpeaking(false)
-      window.speechSynthesis.cancel()
-      window.speechSynthesis.speak(utterance)
+    if (voiceReadyRef.current) {
+      void speakAssistantReply(greetingMessage.content)
     }
-  }, [language, restaurant, tableNumber])
+  }, [language, restaurant, speakAssistantReply, tableNumber])
 
   const getAssistantResponse = useCallback(
     async function getAssistantResponse(
@@ -511,27 +635,6 @@ export default function RestaurantChatPage() {
     [language, tableNumber, theme]
   )
 
-  const speakAssistantReply = useCallback(
-    function speakAssistantReply(text: string) {
-      if (
-        !voiceOutputEnabled ||
-        typeof window === 'undefined' ||
-        !('speechSynthesis' in window)
-      ) {
-        return
-      }
-
-      window.speechSynthesis.cancel()
-      const utterance = new SpeechSynthesisUtterance(text)
-      utterance.lang = language ?? 'en'
-      utterance.onstart = () => setIsSpeaking(true)
-      utterance.onend = () => setIsSpeaking(false)
-      utterance.onerror = () => setIsSpeaking(false)
-      speechSynthesis.speak(utterance)
-    },
-    [language, voiceOutputEnabled]
-  )
-
   const submitMessage = useCallback(
     async function submitMessage(rawMessage: string) {
       const trimmedMessage = rawMessage.trim()
@@ -571,7 +674,7 @@ export default function RestaurantChatPage() {
         setMessages(latestMessageRef.current)
         setLatestSubtitle(assistantText)
         setUserMessageCount((current) => current + 1)
-        speakAssistantReply(assistantText)
+        void speakAssistantReply(assistantText)
       } catch {
         const fallbackText = 'Let me check with the staff.'
         const assistantMessage: ChatMessage = {
@@ -584,7 +687,7 @@ export default function RestaurantChatPage() {
         setMessages(latestMessageRef.current)
         setLatestSubtitle(fallbackText)
         setUserMessageCount((current) => current + 1)
-        speakAssistantReply(fallbackText)
+        void speakAssistantReply(fallbackText)
       } finally {
         setIsSending(false)
       }
@@ -720,13 +823,9 @@ export default function RestaurantChatPage() {
 
   useEffect(() => {
     return () => {
-      if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
-        window.speechSynthesis.cancel()
-      }
-
-      setIsSpeaking(false)
+      stopVoicePlayback()
     }
-  }, [])
+  }, [stopVoicePlayback])
 
   const startVoiceInput = useCallback(
     function startVoiceInput(event: ReactPointerEvent<HTMLButtonElement>) {
@@ -736,6 +835,7 @@ export default function RestaurantChatPage() {
 
       event.preventDefault()
       event.currentTarget.setPointerCapture(event.pointerId)
+      stopVoicePlayback()
       setErrorMessage('')
       shouldSubmitVoiceRef.current = false
       isHoldingToTalkRef.current = true
@@ -753,7 +853,7 @@ export default function RestaurantChatPage() {
         isHoldingToTalkRef.current = false
       }
     },
-    [isSending, isSpeechSupported]
+    [isSending, isSpeechSupported, stopVoicePlayback]
   )
 
   const stopVoiceInput = useCallback(
@@ -822,10 +922,9 @@ export default function RestaurantChatPage() {
 
   useEffect(() => {
     if (showHeadphoneDisclaimer && typeof window !== 'undefined') {
-      window.speechSynthesis?.cancel()
-      setIsSpeaking(false)
+      stopVoicePlayback()
     }
-  }, [showHeadphoneDisclaimer])
+  }, [showHeadphoneDisclaimer, stopVoicePlayback])
 
   useEffect(() => {
     if (messages.length !== 1) {
@@ -881,7 +980,7 @@ export default function RestaurantChatPage() {
           <div className="mx-auto flex w-full max-w-md flex-col gap-3 rounded-[28px] border border-white/10 bg-white/6 px-4 py-3 backdrop-blur sm:flex-row sm:items-start sm:justify-between">
             <div className="min-w-0">
               <p className="text-[11px] uppercase tracking-[0.32em] text-amber-200/70">
-                TableIA Concierge
+                Gustia Concierge
               </p>
               <h1 className="mt-1 break-words text-xl font-semibold text-white">
                 {restaurant?.name ?? 'Loading restaurant...'}
@@ -1039,8 +1138,8 @@ export default function RestaurantChatPage() {
                 </p>
                 <div className="mt-4 flex flex-col gap-3 sm:flex-row">
                   <a
-                    href={`mailto:hello@tableia.ai?subject=${encodeURIComponent(
-                      `I want TableIA for ${restaurant?.name ?? 'my restaurant'}`
+                    href={`mailto:hello@gustia.ai?subject=${encodeURIComponent(
+                      `I want Gustia for ${restaurant?.name ?? 'my restaurant'}`
                     )}`}
                     className="flex min-h-11 flex-1 items-center justify-center rounded-full bg-emerald-300 px-4 py-3 text-center text-sm font-semibold text-[#0b261b] transition hover:bg-emerald-200"
                   >

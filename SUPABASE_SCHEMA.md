@@ -1,11 +1,11 @@
-# Table IA - Supabase Schema
+# Gustia - Supabase Schema
 **Date:** 2026-04-04
 
 ---
 
 ## Context
 
-This SQL is for the Table IA product tables in Supabase.
+This SQL is for the Gustia product tables in Supabase.
 The current Prisma schema in this repo still covers the starter's NextAuth and generic subscription tables.
 
 Run each statement below in the Supabase SQL Editor.

@@ -1,4 +1,4 @@
-# Table IA — SPEC.md
+# Gustia â€” SPEC.md
 **Project:** Restaurant AI Concierge
 **Date:** 2026-04-02
 **Status:** Ready to build
@@ -7,7 +7,7 @@
 
 ## WHAT IT IS
 
-An AI concierge for restaurants. Customers scan a QR code → talk to an AI that knows THIS restaurant's menu, wines, recommendations, and story. Built via a 5-minute onboarding quiz + optional menu photo upload.
+An AI concierge for restaurants. Customers scan a QR code â†’ talk to an AI that knows THIS restaurant's menu, wines, recommendations, and story. Built via a 5-minute onboarding quiz + optional menu photo upload.
 
 ---
 
@@ -20,7 +20,7 @@ An AI concierge for restaurants. Customers scan a QR code → talk to an AI that
 4. Customer speaks or types: "What wine goes with the octopus?"
 5. AI answers in English, with subtitles
 6. Optional: order recommendation sent to waiter
-7. **Demo CTA:** "👍 Yes, I want this" → payment | "👎 No, thanks" → demo stays 7 days then auto-deletes
+7. **Demo CTA:** "ðŸ‘ Yes, I want this" â†’ payment | "ðŸ‘Ž No, thanks" â†’ demo stays 7 days then auto-deletes
 1. Customer scans QR code on table
 2. AI avatar appears with pulsing animation
 3. "Hi! I'm [Restaurant Name]'s concierge. Ask me anything about the menu."
@@ -46,25 +46,25 @@ Welcome! I'm [Restaurant Name]'s AI concierge.
 Let me get to know you so I can represent your restaurant perfectly.
 
 Q1: What's your signature dish?
-→ [owner types]
+â†’ [owner types]
 
 Q2: If someone is unsure what to order, what do you recommend?
-→ [owner types]
+â†’ [owner types]
 
 Q3: Which wine pairs best with your lamb?
-→ [owner types]
+â†’ [owner types]
 
 Q4: What's a dish most tourists don't know to order but should?
-→ [owner types]
+â†’ [owner types]
 
 Q5: Any dishes with allergens guests often ask about?
-→ [owner types]
+â†’ [owner types]
 
 Q6: What's the story behind [signature dish]?
-→ [owner types]
+â†’ [owner types]
 
 Q7: What are the 5 questions customers ask most?
-→ [owner types 5 questions]
+â†’ [owner types 5 questions]
 ```
 
 ---
@@ -72,8 +72,8 @@ Q7: What are the 5 questions customers ask most?
 ## FEATURES
 
 ### Customer Side (QR Interface)
-- Voice input (Web Speech API — free)
-- Voice output (Web Speech API — free)
+- Voice input (Web Speech API â€” free)
+- Voice output (Web Speech API â€” free)
 - Subtitles always displayed
 - Pulsing avatar animation
 - Headphone disclaimer shown before voice
@@ -81,7 +81,7 @@ Q7: What are the 5 questions customers ask most?
 
 ### Admin Side (Restaurant Dashboard)
 - Menu editor (add/edit/delete items)
-- Photo menu upload → AI parses
+- Photo menu upload â†’ AI parses
 - Onboarding quiz
 - QR code PDF download
 - Usage analytics
@@ -105,7 +105,7 @@ Q7: What are the 5 questions customers ask most?
 
 ### Per-Restaurant Context Injection
 ```
-User message → Load restaurant soul.md + menu → Inject into GPT-4o mini → Response
+User message â†’ Load restaurant soul.md + menu â†’ Inject into GPT-4o mini â†’ Response
 ```
 One shared LLM. Restaurant-specific context injected at request time.
 
@@ -137,12 +137,12 @@ Conversation {
 ## PRICING
 
 ### Founding Offer (First 3 Restaurants)
-- **€299 setup** — includes everything below
+- **â‚¬299 setup** â€” includes everything below
 - First month live included
-- After that: **€49/month**
-- "Founding restaurant" angle — feels exclusive and urgent
+- After that: **â‚¬49/month**
+- "Founding restaurant" angle â€” feels exclusive and urgent
 
-### What €299 Setup Includes
+### What â‚¬299 Setup Includes
 - Menu and knowledge base setup
 - Concierge customization for their restaurant (soul.md + rules.md)
 - QR code creation and PDF download
@@ -150,18 +150,18 @@ Conversation {
 - First corrections after launch
 
 ### After Month 1
-- €49/month per restaurant
+- â‚¬49/month per restaurant
 - Month-to-month, cancel anytime
 - Fair-use policy (2,000 queries/month included)
 
 ### Pricing Tier (Future)
-- €349-499 setup + €59/month — only after testimonials and proof
+- â‚¬349-499 setup + â‚¬59/month â€” only after testimonials and proof
 
 ### Why This Works
-- €299 gives real upfront cash now
+- â‚¬299 gives real upfront cash now
 - "First month included" feels clean, not pushy
-- €49/month still reachable for Portugal restaurants
-- Positions Table IA as a custom installed business tool, not a cheap SaaS
+- â‚¬49/month still reachable for Portugal restaurants
+- Positions Gustia as a custom installed business tool, not a cheap SaaS
 
 ---
 
@@ -171,14 +171,14 @@ Conversation {
 - Zicbot: $50/month
 - Hostie AI: voice-only
 
-Our advantage: €299 setup + €49/month, voice + text, self-service onboarding, pre-built demo sales method.
+Our advantage: â‚¬299 setup + â‚¬49/month, voice + text, self-service onboarding, pre-built demo sales method.
 
 ---
 
 ## GOALS
 
-- Month 1: 3 restaurants = €897 (3 × €299 setup)
-- Month 1 cash target: 4 setup closes = €1,196
-- Month 3: 10 restaurants live = €490 MRR
-- Month 6: 30 restaurants = €1,470 MRR
-- Long-term: 71 restaurants live = €3,479 MRR
+- Month 1: 3 restaurants = â‚¬897 (3 Ã— â‚¬299 setup)
+- Month 1 cash target: 4 setup closes = â‚¬1,196
+- Month 3: 10 restaurants live = â‚¬490 MRR
+- Month 6: 30 restaurants = â‚¬1,470 MRR
+- Long-term: 71 restaurants live = â‚¬3,479 MRR

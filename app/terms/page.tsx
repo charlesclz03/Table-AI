@@ -4,7 +4,7 @@ import { LegalPageShell, LegalSection } from '@/app/legal/legal-shell'
 
 export const metadata: Metadata = {
   title: 'Terms of Service',
-  description: 'The terms that apply to restaurant use of TableIA.',
+  description: 'The terms that apply to restaurant use of Gustia.',
 }
 
 export default function TermsPage() {
@@ -12,18 +12,18 @@ export default function TermsPage() {
     <LegalPageShell
       eyebrow="Terms"
       title="Terms of Service"
-      summary="These terms govern restaurant access to TableIA, including service scope, pricing, billing, cancellation, customer responsibilities, and liability limits."
+      summary="These terms govern restaurant access to Gustia, including service scope, pricing, billing, cancellation, customer responsibilities, and liability limits."
       updatedOn="April 4, 2026"
     >
       <LegalSection title="1. Service description">
         <p>
-          TableIA provides an AI concierge service for restaurants. The service
+          Gustia provides an AI concierge service for restaurants. The service
           is designed to help guests discover menu items, ask questions about
           dishes and drinks, and receive restaurant-specific guidance through a
           chat interface.
         </p>
         <p>
-          TableIA is a software service. It supports restaurant operations but
+          Gustia is a software service. It supports restaurant operations but
           does not replace the restaurant&apos;s own responsibility for menu
           accuracy, hospitality, food safety, or regulatory compliance.
         </p>
@@ -31,9 +31,8 @@ export default function TermsPage() {
 
       <LegalSection title="2. Pricing and payment terms">
         <p>
-          Unless otherwise agreed in writing, TableIA pricing is a one-time
-          setup fee of 299 EUR plus a recurring subscription of 49 EUR per
-          month.
+          Unless otherwise agreed in writing, Gustia pricing is a one-time setup
+          fee of 299 EUR plus a recurring subscription of 49 EUR per month.
         </p>
         <p>
           Subscription billing may be offered on a monthly or annual basis and
@@ -64,7 +63,7 @@ export default function TermsPage() {
         <p>
           Each restaurant is responsible for providing accurate and current menu
           details, pricing, allergens, availability, and business information.
-          TableIA relies on restaurant-provided information to generate helpful
+          Gustia relies on restaurant-provided information to generate helpful
           responses.
         </p>
         <p>
@@ -76,12 +75,12 @@ export default function TermsPage() {
 
       <LegalSection title="5. Limitation of liability">
         <p>
-          TableIA is provided on an as-available basis. While we aim for a
+          Gustia is provided on an as-available basis. While we aim for a
           reliable service, we do not guarantee uninterrupted operation, perfect
           accuracy, or error-free outputs in every case.
         </p>
         <p>
-          To the maximum extent allowed by law, TableIA will not be liable for
+          To the maximum extent allowed by law, Gustia will not be liable for
           indirect, incidental, special, or consequential damages, or for loss
           of revenue, profits, data, or business opportunity arising from use of
           the service.
@@ -92,10 +91,10 @@ export default function TermsPage() {
         <p>
           Questions about these terms can be sent to{' '}
           <Link
-            href="mailto:support@tableia.com"
+            href="mailto:support@gustia.com"
             className="font-medium text-amber-100 transition hover:text-white"
           >
-            support@tableia.com
+            support@gustia.com
           </Link>
           .
         </p>

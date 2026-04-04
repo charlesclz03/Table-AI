@@ -58,7 +58,7 @@ export function AdminChrome({ children }: AdminChromeProps) {
         <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
           <div>
             <p className="text-[11px] uppercase tracking-[0.34em] text-amber-200/70">
-              TableIA Owner Console
+              Gustia Owner Console
             </p>
             <h1 className="mt-2 text-2xl font-semibold text-white">
               Run your restaurant concierge

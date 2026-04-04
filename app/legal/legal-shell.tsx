@@ -27,8 +27,8 @@ const legalLinks = [
     icon: Scale,
   },
   {
-    href: 'mailto:support@tableia.com',
-    label: 'support@tableia.com',
+    href: 'mailto:support@gustia.com',
+    label: 'support@gustia.com',
     icon: Mail,
   },
 ] as const

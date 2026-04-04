@@ -12,21 +12,63 @@ import { useParams, useRouter, useSearchParams } from 'next/navigation'
 import { Sparkles } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
-export const LANGUAGE_STORAGE_KEY = 'tableia-lang'
-export const THEME_STORAGE_KEY = 'tableia-theme'
+export const LANGUAGE_STORAGE_KEY = 'gustia-lang'
+export const THEME_STORAGE_KEY = 'gustia-theme'
 
 export const LANGUAGE_OPTIONS = [
-  { code: 'en', label: 'English', nativeLabel: 'English', flag: '🇺🇸' },
-  { code: 'fr', label: 'French', nativeLabel: 'Français', flag: '🇫🇷' },
-  { code: 'es', label: 'Spanish', nativeLabel: 'Español', flag: '🇪🇸' },
-  { code: 'it', label: 'Italian', nativeLabel: 'Italiano', flag: '🇮🇹' },
-  { code: 'pt', label: 'Portuguese', nativeLabel: 'Português', flag: '🇵🇹' },
-  { code: 'ru', label: 'Russian', nativeLabel: 'Русский', flag: '🇷🇺' },
+  {
+    code: 'en',
+    label: 'English',
+    nativeLabel: 'English',
+    flag: '\u{1F1FA}\u{1F1F8}',
+  },
+  {
+    code: 'fr',
+    label: 'French',
+    nativeLabel: 'Fran\u00e7ais',
+    flag: '\u{1F1EB}\u{1F1F7}',
+  },
+  {
+    code: 'es',
+    label: 'Spanish',
+    nativeLabel: 'Espa\u00f1ol',
+    flag: '\u{1F1EA}\u{1F1F8}',
+  },
+  {
+    code: 'pt',
+    label: 'Portuguese',
+    nativeLabel: 'Portugu\u00eas',
+    flag: '\u{1F1F5}\u{1F1F9}',
+  },
+  {
+    code: 'it',
+    label: 'Italian',
+    nativeLabel: 'Italiano',
+    flag: '\u{1F1EE}\u{1F1F9}',
+  },
+  {
+    code: 'ru',
+    label: 'Russian',
+    nativeLabel: '\u0420\u0443\u0441\u0441\u043a\u0438\u0439',
+    flag: '\u{1F1F7}\u{1F1FA}',
+  },
 ] as const
 
 export type LanguageCode = (typeof LANGUAGE_OPTIONS)[number]['code']
 
 export type ThemeKey = 'red' | 'white' | 'rose' | 'champagne' | 'green'
+export type OnboardingProgressStep = 0 | 1 | 2
+
+export const ONBOARDING_SLIDE_TRANSITION = {
+  duration: 0.4,
+  ease: 'easeOut',
+} as const
+
+export const ONBOARDING_SLIDE_STATES = {
+  initial: { y: 100 },
+  animate: { y: 0 },
+  exit: { y: -100 },
+} as const
 
 export interface ThemeOption {
   key: ThemeKey
@@ -188,6 +230,7 @@ interface OnboardingContextValue {
 
 interface OnboardingShellProps {
   step: OnboardingStep
+  progress: OnboardingProgressStep
   children: ReactNode
 }
 
@@ -369,14 +412,15 @@ export function SphereAnimationStyles() {
         }
       }
 
-      @keyframes fadeSlideIn {
-        0% {
-          opacity: 0;
-          transform: translateY(18px);
-        }
+      @keyframes onboardingGlow {
+        0%,
         100% {
-          opacity: 1;
-          transform: translateY(0);
+          transform: scale(0.98);
+          opacity: 0.32;
+        }
+        50% {
+          transform: scale(1.02);
+          opacity: 0.55;
         }
       }
     `}</style>
@@ -489,6 +533,30 @@ export function WineSphere({
   )
 }
 
+function OnboardingProgress({ current }: { current: OnboardingProgressStep }) {
+  return (
+    <div
+      className="flex items-center justify-center gap-3"
+      aria-label="Progress"
+    >
+      {[0, 1, 2].map((index) => {
+        const isActive = current === index
+
+        return (
+          <span
+            key={index}
+            className={cn(
+              'block h-2.5 rounded-full transition-all duration-300',
+              isActive ? 'w-8 bg-amber-200' : 'w-2.5 bg-white/22'
+            )}
+            aria-hidden="true"
+          />
+        )
+      })}
+    </div>
+  )
+}
+
 export function useOnboardingFlow() {
   const value = useContext(OnboardingContext)
 
@@ -499,7 +567,11 @@ export function useOnboardingFlow() {
   return value
 }
 
-export function OnboardingShell({ step, children }: OnboardingShellProps) {
+export function OnboardingShell({
+  step,
+  progress,
+  children,
+}: OnboardingShellProps) {
   const params = useParams<{ restaurantId: string }>()
   const searchParams = useSearchParams()
   const router = useRouter()
@@ -565,32 +637,44 @@ export function OnboardingShell({ step, children }: OnboardingShellProps) {
 
   return (
     <OnboardingContext.Provider value={value}>
-      <div className="min-h-screen overflow-hidden bg-[#040508] text-white">
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(245,158,11,0.16),_transparent_32%),radial-gradient(circle_at_bottom,_rgba(114,47,55,0.22),_transparent_38%),linear-gradient(180deg,_#0c0a09_0%,_#05060a_52%,_#020304_100%)]" />
+      <div className="min-h-screen overflow-hidden bg-[#050508] text-white">
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(247,197,122,0.18),_transparent_28%),radial-gradient(circle_at_20%_80%,_rgba(114,47,55,0.3),_transparent_34%),radial-gradient(circle_at_80%_20%,_rgba(240,180,130,0.12),_transparent_26%),linear-gradient(180deg,_#130d0b_0%,_#09080b_52%,_#040406_100%)]" />
+        <div
+          className="pointer-events-none absolute inset-x-[-15%] top-[18%] h-[28rem] rounded-full blur-3xl"
+          style={{
+            background:
+              'radial-gradient(circle, rgba(255, 231, 204, 0.08) 0%, transparent 72%)',
+            animation: 'onboardingGlow 6s ease-in-out infinite',
+          }}
+        />
 
-        <div className="relative mx-auto flex min-h-screen w-full max-w-md flex-col px-5 pb-8 pt-6">
-          <header className="rounded-[30px] border border-white/10 bg-white/6 px-4 py-4 backdrop-blur">
-            <p className="text-[11px] uppercase tracking-[0.34em] text-amber-200/70">
-              TableIA Concierge
-            </p>
-            <div className="mt-3 flex items-center justify-between gap-3">
-              <div>
-                <h1 className="text-xl font-semibold text-white">
+        <div className="relative mx-auto flex min-h-screen w-full max-w-md flex-col px-5 pb-[max(1.75rem,env(safe-area-inset-bottom))] pt-[max(1.25rem,env(safe-area-inset-top))]">
+          <header className="rounded-[32px] border border-white/10 bg-white/[0.06] px-4 py-4 shadow-[0_22px_80px_rgba(0,0,0,0.28)] backdrop-blur-xl">
+            <div className="flex items-start justify-between gap-4">
+              <div className="min-w-0">
+                <p className="text-[10px] uppercase tracking-[0.38em] text-amber-100/65">
+                  Gustia Concierge
+                </p>
+                <h1 className="mt-3 break-words text-[1.7rem] font-semibold leading-tight text-white">
                   {restaurantName}
                 </h1>
-                <p className="mt-1 text-sm text-white/60">
+                <p className="mt-2 text-sm text-white/58">
                   Table {tableNumber}
                 </p>
               </div>
-              <div className="flex h-11 w-11 items-center justify-center rounded-full border border-white/10 bg-black/20 text-amber-100/90">
+              <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full border border-white/10 bg-black/20 text-amber-100/85">
                 <Sparkles className="h-5 w-5" />
               </div>
             </div>
           </header>
 
-          <main className="flex flex-1 flex-col justify-center">
+          <main className="relative flex min-h-0 flex-1 flex-col justify-center overflow-hidden py-6">
             {children}
           </main>
+
+          <footer className="pb-2 pt-1">
+            <OnboardingProgress current={progress} />
+          </footer>
         </div>
 
         <SphereAnimationStyles />

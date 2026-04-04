@@ -25,7 +25,7 @@
 
 - `/onboarding`: Interactive setup script for new projects based on this template.
 - `/bug_fix`: Reproduce, fix root cause, verify (lint + tsc), and update `docs/reference/PATCH_NOTES.md` plus any touched project docs.
-- `/deploy`: Table IA release workflow for GitHub + Vercel with DB/env checks, lint/build/type-check, required docs sync, patch notes, deploy path selection, and rollback guidance.
+- `/deploy`: Gustia release workflow for GitHub + Vercel with DB/env checks, lint/build/type-check, required docs sync, patch notes, deploy path selection, and rollback guidance.
 - `/database_migration`: Modify `prisma/schema.prisma` safely, generate client, push/migrate, fix types.
 - `/new_component`: Create UI components adhering to the Atomic Design format in `components/`.
 - `/audit`: Perform deep feature audits to find regressions and plan "forever fixes".

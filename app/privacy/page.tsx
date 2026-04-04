@@ -5,7 +5,7 @@ import { LegalPageShell, LegalSection } from '@/app/legal/legal-shell'
 export const metadata: Metadata = {
   title: 'Privacy Policy',
   description:
-    'How TableIA collects, stores, and uses restaurant and chat data.',
+    'How Gustia collects, stores, and uses restaurant and chat data.',
 }
 
 export default function PrivacyPage() {
@@ -13,15 +13,15 @@ export default function PrivacyPage() {
     <LegalPageShell
       eyebrow="Privacy"
       title="Privacy Policy"
-      summary="This policy explains what TableIA stores, why we store it, and how we protect restaurant and guest conversation data while operating our AI concierge service."
+      summary="This policy explains what Gustia stores, why we store it, and how we protect restaurant and guest conversation data while operating our AI concierge service."
       updatedOn="April 4, 2026"
     >
       <LegalSection title="1. What we collect">
         <p>
-          TableIA collects the minimum information needed to run the AI
-          concierge service for restaurants. This includes restaurant profile
-          details such as venue name, menu information, onboarding answers,
-          operating preferences, and account contact details.
+          Gustia collects the minimum information needed to run the AI concierge
+          service for restaurants. This includes restaurant profile details such
+          as venue name, menu information, onboarding answers, operating
+          preferences, and account contact details.
         </p>
         <p>
           We also store guest and restaurant chat logs created through the
@@ -34,20 +34,20 @@ export default function PrivacyPage() {
       <LegalSection title="2. How we use data">
         <p>
           We use collected data only to deliver, maintain, and improve the
-          TableIA AI concierge service. That includes answering guest questions,
+          Gustia AI concierge service. That includes answering guest questions,
           tailoring responses to a restaurant&apos;s menu and setup, supporting
           restaurant owners, and diagnosing service issues when needed.
         </p>
         <p>
           We do not use restaurant data or chat logs for unrelated advertising
           purposes, and we do not repurpose that data outside the operation of
-          the TableIA service.
+          the Gustia service.
         </p>
       </LegalSection>
 
       <LegalSection title="3. Storage and security">
         <p>
-          TableIA stores service data using Supabase-backed infrastructure. We
+          Gustia stores service data using Supabase-backed infrastructure. We
           use industry-standard safeguards, including encrypted connections in
           transit and infrastructure-level encryption at rest provided by our
           service providers.
@@ -62,9 +62,9 @@ export default function PrivacyPage() {
 
       <LegalSection title="4. We do not sell your data">
         <p>
-          TableIA does not sell restaurant data, guest conversation data, or
+          Gustia does not sell restaurant data, guest conversation data, or
           account information to third parties. If we work with subprocessors to
-          run the service, they are used only to support delivery of TableIA.
+          run the service, they are used only to support delivery of Gustia.
         </p>
       </LegalSection>
 
@@ -78,10 +78,10 @@ export default function PrivacyPage() {
         <p>
           For privacy questions, contact{' '}
           <Link
-            href="mailto:support@tableia.com"
+            href="mailto:support@gustia.com"
             className="font-medium text-amber-100 transition hover:text-white"
           >
-            support@tableia.com
+            support@gustia.com
           </Link>
           .
         </p>

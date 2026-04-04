@@ -20,8 +20,8 @@ const publicEnv = getPublicEnv()
 export const metadata: Metadata = {
   metadataBase: new URL(publicEnv.siteUrl),
   title: {
-    default: 'TableIA',
-    template: '%s | TableIA',
+    default: 'Gustia',
+    template: '%s | Gustia',
   },
   description: 'AI Concierge for Restaurants',
 }
@@ -49,7 +49,7 @@ export default function RootLayout({
               <header className="mb-10 flex flex-col gap-6 rounded-full border border-stroke-soft bg-surface-elevated/60 px-6 py-4 backdrop-blur-medium md:flex-row md:items-center md:justify-between">
                 <div>
                   <p className="text-xs uppercase tracking-[0.3em] text-text-secondary">
-                    TableIA
+                    Gustia
                   </p>
                   <p className="mt-1 text-sm text-text-secondary">
                     AI Concierge for Restaurants

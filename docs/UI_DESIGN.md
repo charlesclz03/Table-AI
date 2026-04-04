@@ -1,28 +1,28 @@
-# Table IA — UI/UX Design Language
+# Gustia â€” UI/UX Design Language
 **Date:** 2026-04-03
 **Status:** LOCKED
 
 ---
 
-## AI Entity Design — The Glassy Wine Sphere
+## AI Entity Design â€” The Glassy Wine Sphere
 
 ### Core Visual Concept
 A **glassy sphere** at the center of the screen, **half-filled with wine**. The wine inside moves like a wave while the AI is talking. Like a crystal ball with liquid inside.
 
 ### Visual Effects
-- **Glassy/translucent sphere** — glassmorphism, frosted glass aesthetic, like a crystal orb
-- **Wine level** — exactly half-filled, wine at the bottom half
-- **Wave animation** — wine moves like a gentle wave inside the sphere while talking (sloshing effect)
-- **Pulsating animation** — slow, rhythmic pulse when idle
-- **Centered on screen** — the AI entity is the focal point
-- **Subtle glow** — warm amber glow around the sphere
+- **Glassy/translucent sphere** â€” glassmorphism, frosted glass aesthetic, like a crystal orb
+- **Wine level** â€” exactly half-filled, wine at the bottom half
+- **Wave animation** â€” wine moves like a gentle wave inside the sphere while talking (sloshing effect)
+- **Pulsating animation** â€” slow, rhythmic pulse when idle
+- **Centered on screen** â€” the AI entity is the focal point
+- **Subtle glow** â€” warm amber glow around the sphere
 
 ### Animation Specs
 ```
-- Sphere pulse (idle): scale 1 → 1.05 → 1, 3s ease-in-out infinite
+- Sphere pulse (idle): scale 1 â†’ 1.05 â†’ 1, 3s ease-in-out infinite
 - Wine wave (while talking): gentle sloshing motion inside sphere, CSS keyframes
 - Wine level: always bottom half of sphere
-- Glow pulse: 0.2 → 0.4 → 0.2 opacity, 3s infinite
+- Glow pulse: 0.2 â†’ 0.4 â†’ 0.2 opacity, 3s infinite
 - Glass shimmer: subtle light refraction across sphere surface
 ```
 
@@ -42,7 +42,7 @@ A **glassy sphere** at the center of the screen, **half-filled with wine**. The 
 - Avatar centered vertically and horizontally
 - Subtitles below avatar
 - Input controls at bottom
-- Minimal UI chrome — the glass entity is the hero
+- Minimal UI chrome â€” the glass entity is the hero
 
 ---
 
@@ -55,7 +55,7 @@ The sphere adapts to the restaurant's wine selection (5 themes):
 - Glow: #F7E7CE at 30% opacity
 - Ambient: warm golden light
 
-### Rosé Theme
+### RosÃ© Theme
 - Wine color: #FFB6C1 to #F08080 (pink gradient)
 - Glow: #FFB6C1 at 30% opacity
 - Ambient: soft pink light
@@ -70,11 +70,11 @@ The sphere adapts to the restaurant's wine selection (5 themes):
 - Glow: #F5E6C8 at 40% opacity (brighter)
 - Ambient: effervescent sparkle
 
-### Green Wine Theme (Vinho Verde — Portugal)
+### Green Wine Theme (Vinho Verde â€” Portugal)
 - Wine color: #C9E4CA (pale green)
 - Glow: #90EE90 at 35% opacity
 - Ambient: fresh, youthful, slightly sparkling energy
-- **Portuguese specialty — perfect for Lisbon restaurants**
+- **Portuguese specialty â€” perfect for Lisbon restaurants**
 
 ### Default (Restaurant Chooses)
 - Red Wine theme as default
@@ -90,9 +90,9 @@ Each wine theme has a distinct voice character:
 |-------|----------------|---------|
 | Red Wine | Warm, deep, sophisticated waiter | "Good evening. I am your concierge." |
 | White Wine | Light, crisp, friendly sommelier | "Hello! Let me help you explore." |
-| Rosé | Fresh, fruity, approachable host | "Hey! Looking for recommendations?" |
+| RosÃ© | Fresh, fruity, approachable host | "Hey! Looking for recommendations?" |
 | Champagne | Bright, celebratory, premium maitre d' | "Good evening! What brings you in?" |
-| Green Wine 🇵🇹 | Fresh, youthful, slightly sparkling | "Hey! New to the menu? Let me show you around." |
+| Green Wine ðŸ‡µðŸ‡¹ | Fresh, youthful, slightly sparkling | "Hey! New to the menu? Let me show you around." |
 
 ## Splash Screen
 

@@ -1,19 +1,46 @@
 'use client'
 
-import { startTransition } from 'react'
+import { startTransition, useEffect, useRef, useState } from 'react'
+import { AnimatePresence, motion } from 'framer-motion'
+import { ArrowUp } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 import {
   buildOnboardingPath,
   LANGUAGE_OPTIONS,
   LANGUAGE_STORAGE_KEY,
+  ONBOARDING_SLIDE_STATES,
+  ONBOARDING_SLIDE_TRANSITION,
   OnboardingShell,
   useOnboardingFlow,
+  WineSphere,
 } from '../_layout'
+
+type LanguageStage = 'welcome' | 'language'
 
 function LanguageSelectionScreen() {
   const router = useRouter()
   const { restaurantId, tableNumber, restaurantName, setLang } =
     useOnboardingFlow()
+  const [stage, setStage] = useState<LanguageStage>('welcome')
+  const [isRouting, setIsRouting] = useState(false)
+  const swipeStartYRef = useRef<number | null>(null)
+  const routeTimeoutRef = useRef<number | null>(null)
+
+  useEffect(() => {
+    return () => {
+      if (routeTimeoutRef.current) {
+        window.clearTimeout(routeTimeoutRef.current)
+      }
+    }
+  }, [])
+
+  function handleAdvance() {
+    if (isRouting) {
+      return
+    }
+
+    setStage('language')
+  }
 
   function handleSelectLanguage(
     code: (typeof LANGUAGE_OPTIONS)[number]['code']
@@ -23,50 +50,132 @@ function LanguageSelectionScreen() {
     }
 
     setLang(code)
+    setIsRouting(true)
 
-    startTransition(() => {
-      router.push(buildOnboardingPath(restaurantId, 'theme', tableNumber))
-    })
+    routeTimeoutRef.current = window.setTimeout(() => {
+      startTransition(() => {
+        router.push(buildOnboardingPath(restaurantId, 'theme', tableNumber))
+      })
+    }, 400)
   }
 
   return (
-    <section className="py-8">
-      <div className="mb-8 text-center">
-        <p className="text-sm text-amber-100/60">{restaurantName}</p>
-        <h2 className="mt-3 text-3xl font-semibold tracking-tight text-white">
-          Select your language
-        </h2>
-        <p className="mt-3 text-sm leading-6 text-white/60">
-          Choose the language your concierge should use for this table.
-        </p>
-      </div>
+    <AnimatePresence initial={false} mode="wait">
+      {stage === 'welcome' ? (
+        <motion.section
+          key="welcome"
+          initial={ONBOARDING_SLIDE_STATES.initial}
+          animate={ONBOARDING_SLIDE_STATES.animate}
+          exit={ONBOARDING_SLIDE_STATES.exit}
+          transition={ONBOARDING_SLIDE_TRANSITION}
+          className="flex min-h-0 flex-1 flex-col justify-center"
+          onPointerDown={(event) => {
+            swipeStartYRef.current = event.clientY
+          }}
+          onPointerUp={(event) => {
+            if (swipeStartYRef.current === null) {
+              return
+            }
 
-      <div className="grid grid-cols-2 gap-3">
-        {LANGUAGE_OPTIONS.map((language, index) => (
-          <button
-            key={language.code}
-            type="button"
-            onClick={() => handleSelectLanguage(language.code)}
-            className="rounded-[28px] border border-white/10 bg-white/6 px-4 py-5 text-left backdrop-blur transition hover:border-amber-200/30 hover:bg-white/10"
-            style={{
-              animation: `fadeSlideIn 420ms ease-out ${index * 90}ms both`,
-            }}
-          >
-            <div className="text-3xl leading-none">{language.flag}</div>
-            <p className="mt-4 text-base font-medium text-white">
-              {language.nativeLabel}
+            const swipeDistance = swipeStartYRef.current - event.clientY
+            swipeStartYRef.current = null
+
+            if (swipeDistance > 56) {
+              handleAdvance()
+            }
+          }}
+        >
+          <div className="rounded-[34px] border border-white/10 bg-white/[0.05] px-6 py-8 text-center shadow-[0_24px_80px_rgba(0,0,0,0.28)] backdrop-blur-xl">
+            <p className="text-[11px] uppercase tracking-[0.34em] text-amber-100/62">
+              Welcome
             </p>
-            <p className="mt-1 text-sm text-white/50">{language.label}</p>
-          </button>
-        ))}
-      </div>
-    </section>
+            <WineSphere
+              themeKey="red"
+              speaking
+              size="xl"
+              className="mx-auto mt-7"
+            />
+            <h2 className="mt-8 text-[2rem] font-semibold leading-tight text-white">
+              {restaurantName}
+            </h2>
+            <p className="mt-3 text-sm leading-7 text-white/62">
+              One quick setup and your wine-sphere concierge will be ready to
+              guide this table.
+            </p>
+
+            <button
+              type="button"
+              onClick={handleAdvance}
+              className="mt-8 flex min-h-14 w-full items-center justify-center rounded-full bg-amber-200 px-5 py-4 text-base font-semibold text-[#24160d] transition hover:bg-amber-100 active:scale-[0.99]"
+            >
+              Tap to start
+            </button>
+
+            <div className="mt-5 flex items-center justify-center gap-2 text-xs uppercase tracking-[0.28em] text-white/38">
+              <ArrowUp className="h-4 w-4" />
+              <span>Swipe up to continue</span>
+            </div>
+          </div>
+        </motion.section>
+      ) : (
+        <motion.section
+          key="language"
+          initial={ONBOARDING_SLIDE_STATES.initial}
+          animate={
+            isRouting
+              ? ONBOARDING_SLIDE_STATES.exit
+              : ONBOARDING_SLIDE_STATES.animate
+          }
+          transition={ONBOARDING_SLIDE_TRANSITION}
+          className="flex min-h-0 flex-1 flex-col justify-center"
+        >
+          <div className="mb-6 text-center">
+            <p className="text-[11px] uppercase tracking-[0.34em] text-amber-100/62">
+              Step One
+            </p>
+            <h2 className="mt-4 text-[2rem] font-semibold leading-tight text-white">
+              Choose your language
+            </h2>
+            <p className="mt-3 text-sm leading-7 text-white/60">
+              Pick the language your table concierge should use.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-2 gap-3">
+            {LANGUAGE_OPTIONS.map((language, index) => (
+              <motion.button
+                key={language.code}
+                type="button"
+                onClick={() => handleSelectLanguage(language.code)}
+                whileTap={{ scale: 0.98 }}
+                disabled={isRouting}
+                className="flex min-h-[110px] min-w-[60px] flex-col justify-between rounded-[28px] border border-white/10 bg-white/[0.06] px-4 py-4 text-left shadow-[0_18px_48px_rgba(0,0,0,0.18)] backdrop-blur-xl transition hover:border-amber-200/35 hover:bg-white/[0.1] disabled:pointer-events-none"
+                initial={{ y: 28 }}
+                animate={{ y: 0 }}
+                transition={{
+                  ...ONBOARDING_SLIDE_TRANSITION,
+                  delay: index * 0.04,
+                }}
+              >
+                <span className="text-4xl leading-none">{language.flag}</span>
+                <div className="mt-4">
+                  <p className="text-base font-medium text-white">
+                    {language.nativeLabel}
+                  </p>
+                  <p className="mt-1 text-sm text-white/48">{language.label}</p>
+                </div>
+              </motion.button>
+            ))}
+          </div>
+        </motion.section>
+      )}
+    </AnimatePresence>
   )
 }
 
 export default function LanguageSelectionPage() {
   return (
-    <OnboardingShell step="language">
+    <OnboardingShell step="language" progress={0}>
       <LanguageSelectionScreen />
     </OnboardingShell>
   )

@@ -4,7 +4,7 @@ Date: 2026-04-03
 
 ## What Was Decided Today
 
-- Table IA should be documented as a restaurant AI concierge app, not as the generic starter template.
+- Gustia should be documented as a restaurant AI concierge app, not as the generic starter template.
 - The owner admin area is part of the current shipped state and must be reflected in project docs.
 - The current admin implementation remains on the repo's existing NextAuth Google session flow.
 - Product-spec Supabase Auth + strict RLS is still a follow-up item, not something already completed.
@@ -17,7 +17,7 @@ Date: 2026-04-03
 - `SESSION_SUMMARY.md`
   This handoff document for the next working session.
 - `README.md`
-  Refreshed from the old starter framing to the current Table IA product framing.
+  Refreshed from the old starter framing to the current Gustia product framing.
 
 ## What Was Already Built and Is Now Reflected in Docs
 

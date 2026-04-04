@@ -1,4 +1,4 @@
-# Table IA - Stripe Integration Guide
+# Gustia - Stripe Integration Guide
 **Date:** 2026-04-03
 
 ---
@@ -53,14 +53,14 @@ In Stripe Dashboard -> Products -> Add Product:
 
 ### Product 1: Setup
 ```
-Name: Table IA - Restaurant Setup
+Name: Gustia - Restaurant Setup
 Price: EUR 299.00
 Billing: One-time
 ```
 
 ### Product 2: Monthly plan
 ```
-Name: Table IA - Restaurant Concierge Monthly
+Name: Gustia - Restaurant Concierge Monthly
 Price: EUR 49.00/month
 Billing: Recurring
 Interval: Monthly

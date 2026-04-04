@@ -65,7 +65,7 @@ export default async function AdminBillingPage({
       {hasSuccessState ? (
         <section className="rounded-[28px] border border-emerald-400/20 bg-emerald-500/10 p-5 backdrop-blur">
           <p className="text-sm font-semibold text-white">
-            Payment received! Welcome to TableIA.
+            Payment received! Welcome to Gustia.
           </p>
           <p className="mt-2 text-sm leading-7 text-white/70">
             Your founding setup payment is complete. We&apos;ll use the saved
@@ -80,8 +80,8 @@ export default async function AdminBillingPage({
             Payment canceled. Ready when you are.
           </p>
           <p className="mt-2 text-sm leading-7 text-white/70">
-            No problem. When you&apos;re ready, you can restart the TableIA
-            setup from this page.
+            No problem. When you&apos;re ready, you can restart the Gustia setup
+            from this page.
           </p>
         </section>
       ) : null}
@@ -121,7 +121,7 @@ export default async function AdminBillingPage({
           <p className="mt-2 text-sm text-white/65">
             Payment method:{' '}
             {billing.paymentMethodLast4
-              ? `•••• ${billing.paymentMethodLast4}`
+              ? `â€¢â€¢â€¢â€¢ ${billing.paymentMethodLast4}`
               : 'Not available'}
           </p>
         </article>

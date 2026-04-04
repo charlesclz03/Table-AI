@@ -1,4 +1,4 @@
-# Table IA — UI/Design Skills Reference
+# Gustia â€” UI/Design Skills Reference
 **Date:** 2026-04-03
 **Status:** ACTIVE
 
@@ -6,7 +6,7 @@
 
 ## Design Skills to Reference
 
-When building TableIA UI, Codex should read these skills first:
+When building Gustia UI, Codex should read these skills first:
 
 ### Mobile-First Design
 - `C:\Projects\SKILLS-AGENTS\mobile-design\`
@@ -35,13 +35,13 @@ When building TableIA UI, Codex should read these skills first:
 
 ## Mobile-First Requirements
 
-TableIA is a **mobile-first app**. Every screen must be:
+Gustia is a **mobile-first app**. Every screen must be:
 
-1. **Touch-optimized** — all buttons 44px+ tap targets
-2. **Portrait primary** — assume phone held vertically
-3. **Thumb-friendly** — key actions in bottom 60% of screen
-4. **Fast load** — first content < 2s on 4G
-5. **No hover states** — everything works on tap
+1. **Touch-optimized** â€” all buttons 44px+ tap targets
+2. **Portrait primary** â€” assume phone held vertically
+3. **Thumb-friendly** â€” key actions in bottom 60% of screen
+4. **Fast load** â€” first content < 2s on 4G
+5. **No hover states** â€” everything works on tap
 
 ---
 
@@ -71,7 +71,7 @@ REFERENCE THESE SKILLS BEFORE BUILDING UI:
 - C:\Projects\SKILLS-AGENTS\baseline-ui\
 - C:\Projects\SKILLS-AGENTS\tailwind-patterns\
 
-TableIA is MOBILE-FIRST. All components must be touch-optimized.
+Gustia is MOBILE-FIRST. All components must be touch-optimized.
 ```
 
 ---

@@ -13,7 +13,7 @@ export default async function AdminLoginPage() {
     <div className="mx-auto flex min-h-screen w-full max-w-xl items-center justify-center px-4 py-12">
       <div className="w-full rounded-[36px] border border-white/10 bg-white/6 p-8 text-white shadow-2xl backdrop-blur">
         <p className="text-[11px] uppercase tracking-[0.34em] text-amber-200/70">
-          TableIA Admin
+          Gustia Admin
         </p>
         <h1 className="mt-4 text-4xl font-semibold">
           Welcome back to your dining room dashboard

@@ -1,11 +1,11 @@
-# Table IA — Supabase Setup Guide
+# Gustia â€” Supabase Setup Guide
 **Date:** 2026-04-02
 
 ---
 
 ## Overview
 
-Table IA uses Supabase for:
+Gustia uses Supabase for:
 - Authentication (email/password for restaurant owners)
 - Database (restaurants, conversations, analytics)
 - Storage (menu photos, QR codes)
@@ -16,33 +16,33 @@ Table IA uses Supabase for:
 
 1. Go to supabase.com
 2. Click "New Project"
-3. Name: `table-ia`
-4. Database region: `eu-west-1` (Ireland — closest to Lisbon)
-5. Save the password shown — you'll need it
+3. Name: `gustia`
+4. Database region: `eu-west-1` (Ireland â€” closest to Lisbon)
+5. Save the password shown â€” you'll need it
 
 ---
 
 ## Step 2: Get API Keys
 
-In Supabase Dashboard → Settings → API:
+In Supabase Dashboard â†’ Settings â†’ API:
 
 ```
 SUPABASE_URL=https://[YOUR_PROJECT].supabase.co
 SUPABASE_ANON_KEY=[ANON_KEY]
-SUPABASE_SERVICE_ROLE_KEY=[SERVICE_ROLE_KEY]  ← Keep secret
+SUPABASE_SERVICE_ROLE_KEY=[SERVICE_ROLE_KEY]  â† Keep secret
 ```
 
-Add these to `C:\Projects\TableIA\.env.local`
+Add these to `C:\Projects\Gustia\.env.local`
 
 ---
 
 ## Step 3: Run Database Schema
 
-Go to Supabase Dashboard → SQL Editor → New Query:
+Go to Supabase Dashboard â†’ SQL Editor â†’ New Query:
 
 ```sql
 -- ============================================
--- Table IA Database Schema
+-- Gustia Database Schema
 -- ============================================
 
 -- Restaurants table
@@ -149,10 +149,10 @@ create policy "qr_codes_read" on storage.objects
 
 ## Step 4: Enable Email Auth
 
-In Supabase Dashboard → Authentication → Providers → Email:
+In Supabase Dashboard â†’ Authentication â†’ Providers â†’ Email:
 
-✅ Enable Email provider
-✅ Enable "Confirm email" (recommended) — OR — ❌ Disable for faster signup
+âœ… Enable Email provider
+âœ… Enable "Confirm email" (recommended) â€” OR â€” âŒ Disable for faster signup
 
 For v1 testing: disable confirm email
 
@@ -160,7 +160,7 @@ For v1 testing: disable confirm email
 
 ## Step 5: Connect to App
 
-Add to `C:\Projects\TableIA\.env.local`:
+Add to `C:\Projects\Gustia\.env.local`:
 
 ```env
 NEXT_PUBLIC_SUPABASE_URL=https://[YOUR_PROJECT].supabase.co
@@ -208,8 +208,8 @@ You should see the test restaurant in the table.
 
 If Bidi already has Supabase set up for Freestyla:
 
-1. He can reuse the same Supabase project for Table IA (just add new tables)
-2. OR create a new project — depends on whether he wants them separate
+1. He can reuse the same Supabase project for Gustia (just add new tables)
+2. OR create a new project â€” depends on whether he wants them separate
 
 The auth, storage, and database are all shared, so he only needs one Supabase project.
 

@@ -1,4 +1,4 @@
-# Table IA Technical Spec
+# Gustia Technical Spec
 
 Purpose:
 

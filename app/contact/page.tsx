@@ -6,16 +6,16 @@ export default function ContactPage() {
       <p className="text-[11px] uppercase tracking-[0.34em] text-amber-200/70">
         Contact
       </p>
-      <h1 className="text-4xl font-semibold">Talk to TableIA</h1>
+      <h1 className="text-4xl font-semibold">Talk to Gustia</h1>
       <p className="text-sm leading-7 text-white/72">
-        Want to see how TableIA could fit your restaurant? Reach out and we can
+        Want to see how Gustia could fit your restaurant? Reach out and we can
         walk through the guest experience together.
       </p>
       <Link
-        href="mailto:support@tableia.com"
+        href="mailto:support@gustia.com"
         className="inline-flex rounded-full border border-white/10 bg-black/20 px-5 py-3 text-sm font-semibold text-white transition hover:bg-black/30"
       >
-        support@tableia.com
+        support@gustia.com
       </Link>
     </div>
   )

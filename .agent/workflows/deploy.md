@@ -1,8 +1,8 @@
 ---
-description: Prepare Table IA for a safe GitHub + Vercel release with repo-specific checks, push flow, and rollback guidance.
+description: Prepare Gustia for a safe GitHub + Vercel release with repo-specific checks, push flow, and rollback guidance.
 ---
 
-# /deploy - Table IA Release Workflow
+# /deploy - Gustia Release Workflow
 
 $ARGUMENTS
 
@@ -10,7 +10,7 @@ $ARGUMENTS
 
 ## Purpose
 
-Use this workflow before pushing Table IA to GitHub or releasing to Vercel.
+Use this workflow before pushing Gustia to GitHub or releasing to Vercel.
 
 This workflow is adapted from the stricter Freestyla release discipline, but only keeps commands and checks that actually exist in this repo.
 
@@ -27,7 +27,7 @@ This workflow is adapted from the stricter Freestyla release discipline, but onl
 /deploy rollback
 ```
 
-- `/deploy` or `/deploy production`: run the full release checklist, then push GitHub and deploy to Vercel
+- `/deploy` or `/deploy production`: run the full release checklist, commit and push `main`, then let Vercel auto-deploy from GitHub
 - `/deploy check`: verification only, no push or deploy
 - `/deploy github`: verify, then push `main`
 - `/deploy vercel`: verify, then deploy through Vercel
@@ -57,10 +57,12 @@ This workflow is adapted from the stricter Freestyla release discipline, but onl
   - `OPENAI_API_KEY`
   - `STRIPE_SECRET_KEY`
   - `NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY`
+  - `NEXT_PUBLIC_SITE_URL`
   - `NEXTAUTH_SECRET`
   - `NEXTAUTH_URL`
   - `NEXT_PUBLIC_SUPABASE_URL`
   - `NEXT_PUBLIC_SUPABASE_ANON_KEY`
+- Confirm the production domain still points at `https://www.gustia.wine`
 - Never print or commit secret values
 
 ---
@@ -133,7 +135,7 @@ If the release changed these contracts, update them in the same session:
 
 ### GitHub Path
 
-Use this when the Vercel project auto-deploys from GitHub:
+Use this as the default production path when the Vercel project auto-deploys from GitHub:
 
 ```bash
 git add .
@@ -143,7 +145,7 @@ git push origin main
 
 ### Vercel CLI Path
 
-Use this when you want a direct deploy from the local workspace:
+Use this only when GitHub auto-deploy is unavailable, intentionally bypassed for a hotfix, or you explicitly need a manual Vercel release from the local workspace:
 
 ```powershell
 & "C:/Program Files/nodejs/npx.cmd" vercel pull --yes --environment=production
@@ -152,8 +154,8 @@ Use this when you want a direct deploy from the local workspace:
 
 ### Selection Rule
 
-- Prefer the GitHub push path when the project is already connected to Vercel and you want reproducible history
-- Prefer the CLI path for direct production deploys, hotfixes, or when GitHub auto-deploy is unavailable
+- Default to the GitHub push path for `/deploy` when `main` is the intended release branch and the Vercel project is connected to GitHub
+- Treat the Vercel CLI path as a fallback or emergency path, not the normal release flow
 
 ---
 

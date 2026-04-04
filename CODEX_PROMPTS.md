@@ -1,4 +1,4 @@
-# Table IA — CODEX PROMPTS
+# Gustia â€” CODEX PROMPTS
 **Date:** 2026-04-02
 **Use:** Paste these into Codex to build the app step by step
 
@@ -6,7 +6,7 @@
 
 ## CONTEXT
 
-You are building Table IA — an AI concierge for restaurants. Customers scan QR codes on tables and chat with an AI that knows the restaurant's menu, wines, and recommendations.
+You are building Gustia â€” an AI concierge for restaurants. Customers scan QR codes on tables and chat with an AI that knows the restaurant's menu, wines, and recommendations.
 
 Tech stack: Next.js + Supabase + Stripe + OpenAI GPT-4o mini + Web Speech API
 
@@ -70,10 +70,10 @@ create table conversations (
 ```
 After the demo chat interface, add a simple feedback section:
 
-[👍 Yes, I want this] [👎 No, thanks]
+[ðŸ‘ Yes, I want this] [ðŸ‘Ž No, thanks]
 
-- 👍 "Yes, I want this" → redirects to /admin/payment (Stripe checkout)
-- 👎 "No, thanks" → shows "No problem! Your demo will be available for 7 days."
+- ðŸ‘ "Yes, I want this" â†’ redirects to /admin/payment (Stripe checkout)
+- ðŸ‘Ž "No, thanks" â†’ shows "No problem! Your demo will be available for 7 days."
 
 The demo restaurant data stays in the system for 7 days, then auto-deletes.
 ```
@@ -87,10 +87,10 @@ This is the main customer-facing page. Customers scan a QR code on their table a
 
 DESIGN:
 - Full-screen mobile-first layout
-- Centered pulsing circle avatar (CSS animation: scale 1 → 1.1 → 1, 2s infinite)
+- Centered pulsing circle avatar (CSS animation: scale 1 â†’ 1.1 â†’ 1, 2s infinite)
 - "Plug in headphones for best experience" banner (dismissible, only shows once)
 - Subtitles below avatar (white text on dark background, max 2 lines)
-- Voice input button (microphone icon) — hold to speak or tap to toggle
+- Voice input button (microphone icon) â€” hold to speak or tap to toggle
 - Text input below as fallback
 - Restaurant name and table number at top
 
@@ -129,12 +129,12 @@ Respond in this format:
 ```
 
 CONVERSATION FLOW:
-1. Customer opens page → "Hi! I'm {name}'s concierge. Ask me anything about our menu."
-2. Customer speaks/types → sent to GPT-4o mini with restaurant context
-3. AI responds → displayed as text + spoken aloud
-4. After 3 messages → show "👍 Yes, I want this" / "👎 No, thanks" CTA
-5. 👍 → redirect to /admin/payment
-6. 👎 → "No problem! Your demo will be available for 7 days."
+1. Customer opens page â†’ "Hi! I'm {name}'s concierge. Ask me anything about our menu."
+2. Customer speaks/types â†’ sent to GPT-4o mini with restaurant context
+3. AI responds â†’ displayed as text + spoken aloud
+4. After 3 messages â†’ show "ðŸ‘ Yes, I want this" / "ðŸ‘Ž No, thanks" CTA
+5. ðŸ‘ â†’ redirect to /admin/payment
+6. ðŸ‘Ž â†’ "No problem! Your demo will be available for 7 days."
 
 DEMO MODE:
 - No login required for customer
@@ -177,12 +177,12 @@ Store conversation history in Supabase conversations table.
 Build the admin dashboard at /admin
 
 Pages:
-- /admin/login — Supabase auth email/password
-- /admin/dashboard — restaurant overview
-- /admin/menu — menu editor (CRUD: add/edit/delete items)
-- /admin/quiz — onboarding quiz (7 questions)
-- /admin/qr — QR code download as PDF
-- /admin/settings — restaurant profile
+- /admin/login â€” Supabase auth email/password
+- /admin/dashboard â€” restaurant overview
+- /admin/menu â€” menu editor (CRUD: add/edit/delete items)
+- /admin/quiz â€” onboarding quiz (7 questions)
+- /admin/qr â€” QR code download as PDF
+- /admin/settings â€” restaurant profile
 
 Menu editor:
 - Item name, price, category, description, allergens
@@ -276,26 +276,26 @@ const qrDataUrl = await QRCode.toDataURL(
 
 PDF LAYOUT (using React-PDF or html2canvas + jsPDF):
 ```
-┌─────────────────────────────────┐
-│                                 │
-│      [Restaurant Logo]          │
-│      RESTAURANT NAME            │
-│                                 │
-│   ┌─────────────────────────┐  │
-│   │                         │  │
-│   │      [QR CODE]          │  │
-│   │                         │  │
-│   └─────────────────────────┘  │
-│                                 │
-│  Scan to chat with our          │
-│  AI concierge                   │
-│                                 │
-│  Table: ___                     │
-│  (fill in table number)        │
-│                                 │
-│  🇬🇧 English                   │
-│                                 │
-└─────────────────────────────────┘
+â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”
+â”‚                                 â”‚
+â”‚      [Restaurant Logo]          â”‚
+â”‚      RESTAURANT NAME            â”‚
+â”‚                                 â”‚
+â”‚   â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”  â”‚
+â”‚   â”‚                         â”‚  â”‚
+â”‚   â”‚      [QR CODE]          â”‚  â”‚
+â”‚   â”‚                         â”‚  â”‚
+â”‚   â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜  â”‚
+â”‚                                 â”‚
+â”‚  Scan to chat with our          â”‚
+â”‚  AI concierge                   â”‚
+â”‚                                 â”‚
+â”‚  Table: ___                     â”‚
+â”‚  (fill in table number)        â”‚
+â”‚                                 â”‚
+â”‚  ðŸ‡¬ðŸ‡§ English                   â”‚
+â”‚                                 â”‚
+â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜
 ```
 
 FEATURES:
@@ -304,7 +304,7 @@ FEATURES:
 - Table number field (handwritten after printing)
 - "Scan to chat with our AI concierge" text
 - Language flag
-- Share button → WhatsApp share URL:
+- Share button â†’ WhatsApp share URL:
   `https://wa.me/?text=Scan%20to%20chat%20with%20our%20AI%20concierge%3A%20${qrUrl}`
 - Download as PDF button
 ```

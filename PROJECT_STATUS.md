@@ -1,10 +1,10 @@
-# Table IA Project Status
+# Gustia Project Status
 
 Last updated: 2026-04-03
 
 ## Overview
 
-Table IA is a mobile-first restaurant AI concierge built for QR-to-chat table experiences.
+Gustia is a mobile-first restaurant AI concierge built for QR-to-chat table experiences.
 Customers scan a QR code, choose language and theme, then talk to a restaurant-specific AI that answers from that restaurant's menu and owner-provided context.
 
 The project now includes:
@@ -153,64 +153,64 @@ Current known warning:
 ## Project Folder Structure
 
 ```text
-Table IA/
-├─ app/
-│  ├─ admin/
-│  │  ├─ billing/page.tsx
-│  │  ├─ layout.tsx
-│  │  ├─ login/page.tsx
-│  │  ├─ menu/page.tsx
-│  │  ├─ page.tsx
-│  │  ├─ qr/page.tsx
-│  │  └─ quiz/page.tsx
-│  ├─ api/
-│  │  ├─ admin/
-│  │  │  ├─ billing/portal/route.ts
-│  │  │  ├─ menu/route.ts
-│  │  │  └─ quiz/route.ts
-│  │  ├─ auth/[...nextauth]/route.ts
-│  │  ├─ onboarding/suggestions/route.ts
-│  │  └─ stripe/webhook/route.ts
-│  ├─ chat/
-│  │  └─ [restaurantId]/
-│  │     ├─ onboarding/
-│  │     │  ├─ _layout.tsx
-│  │     │  ├─ language/page.tsx
-│  │     │  └─ theme/page.tsx
-│  │     └─ page.tsx
-│  ├─ dashboard/page.tsx
-│  ├─ globals.css
-│  ├─ layout.tsx
-│  └─ page.tsx
-├─ components/
-│  ├─ admin/
-│  ├─ atoms/
-│  └─ ui/
-├─ docs/
-│  ├─ architecture/
-│  ├─ integrations/
-│  ├─ reference/
-│  ├─ runbooks/
-│  ├─ SPEC.md
-│  ├─ UI_DESIGN.md
-│  ├─ UX_FLOW.md
-│  ├─ V1_LIVE_INTERACTION.md
-│  └─ FEATURE_ASSESSMENT.md
-├─ lib/
-│  ├─ admin/
-│  ├─ billing/
-│  ├─ onboarding/
-│  ├─ supabase/
-│  ├─ stripe/
-│  ├─ auth.ts
-│  ├─ env.ts
-│  └─ prisma.ts
-├─ prisma/
-│  └─ schema.prisma
-├─ SPEC.md
-├─ PRICING_DECISION.md
-├─ README.md
-└─ SESSION_SUMMARY.md
+Gustia/
+â”œâ”€ app/
+â”‚  â”œâ”€ admin/
+â”‚  â”‚  â”œâ”€ billing/page.tsx
+â”‚  â”‚  â”œâ”€ layout.tsx
+â”‚  â”‚  â”œâ”€ login/page.tsx
+â”‚  â”‚  â”œâ”€ menu/page.tsx
+â”‚  â”‚  â”œâ”€ page.tsx
+â”‚  â”‚  â”œâ”€ qr/page.tsx
+â”‚  â”‚  â””â”€ quiz/page.tsx
+â”‚  â”œâ”€ api/
+â”‚  â”‚  â”œâ”€ admin/
+â”‚  â”‚  â”‚  â”œâ”€ billing/portal/route.ts
+â”‚  â”‚  â”‚  â”œâ”€ menu/route.ts
+â”‚  â”‚  â”‚  â””â”€ quiz/route.ts
+â”‚  â”‚  â”œâ”€ auth/[...nextauth]/route.ts
+â”‚  â”‚  â”œâ”€ onboarding/suggestions/route.ts
+â”‚  â”‚  â””â”€ stripe/webhook/route.ts
+â”‚  â”œâ”€ chat/
+â”‚  â”‚  â””â”€ [restaurantId]/
+â”‚  â”‚     â”œâ”€ onboarding/
+â”‚  â”‚     â”‚  â”œâ”€ _layout.tsx
+â”‚  â”‚     â”‚  â”œâ”€ language/page.tsx
+â”‚  â”‚     â”‚  â””â”€ theme/page.tsx
+â”‚  â”‚     â””â”€ page.tsx
+â”‚  â”œâ”€ dashboard/page.tsx
+â”‚  â”œâ”€ globals.css
+â”‚  â”œâ”€ layout.tsx
+â”‚  â””â”€ page.tsx
+â”œâ”€ components/
+â”‚  â”œâ”€ admin/
+â”‚  â”œâ”€ atoms/
+â”‚  â””â”€ ui/
+â”œâ”€ docs/
+â”‚  â”œâ”€ architecture/
+â”‚  â”œâ”€ integrations/
+â”‚  â”œâ”€ reference/
+â”‚  â”œâ”€ runbooks/
+â”‚  â”œâ”€ SPEC.md
+â”‚  â”œâ”€ UI_DESIGN.md
+â”‚  â”œâ”€ UX_FLOW.md
+â”‚  â”œâ”€ V1_LIVE_INTERACTION.md
+â”‚  â””â”€ FEATURE_ASSESSMENT.md
+â”œâ”€ lib/
+â”‚  â”œâ”€ admin/
+â”‚  â”œâ”€ billing/
+â”‚  â”œâ”€ onboarding/
+â”‚  â”œâ”€ supabase/
+â”‚  â”œâ”€ stripe/
+â”‚  â”œâ”€ auth.ts
+â”‚  â”œâ”€ env.ts
+â”‚  â””â”€ prisma.ts
+â”œâ”€ prisma/
+â”‚  â””â”€ schema.prisma
+â”œâ”€ SPEC.md
+â”œâ”€ PRICING_DECISION.md
+â”œâ”€ README.md
+â””â”€ SESSION_SUMMARY.md
 ```
 
 ## Current Implementation Notes

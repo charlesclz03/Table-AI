@@ -1,4 +1,4 @@
-# Table IA
+# Gustia
 
 Mobile-first restaurant AI concierge for QR-based table conversations.
 
@@ -20,16 +20,18 @@ The repo now contains:
 - QR poster studio
 - billing overview with Stripe portal entry
 - public privacy, terms, and contact pages
+- live production site on `https://www.gustia.wine`
 
 The app currently builds successfully.
 
 ## Product Summary
 
-Table IA is designed as a concierge layer for restaurants:
+Gustia is designed as a concierge layer for restaurants:
 
 - customer scans QR at table
 - AI answers questions about menu, wine, allergens, and recommendations
 - owner manages menu, quiz answers, QR posters, and billing
+- live marketing site and demo now publish on `https://www.gustia.wine`
 
 Commercial model:
 
@@ -46,7 +48,7 @@ Commercial model:
 - Prisma
 - Supabase
 - Stripe
-- Web Speech API
+- OpenAI TTS with browser fallback
 
 ## Main App Areas
 
@@ -124,6 +126,7 @@ You will typically need configuration for:
 - Supabase
 - Stripe
 - Prisma / Postgres
+- production site URL (`https://www.gustia.wine`)
 
 See:
 
@@ -155,7 +158,6 @@ See:
 - strict RLS owner isolation is not yet the primary enforcement path
 - menu photo upload and AI parsing are still pending
 - live owner analytics are still limited
-- one existing React hook warning remains in `app/chat/[restaurantId]/page.tsx`
 - local Google login verification still depends on valid Google OAuth env vars and Supabase service-role access
 
 ## Recommended Next Steps
@@ -164,4 +166,3 @@ See:
 2. Add strict RLS for `restaurants`, `conversations`, and analytics tables.
 3. Build menu photo upload and parsing.
 4. Expand analytics and owner insight surfaces.
-5. Resolve the remaining chat lint warning.

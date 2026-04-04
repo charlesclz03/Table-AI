@@ -1,4 +1,4 @@
-# Table IA — CHATGPT ANALYSIS
+# Gustia â€” CHATGPT ANALYSIS
 **Source:** ChatGPT (Gemini comparison in separate file)
 **Date:** 2026-04-02
 **Score:** 134/240 (56%)
@@ -10,15 +10,15 @@
 | Category | ChatGPT | Gemini | Delta |
 |---|---|---|---|
 | Financial | 13/20 | 11/20 | -2 |
-| Revenue Projection | (in financial) | 13/20 | — |
-| Cost Structure | (in financial) | 14/20 | — |
+| Revenue Projection | (in financial) | 13/20 | â€” |
+| Cost Structure | (in financial) | 14/20 | â€” |
 | Marketing | 18/20 (implied) | 18/20 | 0 |
 | Feasibility | 16/20 | 14/20 | +2 |
 | Growth | 15/20 | 16/20 | -1 |
 | Tech Stack | 16/20 | 15/20 | +1 |
 | Virality | 3/20 | 17/20 | **-14** |
 | Competitive Moat | 4/20 | 9/20 | **-5** |
-| Risk Matrix | (in financial) | 13/20 | — |
+| Risk Matrix | (in financial) | 13/20 | â€” |
 | **TOTAL** | **134/240 (56%)** | **185/240 (77%)** | **-51** |
 
 ---
@@ -35,7 +35,7 @@ Gemini: Proprietary conversation data + POS integration lock-in over time. Score
 
 ### Financial (11 vs 13)
 ChatGPT: Strong margin (~80%), break-even at 3 clients. Score: 13/20.
-Gemini: Flat €29 model has existential risk from uncapped AI inference at scale. Score: 11/20.
+Gemini: Flat â‚¬29 model has existential risk from uncapped AI inference at scale. Score: 11/20.
 
 ---
 
@@ -56,13 +56,13 @@ Gemini is MORE OPTIMISTIC on churn management (lower churn assumption).
 
 ## WHERE THEY AGREE
 
-✅ Pre-built demo is the strongest sales lever
-✅ Break-even is 3 clients (very low risk)
-✅ Strong unit economics (~80% margin)
-✅ OpenClaw automation is essential for CAC
-✅ ASAE/allergen risk is real
-✅ Tech stack is solid and proven
-✅ Market timing is favorable (QR code adoption, labor shortage)
+âœ… Pre-built demo is the strongest sales lever
+âœ… Break-even is 3 clients (very low risk)
+âœ… Strong unit economics (~80% margin)
+âœ… OpenClaw automation is essential for CAC
+âœ… ASAE/allergen risk is real
+âœ… Tech stack is solid and proven
+âœ… Market timing is favorable (QR code adoption, labor shortage)
 
 ---
 
@@ -79,20 +79,20 @@ Both agree: must continuously add new clients to offset churn. The business work
 
 ## PRICING MODEL CHANGE REQUIRED
 
-Both analyses flag the flat €29 unlimited model as risky. Recommended fix:
+Both analyses flag the flat â‚¬29 unlimited model as risky. Recommended fix:
 
-**Option A:** €19 base + usage cap (e.g., 2,000 queries/month)
-**Option B:** €29/month with hard cap (same 2,000 queries, overage = €0.01/query)
+**Option A:** â‚¬19 base + usage cap (e.g., 2,000 queries/month)
+**Option B:** â‚¬29/month with hard cap (same 2,000 queries, overage = â‚¬0.01/query)
 
 ---
 
 ## RECOMMENDED ACTION
 
-1. **Adopt Gemini's pricing concern** — add usage cap before first client
-2. **Adopt Gemini's ASAE guardrails** — AI must only retrieve, never generate
-3. **Adopt ChatGPT's conservative revenue model** — 3 clients month 1 is realistic
-4. **Build hybrid UI** (buttons + carousels, not blank chat box) — both imply this
-5. **Implement referral program** (Give 1 Get 1) — from Gemini's virality section
+1. **Adopt Gemini's pricing concern** â€” add usage cap before first client
+2. **Adopt Gemini's ASAE guardrails** â€” AI must only retrieve, never generate
+3. **Adopt ChatGPT's conservative revenue model** â€” 3 clients month 1 is realistic
+4. **Build hybrid UI** (buttons + carousels, not blank chat box) â€” both imply this
+5. **Implement referral program** (Give 1 Get 1) â€” from Gemini's virality section
 
 ---
 

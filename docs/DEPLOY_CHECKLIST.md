@@ -1,8 +1,8 @@
-# Table IA Deploy Checklist
+# Gustia Deploy Checklist
 
 Purpose:
 
-- define the release path for pushing Table IA to GitHub and deploying it to Vercel
+- define the release path for pushing Gustia to GitHub and deploying it to Vercel
 
 Audience:
 
@@ -34,7 +34,7 @@ Related docs:
 1. Read `AGENTS.md`
 2. Follow `.agent/workflows/deploy.md`
 3. Run the verification commands in `docs/runbooks/verification.md`
-4. Push GitHub or deploy directly to Vercel only after all required checks pass
+4. Push `main` to GitHub after all required checks pass and let Vercel auto-deploy; use direct Vercel CLI deploys only as a fallback
 
 ## Required Verification
 
@@ -64,6 +64,7 @@ npm run test:e2e
 - `git fetch` has been run and branch state is understood
 - any `prisma/schema.prisma` change has a safe production migration plan
 - required Vercel environment variables are present
+- the production domain remains `https://www.gustia.wine`
 - the relevant docs set has been synchronized for this release
 - secrets are not logged, committed, or pasted into docs
 
@@ -94,6 +95,7 @@ Release is not ready if the code changed but the canonical docs still describe t
 - `OPENAI_API_KEY`
 - `STRIPE_SECRET_KEY`
 - `NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY`
+- `NEXT_PUBLIC_SITE_URL`
 - `NEXTAUTH_SECRET`
 - `NEXTAUTH_URL`
 - `NEXT_PUBLIC_SUPABASE_URL`
@@ -101,7 +103,7 @@ Release is not ready if the code changed but the canonical docs still describe t
 
 ## GitHub Release Path
 
-Use this path when Vercel auto-deploys from the GitHub repository:
+Use this as the default path when Vercel auto-deploys from the GitHub repository:
 
 ```bash
 git add .
@@ -111,7 +113,7 @@ git push origin main
 
 ## Direct Vercel CLI Path
 
-Use this path when deploying directly from the local workspace:
+Use this path only when GitHub auto-deploy is unavailable, intentionally bypassed for a hotfix, or you explicitly need a manual release from the local workspace:
 
 ```powershell
 & "C:/Program Files/nodejs/npx.cmd" vercel pull --yes --environment=production

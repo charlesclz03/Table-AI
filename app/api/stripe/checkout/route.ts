@@ -88,7 +88,7 @@ export async function POST(request: Request) {
           price_data: {
             currency: 'eur',
             product_data: {
-              name: `TableIA setup for ${restaurantName}`,
+              name: `Gustia setup for ${restaurantName}`,
               description:
                 'Founding setup fee covering onboarding, customization, and launch preparation.',
             },
@@ -100,9 +100,9 @@ export async function POST(request: Request) {
           price_data: {
             currency: 'eur',
             product_data: {
-              name: `TableIA monthly subscription for ${restaurantName}`,
+              name: `Gustia monthly subscription for ${restaurantName}`,
               description:
-                'Ongoing TableIA concierge access after the included first month.',
+                'Ongoing Gustia concierge access after the included first month.',
             },
             recurring: {
               interval: 'month',

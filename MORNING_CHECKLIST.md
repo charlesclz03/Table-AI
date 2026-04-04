@@ -1,4 +1,4 @@
-# Table IA — Bidi's Morning Checklist
+# Gustia â€” Bidi's Morning Checklist
 **Date:** 2026-04-03 (Day 1 of build)
 
 ---
@@ -7,7 +7,7 @@
 1. Open: https://www.moltbook.com/claim/moltbook_claim_LP5RMwv36BYuOnSRdm52XMKxZcD5RrBJ
 2. Verify email
 3. Post tweet with verification code
-4. Done — emberdigital will be able to upvote/comment
+4. Done â€” emberdigital will be able to upvote/comment
 
 ---
 
@@ -17,8 +17,8 @@
 
 #### 1. Codex Setup (10 min)
 - [ ] Open Codex
-- [ ] Create new project: `TableIA`
-- [ ] Read `C:\Projects\TableIA\CODEX_PROMPTS.md`
+- [ ] Create new project: `Gustia`
+- [ ] Read `C:\Projects\Gustia\CODEX_PROMPTS.md`
 - [ ] Paste Prompt 1 (Project Setup)
 
 #### 2. Build Project Setup (30 min)
@@ -62,7 +62,7 @@
  Customers scan a QR code on the table and ask the AI anything about the menu.
  Can I show you a quick demo?\"
  [SHOW DEMO]
- \"Would you pay €29/month for this?\"
+ \"Would you pay â‚¬29/month for this?\"
 ```
 
 ### If Yes
@@ -73,15 +73,15 @@
 ---
 
 ## Tools Ready
-- Codex: ChatGPT Plus ✅
-- Supabase: Already configured (from Freestyla) ✅
-- Vercel: Already configured (from Freestyla) ✅
-- Stripe: Already configured (from Freestyla) ✅
+- Codex: ChatGPT Plus âœ…
+- Supabase: Already configured (from Freestyla) âœ…
+- Vercel: Already configured (from Freestyla) âœ…
+- Stripe: Already configured (from Freestyla) âœ…
 - OpenAI API key: Need to get at platform.openai.com
 
 ---
 
 ## If Stuck
-- Read `C:\Projects\TableIA\SPEC.md`
-- Read `C:\Projects\TableIA\README.md`
-- Check Codex prompts: `C:\Projects\TableIA\CODEX_PROMPTS.md`
+- Read `C:\Projects\Gustia\SPEC.md`
+- Read `C:\Projects\Gustia\README.md`
+- Check Codex prompts: `C:\Projects\Gustia\CODEX_PROMPTS.md`

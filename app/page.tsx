@@ -74,7 +74,7 @@ export default function HomePage() {
             </h1>
 
             <p className="mt-5 max-w-2xl text-base leading-8 text-white/70 sm:text-lg">
-              TableIA brings the warmth of a great Lisbon dining room into every
+              Gustia brings the warmth of a great Lisbon dining room into every
               guest conversation, helping visitors discover the right dish, the
               right wine, and the confidence to order more.
             </p>
@@ -217,7 +217,7 @@ export default function HomePage() {
             more.
           </h2>
           <p className="mt-4 text-sm leading-7 text-white/68">
-            TableIA is designed for restaurant owners who want every guest to
+            Gustia is designed for restaurant owners who want every guest to
             feel looked after, especially during the busiest part of service.
           </p>
         </div>
@@ -303,7 +303,7 @@ export default function HomePage() {
       </section>
 
       <footer className="relative mt-10 flex flex-col gap-4 border-t border-white/10 pt-6 text-sm text-white/58 sm:flex-row sm:items-center sm:justify-between">
-        <p>TableIA for restaurant owners</p>
+        <p>Gustia for restaurant owners</p>
         <div className="flex flex-wrap items-center gap-4">
           <Link href="/privacy" className="transition hover:text-white">
             Privacy Policy

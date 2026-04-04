@@ -37,10 +37,42 @@ Related docs:
 
 ## Entries
 
+### 2026-04-04 - OpenAI TTS Reply Upgrade
+
+- added an `app/api/tts` route that uses the existing OpenAI server env wiring to synthesize concierge reply audio with the `tts-1-hd` model and `onyx` voice
+- replaced the chat page's primary Web Speech reply path with streamed MP3 playback plus cleanup for cancellation, replay interruption, and audio URL revocation
+- kept a silent browser speech fallback for reply playback if the TTS request or audio playback fails, and updated the product docs to describe the new voice path
+- verified `npm run type-check`, `npm run lint`, and `npm run build` all pass; runtime smoke on `/api/tts` reached the route but the current OpenAI account returned a quota `429`, so natural-audio playback still needs live confirmation once billing/quota is restored
+
+### 2026-04-04 - Gustia Domain Go-Live Deploy Prep
+
+- confirmed the public production site is live at `https://www.gustia.wine`
+- updated repo docs, env guidance, and deploy checklists so future releases treat `gustia.wine` as the canonical production domain
+- re-ran `npm run lint`, `npm run build`, and `npm run type-check`, then deployed production through the Vercel CLI
+- verified deployment `dpl_FzNTKtpWkXdKeBPBPPLuWR9uten3` is ready and aliased to `https://gustia.wine` and `https://www.gustia.wine`
+- confirmed `200` responses with Gustia branding on `/`, `/chat/demo`, `/admin`, `/privacy`, and `/terms`
+
+### 2026-04-04 - Deploy Contract Corrected to GitHub-First
+
+- updated `.agent/workflows/deploy.md` and `docs/DEPLOY_CHECKLIST.md` so `/deploy` now explicitly defaults to commit-plus-push on `main` and relies on Vercel auto-deploy from GitHub
+- kept the direct Vercel CLI path documented only as a fallback or emergency release path
+
+### 2026-04-04 - Gustia Rename Sweep
+
+- renamed the product across app code, docs, package metadata, onboarding, admin, billing, legal, and marketing copy to Gustia
+- updated repo-visible identifiers including the npm package name, session storage keys, checkout copy, and brand-linked contact strings so the codebase matches the new name end-to-end
+- verified a clean residue search for old branding in tracked source/docs and confirmed `npm run build` passes after the rename
+
+### 2026-04-04 - Slide-Based Mobile Onboarding Refresh
+
+- rebuilt the guest onboarding flow into welcome, language, theme, and enter-chat slides with vertical motion transitions and bottom progress dots
+- kept the existing sessionStorage-based language/theme persistence so `/chat/demo` still resolves into chat with the selected preferences
+- verified `npm run build` passes and manually checked the `/chat/demo` flow at 375px width through onboarding into chat
+
 ### 2026-04-04 - Legal Pages and Footer Alignment
 
-- replaced the placeholder `/privacy` and `/terms` pages with TableIA-specific legal copy and a shared glassmorphism legal shell
-- aligned public support contact details to `support@tableia.com`
+- replaced the placeholder `/privacy` and `/terms` pages with Gustia-specific legal copy and a shared glassmorphism legal shell
+- aligned public support contact details to `support@gustia.com`
 - expanded the homepage footer labels to `Privacy Policy` and `Terms of Service`
 
 ### 2026-04-04 - File-List Reporting Removed
@@ -66,6 +98,6 @@ Related docs:
 - updated `app/chat/[restaurantId]/onboarding/_layout.tsx` so the wine sphere visibly animates while speaking
 - tightened `app/api/chat/route.ts` and chat message handling so the concierge greeting only appears once at the start of a conversation
 - added `tsconfig.typecheck.json` and updated `package.json` so `npm run type-check` works reliably alongside generated Next.js route types
-- installed a Table IA-specific `.agent/workflows/deploy.md` adapted from the Freestyla release process and synchronized deployment docs
+- installed a Gustia-specific `.agent/workflows/deploy.md` adapted from the Freestyla release process and synchronized deployment docs
 - released commit `f7ba097` (`chore(release): owner onboarding and mobile concierge polish`) to GitHub and deployed production on Vercel
 - verified `200` responses on `/`, `/chat/demo`, `/admin/login`, `/contact`, `/privacy`, and `/terms`

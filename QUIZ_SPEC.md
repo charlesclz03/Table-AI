@@ -1,4 +1,4 @@
-# Table IA — Quiz + System Prompt Spec
+# Gustia â€” Quiz + System Prompt Spec
 **Date:** 2026-04-02
 
 ---
@@ -58,11 +58,11 @@ SECRET DISH (what tourists don't know to order):
 {secret_dish}
 
 FAQ - Answer exactly as stated:
-Q: "{faq_1}" → A: [answer from menu + {allergen_notes}]
-Q: "{faq_2}" → A: [answer from menu]
-Q: "{faq_3}" → A: [answer from menu]
-Q: "{faq_4}" → A: [answer from menu]
-Q: "{faq_5}" → A: [answer from menu]
+Q: "{faq_1}" â†’ A: [answer from menu + {allergen_notes}]
+Q: "{faq_2}" â†’ A: [answer from menu]
+Q: "{faq_3}" â†’ A: [answer from menu]
+Q: "{faq_4}" â†’ A: [answer from menu]
+Q: "{faq_5}" â†’ A: [answer from menu]
 
 RESTAURANT STORY:
 {story}
@@ -104,7 +104,7 @@ RULES - Never break:
    - Subtitles always shown
 
 7. ORDERING
-   - Don't take orders — recommend only
+   - Don't take orders â€” recommend only
    - "I'll note that for the waiter" if they try to order
 ```
 
@@ -114,30 +114,30 @@ RULES - Never break:
 
 ### Question 1: Signature Dish
 ```
-What's your signature dish — the one dish you're famous for?
+What's your signature dish â€” the one dish you're famous for?
 [Text input]
-Example: "Our grilled octopus with sweet potato purée"
+Example: "Our grilled octopus with sweet potato purÃ©e"
 ```
 
 ### Question 2: Top Recommendation
 ```
 If someone is completely unsure what to order, what do you always tell them to get?
 [Text input]
-Example: "The sea bass — it's flown in fresh every morning"
+Example: "The sea bass â€” it's flown in fresh every morning"
 ```
 
 ### Question 3: Wine Pairing
 ```
 Which wine pairs best with your signature meat dish?
 [Text input]
-Example: "The 2019 Douro red — it cuts through the richness perfectly"
+Example: "The 2019 Douro red â€” it cuts through the richness perfectly"
 ```
 
 ### Question 4: Secret Dish
 ```
 What's a dish most tourists don't know to order but absolutely should?
 [Text input]
-Example: "The percebes — they're rare, expensive, and incredible"
+Example: "The percebes â€” they're rare, expensive, and incredible"
 ```
 
 ### Question 5: Allergens
@@ -151,7 +151,7 @@ Example: "The cataplana has shellfish, the cataplana has gluten from the bread"
 ```
 What's the story behind your signature dish or your restaurant?
 [Text input]
-Example: "It was my grandmother's recipe from the Azores — we've been making it for 40 years"
+Example: "It was my grandmother's recipe from the Azores â€” we've been making it for 40 years"
 ```
 
 ### Question 7: FAQs

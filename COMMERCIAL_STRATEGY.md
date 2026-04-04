@@ -1,4 +1,4 @@
-# Table IA - Commercial Strategy
+# Gustia - Commercial Strategy
 **Date:** 2026-04-03
 **Status:** Locked operating model for the current cash-first phase
 
@@ -6,7 +6,7 @@
 
 ## Core Offer
 
-Table IA is not being sold as cheap self-serve SaaS.
+Gustia is not being sold as cheap self-serve SaaS.
 
 It is being sold as a **founder-installed restaurant concierge**:
 
@@ -91,7 +91,7 @@ Avoid for now:
 
 Do not expand the promise during sales.
 
-Table IA v1 is:
+Gustia v1 is:
 
 - menu Q&A
 - recommendations
@@ -99,7 +99,7 @@ Table IA v1 is:
 - hours / practical FAQ
 - multilingual assistance
 
-Table IA v1 is not:
+Gustia v1 is not:
 
 - allergy authority
 - order automation

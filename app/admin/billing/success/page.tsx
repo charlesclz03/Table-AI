@@ -7,7 +7,7 @@ export default function BillingSuccessPage() {
   return (
     <AdminPageShell
       eyebrow="Billing"
-      title="Payment received! Welcome to TableIA."
+      title="Payment received! Welcome to Gustia."
       description="Your founding setup payment is in. We can now move into onboarding, customization, and launch."
     >
       <section className="rounded-[28px] border border-emerald-400/20 bg-emerald-500/10 p-6 backdrop-blur">
@@ -18,7 +18,7 @@ export default function BillingSuccessPage() {
             </div>
             <div className="space-y-2">
               <p className="text-lg font-semibold text-white">
-                Payment received! Welcome to TableIA.
+                Payment received! Welcome to Gustia.
               </p>
               <p className="max-w-2xl text-sm leading-7 text-white/70">
                 Your restaurant is ready for the next onboarding steps. Head
