@@ -35,6 +35,13 @@ Related docs:
 - use this file for release history, `docs/progress-log.md` for durable baseline truth, and `docs/session-log.md` for session chronology
 - until formal semantic versioning starts, date-keyed entries are acceptable
 
+## 2026-04-04 - Google Maps Concierge Training
+
+- **ADMIN**: Added `/admin/onboarding` so owners can import a restaurant from Google Maps, tune concierge identity fields, and preview generated markdown before saving.
+- **DATA**: Added Google Places-backed place import, optional website email scraping, and optional OpenAI-powered photo scanning so restaurant details, menu clues, and review context can seed the concierge draft quickly.
+- **CONTENT**: Added canonical `lib/concierge/templates.ts` generation for `soul.md` and `rules.md`, with save-back into `restaurants.soul_md`, `restaurants.rules_md`, `restaurants.menu_json`, and `quiz_answers.concierge_training`.
+- **VERIFY**: Re-ran `npm run type-check`, `npm run lint`, and `npm run build` after wiring the new admin import flow.
+
 ## 2026-04-04 - Auth Before Stripe Checkout
 
 - **BILLING**: Reworked the public pricing flow so plan selection now starts on `/`, continues through `/auth/login`, and hands authenticated owners into `/auth/checkout` before Stripe is opened.

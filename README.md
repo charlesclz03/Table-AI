@@ -18,6 +18,7 @@ The repo now contains:
 - public plan selection now signs the owner in before Stripe so Checkout stays tied to the right account email
 - first-login owner and restaurant auto-provisioning through Supabase when the owner SQL migration and service-role env are configured
 - menu editor with AI menu photo import
+- concierge training workspace with Google Maps import and generated markdown
 - onboarding quiz editor
 - QR poster studio
 - billing overview with Stripe portal entry
@@ -35,6 +36,7 @@ Gustia is designed as a concierge layer for restaurants:
 - customer scans QR at table
 - AI answers questions about menu, wine, allergens, and recommendations
 - owner manages menu, quiz answers, QR posters, and billing
+- owner can bootstrap a demo by importing Google Maps data and generating `soul.md` plus `rules.md`
 - live marketing site and demo now publish on `https://www.gustia.wine`
 
 Commercial model:
@@ -72,6 +74,8 @@ Commercial model:
   Dashboard home with conversation summary, top questions, and quick actions.
 - `/admin/menu`
   Menu CRUD editor for `menu_json`.
+- `/admin/onboarding`
+  Google Maps import, concierge training editor, and markdown generation for fast demos.
 - `/admin/quiz`
   Quiz editor for owner answers and FAQs.
 - `/admin/qr`

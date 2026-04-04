@@ -7,6 +7,7 @@ import { getSupabaseServerComponentClient } from '@/lib/supabase/server'
 import { ensureServerOnly } from '@/lib/server-only'
 import {
   EMPTY_QUIZ_ANSWERS,
+  type AdminConciergeTrainingData,
   type AdminMenuItem,
   type AdminOwnerRecord,
   type AdminQuizAnswers,
@@ -172,6 +173,31 @@ export function normalizeQuizAnswers(
     ...EMPTY_QUIZ_ANSWERS,
     ...(quizAnswers || {}),
   }
+}
+
+async function getExistingQuizAnswers(restaurantId: string) {
+  const client = await getAdminSupabaseClient()
+
+  if (!client) {
+    throw new Error('Supabase is not configured.')
+  }
+
+  const { data, error } = await client
+    .from('restaurants')
+    .select('quiz_answers')
+    .eq('id', restaurantId)
+    .maybeSingle()
+
+  if (error) {
+    throw new Error(error.message)
+  }
+
+  const quizAnswers =
+    data && typeof data === 'object' && 'quiz_answers' in data
+      ? (data.quiz_answers as Partial<AdminQuizAnswers> | null)
+      : null
+
+  return quizAnswers || null
 }
 
 function normalizeConversationMessages(
@@ -361,8 +387,10 @@ export async function updateRestaurantQuiz(
     throw new Error('Supabase is not configured.')
   }
 
+  const existingQuizAnswers = await getExistingQuizAnswers(restaurantId)
   const payload = {
     ...EMPTY_QUIZ_ANSWERS,
+    ...(existingQuizAnswers || {}),
     ...quizAnswers,
     completed_at: new Date().toISOString(),
   }
@@ -377,6 +405,154 @@ export async function updateRestaurantQuiz(
   }
 
   return payload
+}
+
+interface UpdateRestaurantConciergeTrainingInput {
+  contactEmail: string
+  name: string
+  rulesMd: string
+  soulMd: string
+  menuItems: AdminMenuItem[]
+  conciergeTraining: AdminConciergeTrainingData
+}
+
+function normalizeConciergeTrainingData(
+  training: AdminConciergeTrainingData
+): AdminConciergeTrainingData {
+  return {
+    google_maps_url: training.google_maps_url?.trim() || undefined,
+    google_place_id: training.google_place_id?.trim() || undefined,
+    address: training.address?.trim() || undefined,
+    phone: training.phone?.trim() || undefined,
+    contact_email: training.contact_email?.trim() || undefined,
+    website_url: training.website_url?.trim() || undefined,
+    opening_hours: Array.isArray(training.opening_hours)
+      ? training.opening_hours.map((entry) => entry.trim()).filter(Boolean)
+      : [],
+    personality_description:
+      training.personality_description?.trim() || undefined,
+    greeting_message: training.greeting_message?.trim() || undefined,
+    languages_supported: Array.isArray(training.languages_supported)
+      ? training.languages_supported
+          .map((entry) => entry.trim())
+          .filter(Boolean)
+      : [],
+    signature_dishes: Array.isArray(training.signature_dishes)
+      ? training.signature_dishes.map((entry) => entry.trim()).filter(Boolean)
+      : [],
+    wine_pairings: Array.isArray(training.wine_pairings)
+      ? training.wine_pairings.map((entry) => entry.trim()).filter(Boolean)
+      : [],
+    faq_entries: Array.isArray(training.faq_entries)
+      ? training.faq_entries
+          .map((entry) => ({
+            question: entry.question?.trim() || '',
+            answer: entry.answer?.trim() || '',
+          }))
+          .filter((entry) => entry.question || entry.answer)
+      : [],
+    recommendation_notes: Array.isArray(training.recommendation_notes)
+      ? training.recommendation_notes
+          .map((entry) => entry.trim())
+          .filter(Boolean)
+      : [],
+    menu_knowledge: Array.isArray(training.menu_knowledge)
+      ? training.menu_knowledge.map((entry) => entry.trim()).filter(Boolean)
+      : [],
+    review_highlights: Array.isArray(training.review_highlights)
+      ? training.review_highlights.map((entry) => entry.trim()).filter(Boolean)
+      : [],
+    photo_urls: Array.isArray(training.photo_urls)
+      ? training.photo_urls.map((entry) => entry.trim()).filter(Boolean)
+      : [],
+    voice_selection: training.voice_selection?.trim() || undefined,
+    theme_selection: training.theme_selection?.trim() || undefined,
+    menu_import_notes: Array.isArray(training.menu_import_notes)
+      ? training.menu_import_notes.map((entry) => entry.trim()).filter(Boolean)
+      : [],
+    imported_at: training.imported_at?.trim() || new Date().toISOString(),
+  }
+}
+
+export async function updateRestaurantConciergeTraining(
+  restaurantId: string,
+  input: UpdateRestaurantConciergeTrainingInput
+) {
+  const client = await getAdminSupabaseClient()
+
+  if (!client) {
+    throw new Error('Supabase is not configured.')
+  }
+
+  const existingQuizAnswers = await getExistingQuizAnswers(restaurantId)
+  const conciergeTraining = normalizeConciergeTrainingData(
+    input.conciergeTraining
+  )
+  const faqAnswers = conciergeTraining.faq_entries || []
+  const recommendationNotes = conciergeTraining.recommendation_notes || []
+  const signatureDishes = conciergeTraining.signature_dishes || []
+  const winePairings = conciergeTraining.wine_pairings || []
+  const menuKnowledge = conciergeTraining.menu_knowledge || []
+  const reviewHighlights = conciergeTraining.review_highlights || []
+
+  const nextQuizAnswers: AdminQuizAnswers = {
+    ...EMPTY_QUIZ_ANSWERS,
+    ...(existingQuizAnswers || {}),
+    signature_dish: signatureDishes.join(' | '),
+    recommendation:
+      recommendationNotes[0] ||
+      signatureDishes[0] ||
+      EMPTY_QUIZ_ANSWERS.recommendation,
+    wine_pairing: winePairings.join(' | '),
+    secret_dish:
+      signatureDishes[1] ||
+      recommendationNotes[1] ||
+      EMPTY_QUIZ_ANSWERS.secret_dish,
+    allergen_notes:
+      menuKnowledge.find((entry) => /allerg/i.test(entry)) ||
+      'If a guest asks about allergens, confirm with the staff before promising anything.',
+    story:
+      conciergeTraining.personality_description ||
+      reviewHighlights[0] ||
+      EMPTY_QUIZ_ANSWERS.story,
+    faq_1: faqAnswers[0]
+      ? `${faqAnswers[0].question}: ${faqAnswers[0].answer}`
+      : EMPTY_QUIZ_ANSWERS.faq_1,
+    faq_2: faqAnswers[1]
+      ? `${faqAnswers[1].question}: ${faqAnswers[1].answer}`
+      : EMPTY_QUIZ_ANSWERS.faq_2,
+    faq_3: faqAnswers[2]
+      ? `${faqAnswers[2].question}: ${faqAnswers[2].answer}`
+      : EMPTY_QUIZ_ANSWERS.faq_3,
+    faq_4: faqAnswers[3]
+      ? `${faqAnswers[3].question}: ${faqAnswers[3].answer}`
+      : EMPTY_QUIZ_ANSWERS.faq_4,
+    faq_5: faqAnswers[4]
+      ? `${faqAnswers[4].question}: ${faqAnswers[4].answer}`
+      : EMPTY_QUIZ_ANSWERS.faq_5,
+    concierge_training: conciergeTraining,
+    completed_at: new Date().toISOString(),
+  }
+
+  const { data, error } = await client
+    .from('restaurants')
+    .update({
+      name: input.name.trim(),
+      email: input.contactEmail.trim(),
+      menu_json: { items: normalizeMenuItems(input.menuItems) },
+      quiz_answers: nextQuizAnswers,
+      rules_md: input.rulesMd,
+      soul_md: input.soulMd,
+    })
+    .eq('id', restaurantId)
+    .select('*')
+    .single()
+
+  if (error) {
+    throw new Error(error.message)
+  }
+
+  return data as AdminRestaurantRecord
 }
 
 function formatBillingDate(dateValue?: string | null) {

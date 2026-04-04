@@ -6,6 +6,7 @@ import {
   BarChart3,
   ClipboardList,
   LayoutDashboard,
+  MapPinned,
   MenuSquare,
   QrCode,
   Receipt,
@@ -24,6 +25,11 @@ const navigation = [
     href: '/admin/analytics',
     label: 'Analytics',
     icon: BarChart3,
+  },
+  {
+    href: '/admin/onboarding',
+    label: 'Training',
+    icon: MapPinned,
   },
   {
     href: '/admin/menu',

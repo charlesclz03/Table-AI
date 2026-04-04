@@ -37,6 +37,13 @@ Related docs:
 
 ## Entries
 
+### 2026-04-04 - Google Maps Concierge Training Flow
+
+- added `/admin/onboarding` plus `/api/admin/onboarding` and `/api/admin/onboarding/import` so owners can paste a Google Maps URL, import place data, edit concierge fields, and save generated `soul.md` plus `rules.md`
+- introduced Google Places-backed restaurant resolution with optional website email scraping, optional OpenAI-powered photo menu extraction, and fallback synthesis for recommendations, FAQs, theme, and voice defaults
+- kept the existing Supabase restaurant model intact by storing the imported concierge bootstrap metadata under `quiz_answers.concierge_training`, while still updating top-level `name`, `email`, `menu_json`, `soul_md`, and `rules_md`
+- verified `npm run type-check`, `npm run lint`, and `npm run build` all pass after wiring the new admin flow
+
 ### 2026-04-04 - Pricing Auth Gate Before Stripe
 
 - audited the landing-to-billing flow and found two main mismatches: the public pricing CTAs were still sending owners to contact-style entry points, and Stripe Checkout still used the legacy `EUR 299` activation amount

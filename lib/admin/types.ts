@@ -32,7 +32,37 @@ export interface AdminQuizAnswers {
   faq_3: string
   faq_4: string
   faq_5: string
+  concierge_training?: AdminConciergeTrainingData
   completed_at?: string
+}
+
+export interface AdminConciergeFaqEntry {
+  question: string
+  answer: string
+}
+
+export interface AdminConciergeTrainingData {
+  google_maps_url?: string
+  google_place_id?: string
+  address?: string
+  phone?: string
+  contact_email?: string
+  website_url?: string
+  opening_hours?: string[]
+  personality_description?: string
+  greeting_message?: string
+  languages_supported?: string[]
+  signature_dishes?: string[]
+  wine_pairings?: string[]
+  faq_entries?: AdminConciergeFaqEntry[]
+  recommendation_notes?: string[]
+  menu_knowledge?: string[]
+  review_highlights?: string[]
+  photo_urls?: string[]
+  voice_selection?: string
+  theme_selection?: string
+  menu_import_notes?: string[]
+  imported_at?: string
 }
 
 export interface AdminRestaurantRecord {

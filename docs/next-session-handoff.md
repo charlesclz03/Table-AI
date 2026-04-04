@@ -60,6 +60,7 @@ Related docs:
 - the owner menu editor now includes an `Upload Photo` flow backed by `/api/menu/parse`, where OpenAI `gpt-4o` extracts menu items from uploaded menu images or PDFs before owner review and save
 - the owner dashboard now includes `/admin/changelog`, backed by `lib/changelog.ts` and `/api/changelog`, with a latest-version badge in the admin navigation
 - the owner dashboard now includes `/admin/analytics`, backed by `/api/admin/analytics`, with live conversation counts, top questions, language mix, peak usage windows, and recommendation trends
+- the owner admin now includes `/admin/onboarding`, backed by `/api/admin/onboarding` and `/api/admin/onboarding/import`, so Bidi can paste a Google Maps URL, review editable concierge fields, and save generated `soul_md` plus `rules_md`
 - `/api/chat` now persists full conversation snapshots plus anonymized rows in `conversation_analytics`, so owner analytics can refresh from real guest usage without storing guest identities
 - tracked app/docs branding is now clean of residual pre-launch product-name references, and the app ships a branded browser tab icon
 - the current release passed `npm run type-check`, `npm run lint`, `npm run build`, and `npm run test` before production deploy
@@ -82,6 +83,7 @@ Related docs:
 - treat `README.md` and `docs/README.md` as part of the default release doc review whenever product scope, setup, commands, or operating guidance changed
 - keep `/deploy` and `docs/DEPLOY_CHECKLIST.md` aligned with the current reporting contract so deploy summaries stay concise and non-redundant
 - live-smoke the new `/admin/menu` photo import with a real owner account and a real menu PDF in production
+- live-smoke `/admin/onboarding` with a real Google Maps restaurant URL in production and confirm that place details, editable fields, and generated markdown save correctly
 - live-smoke the onboarding theme voice previews and new orbital swipe selector on a real mobile device, and confirm the per-theme voice mapping feels distinct enough in production
 - apply the `conversation_analytics` SQL changes from `docs/reference/supabase-owner-auth-migration.sql` in the live Supabase project before expecting language and recommendation analytics in production
 - live-smoke `/admin/analytics` with a real owner account after the SQL update so the dashboard is validated against real concierge traffic

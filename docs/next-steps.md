@@ -32,5 +32,6 @@ Related docs:
 - remove or archive example artifacts when they no longer reflect the baseline starter
 - tighten verification automation if new integrations or workflows are added
 - apply and verify the live Supabase owner-auth migration in production, including Auth provider redirects and RLS behavior
+- live-smoke the Google Maps concierge-training import with a real restaurant URL and confirm photo-based menu extraction quality against a few restaurant profiles
 - replace the current QR image service dependency with a first-party generator if offline or stricter control is required
 - fix the remaining `react-hooks/exhaustive-deps` warning in `app/chat/[restaurantId]/page.tsx`

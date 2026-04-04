@@ -21,7 +21,7 @@ Source of truth scope:
 
 Last updated:
 
-- 2026-04-03
+- 2026-04-04
 
 Related docs:
 
@@ -37,6 +37,7 @@ Related docs:
 - owner admin auth now uses Supabase Auth sessions, with both email/password and Google OAuth supported
 - public pricing now routes owners through `/auth/login` and `/auth/checkout` before Stripe Checkout opens, so the selected plan and authenticated email stay aligned
 - first-time owner auth automatically creates or claims an `owners` row plus a Supabase `restaurants` row linked through `restaurants.owner_id`
+- owner onboarding now includes `/admin/onboarding`, which can import Google Maps place data, generate editable concierge training fields, and write fresh `soul_md` plus `rules_md`
 - restaurant content is stored in Supabase, not in the starter Prisma models
 - public guest chat fetches a server-curated restaurant payload instead of relying on direct anon table reads
 
@@ -53,6 +54,7 @@ Expected fields in `restaurants`:
 - `rules_md`
 - `menu_json`
 - `quiz_answers`
+- `quiz_answers.concierge_training` stores Google Maps-derived bootstrap metadata such as address, phone, hours, recommendations, FAQs, photo URLs, theme, and voice defaults
 - `stripe_customer_id`
 - `stripe_subscription_id`
 - `subscription_status`
@@ -66,6 +68,7 @@ Expected fields in `restaurants`:
 
 - `/admin`: weekly conversation count, top questions, subscription status, recent conversations
 - `/admin/analytics`: owner analytics dashboard with 7d / 30d / all-time filters, usage trends, top questions, language mix, and recommendation traction
+- `/admin/onboarding`: Google Maps import plus editable concierge-training workspace for restaurant identity, greeting, personality, languages, recommendations, FAQs, markdown previews, and save-back
 - `/admin/menu`: CRUD editor for `menu_json.items`
 - `/admin/quiz`: edit the 7 onboarding answers stored in `quiz_answers`
 - `/admin/qr`: QR preview and download/share/print tools for `/chat/{restaurantId}?table=T{n}`

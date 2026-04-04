@@ -15,6 +15,24 @@ export interface ChangelogEntry {
 
 export const changelog: ChangelogEntry[] = [
   {
+    version: '1.1.1',
+    date: '2026-04-04',
+    changes: [
+      {
+        type: 'feature',
+        text: 'Owners can now paste a Google Maps URL to bootstrap a restaurant demo inside the admin area',
+      },
+      {
+        type: 'improvement',
+        text: 'The new concierge training workspace generates editable soul.md and rules.md drafts before saving them live',
+      },
+      {
+        type: 'fix',
+        text: 'Restaurant setup is faster because address, hours, contact details, review highlights, and menu clues can now be prefilled from Google Maps',
+      },
+    ],
+  },
+  {
     version: '1.1.0',
     date: '2026-04-04',
     changes: [

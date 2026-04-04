@@ -2,6 +2,7 @@ import { formatDistanceToNow } from 'date-fns'
 import {
   ArrowRight,
   MessageSquare,
+  MapPinned,
   QrCode,
   Receipt,
   Sparkles,
@@ -12,6 +13,12 @@ import { EmptyRestaurantState } from '@/components/admin/EmptyRestaurantState'
 import { getDashboardStats, requireAdminContext } from '@/lib/admin/server'
 
 const quickActions = [
+  {
+    href: '/admin/onboarding',
+    label: 'Import Demo',
+    description: 'Paste a Google Maps URL and generate concierge markdown.',
+    icon: MapPinned,
+  },
   {
     href: '/admin/menu',
     label: 'Edit Menu',

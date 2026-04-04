@@ -19,6 +19,7 @@ export interface ServerEnv {
   stripePriceIdMonthly?: string
   stripePriceIdYearly?: string
   openAiApiKey?: string
+  googlePlacesApiKey?: string
   supabaseServiceRoleKey?: string
   insForgeBaseUrl?: string
   insForgeApiKey?: string
@@ -63,6 +64,7 @@ export function getServerEnv(): ServerEnv {
     stripePriceIdMonthly: env.STRIPE_PRICE_ID_MONTHLY,
     stripePriceIdYearly: env.STRIPE_PRICE_ID_YEARLY,
     openAiApiKey: env.OPENAI_API_KEY,
+    googlePlacesApiKey: env.GOOGLE_PLACES_API_KEY,
     supabaseServiceRoleKey: env.SUPABASE_SERVICE_ROLE_KEY,
     insForgeBaseUrl: env.INSFORGE_BASE_URL,
     insForgeApiKey: env.INSFORGE_API_KEY,
