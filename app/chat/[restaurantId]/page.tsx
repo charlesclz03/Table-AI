@@ -3,6 +3,7 @@
 import Link from 'next/link'
 import {
   type FormEvent,
+  useCallback,
   useDeferredValue,
   useEffect,
   useRef,
@@ -408,123 +409,131 @@ export default function RestaurantChatPage() {
     }
   }, [language, restaurant, tableNumber])
 
-  async function getAssistantResponse(
-    userInput: string,
-    activeRestaurant: RestaurantProfile
-  ) {
-    if (!language || !theme) {
-      return buildDemoResponse(userInput, activeRestaurant, language ?? 'en')
-    }
-
-    try {
-      const response = await fetch('/api/chat', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          messages: latestMessageRef.current,
-          restaurant: activeRestaurant,
-        }),
-        signal: AbortSignal.timeout(12000),
-      })
-
-      if (!response.ok) {
-        throw new Error(`Chat request failed with ${response.status}`)
-      }
-
-      const data = (await response.json()) as {
-        reply?: string
-      }
-
-      const content = data.reply?.trim()
-
-      if (!content) {
-        throw new Error('Empty assistant response')
-      }
-
-      return content
-    } catch {
-      return buildDemoResponse(userInput, activeRestaurant, language ?? 'en')
-    }
-  }
-
-  function speakAssistantReply(text: string) {
-    if (
-      !voiceOutputEnabled ||
-      typeof window === 'undefined' ||
-      !('speechSynthesis' in window)
+  const getAssistantResponse = useCallback(
+    async function getAssistantResponse(
+      userInput: string,
+      activeRestaurant: RestaurantProfile
     ) {
-      return
-    }
-
-    window.speechSynthesis.cancel()
-    const utterance = new SpeechSynthesisUtterance(text)
-    utterance.lang = language ?? 'en'
-    utterance.onstart = () => setIsSpeaking(true)
-    utterance.onend = () => setIsSpeaking(false)
-    utterance.onerror = () => setIsSpeaking(false)
-    speechSynthesis.speak(utterance)
-  }
-
-  async function submitMessage(rawMessage: string) {
-    const trimmedMessage = rawMessage.trim()
-
-    if (!trimmedMessage || !restaurant || isSending) {
-      return
-    }
-
-    setErrorMessage('')
-    setIsSending(true)
-
-    const userMessage: ChatMessage = {
-      id: createMessageId(),
-      role: 'user',
-      content: trimmedMessage,
-    }
-
-    const nextMessages = [...latestMessageRef.current, userMessage]
-    latestMessageRef.current = nextMessages
-    setMessages(nextMessages)
-    setInputValue('')
-    setInterimTranscript('')
-
-    try {
-      const assistantText = await getAssistantResponse(
-        trimmedMessage,
-        restaurant
-      )
-
-      const assistantMessage: ChatMessage = {
-        id: createMessageId(),
-        role: 'assistant',
-        content: assistantText,
+      if (!language || !theme) {
+        return buildDemoResponse(userInput, activeRestaurant, language ?? 'en')
       }
 
-      latestMessageRef.current = [...nextMessages, assistantMessage]
-      setMessages(latestMessageRef.current)
-      setLatestSubtitle(assistantText)
-      setUserMessageCount((current) => current + 1)
-      speakAssistantReply(assistantText)
-    } catch {
-      const fallbackText = 'Let me check with the staff.'
-      const assistantMessage: ChatMessage = {
-        id: createMessageId(),
-        role: 'assistant',
-        content: fallbackText,
+      try {
+        const response = await fetch('/api/chat', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            messages: latestMessageRef.current,
+            restaurant: activeRestaurant,
+          }),
+          signal: AbortSignal.timeout(12000),
+        })
+
+        if (!response.ok) {
+          throw new Error(`Chat request failed with ${response.status}`)
+        }
+
+        const data = (await response.json()) as {
+          reply?: string
+        }
+
+        const content = data.reply?.trim()
+
+        if (!content) {
+          throw new Error('Empty assistant response')
+        }
+
+        return content
+      } catch {
+        return buildDemoResponse(userInput, activeRestaurant, language ?? 'en')
+      }
+    },
+    [language, theme]
+  )
+
+  const speakAssistantReply = useCallback(
+    function speakAssistantReply(text: string) {
+      if (
+        !voiceOutputEnabled ||
+        typeof window === 'undefined' ||
+        !('speechSynthesis' in window)
+      ) {
+        return
       }
 
-      latestMessageRef.current = [...nextMessages, assistantMessage]
-      setMessages(latestMessageRef.current)
-      setLatestSubtitle(fallbackText)
-      setUserMessageCount((current) => current + 1)
-      speakAssistantReply(fallbackText)
-    } finally {
-      setIsSending(false)
-    }
-  }
+      window.speechSynthesis.cancel()
+      const utterance = new SpeechSynthesisUtterance(text)
+      utterance.lang = language ?? 'en'
+      utterance.onstart = () => setIsSpeaking(true)
+      utterance.onend = () => setIsSpeaking(false)
+      utterance.onerror = () => setIsSpeaking(false)
+      speechSynthesis.speak(utterance)
+    },
+    [language, voiceOutputEnabled]
+  )
 
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const submitMessage = useCallback(
+    async function submitMessage(rawMessage: string) {
+      const trimmedMessage = rawMessage.trim()
+
+      if (!trimmedMessage || !restaurant || isSending) {
+        return
+      }
+
+      setErrorMessage('')
+      setIsSending(true)
+
+      const userMessage: ChatMessage = {
+        id: createMessageId(),
+        role: 'user',
+        content: trimmedMessage,
+      }
+
+      const nextMessages = [...latestMessageRef.current, userMessage]
+      latestMessageRef.current = nextMessages
+      setMessages(nextMessages)
+      setInputValue('')
+      setInterimTranscript('')
+
+      try {
+        const assistantText = await getAssistantResponse(
+          trimmedMessage,
+          restaurant
+        )
+
+        const assistantMessage: ChatMessage = {
+          id: createMessageId(),
+          role: 'assistant',
+          content: assistantText,
+        }
+
+        latestMessageRef.current = [...nextMessages, assistantMessage]
+        setMessages(latestMessageRef.current)
+        setLatestSubtitle(assistantText)
+        setUserMessageCount((current) => current + 1)
+        speakAssistantReply(assistantText)
+      } catch {
+        const fallbackText = 'Let me check with the staff.'
+        const assistantMessage: ChatMessage = {
+          id: createMessageId(),
+          role: 'assistant',
+          content: fallbackText,
+        }
+
+        latestMessageRef.current = [...nextMessages, assistantMessage]
+        setMessages(latestMessageRef.current)
+        setLatestSubtitle(fallbackText)
+        setUserMessageCount((current) => current + 1)
+        speakAssistantReply(fallbackText)
+      } finally {
+        setIsSending(false)
+      }
+    },
+    [getAssistantResponse, isSending, restaurant, speakAssistantReply]
+  )
+
   useEffect(() => {
     if (typeof window === 'undefined' || !window.webkitSpeechRecognition) {
       return
@@ -585,7 +594,7 @@ export default function RestaurantChatPage() {
       recognitionRef.current?.abort?.()
       recognitionRef.current = null
     }
-  }, [isSending, language, restaurant])
+  }, [isSending, language, restaurant, submitMessage])
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {

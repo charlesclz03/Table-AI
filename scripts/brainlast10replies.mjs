@@ -158,25 +158,32 @@ async function main() {
   }
 
   const existingEntries = extractEntries(existingContent)
-  const newEntries = providedEntries && providedEntries.length > 0
-    ? providedEntries
-    : message
-      ? [{
-          timestamp: new Date().toISOString(),
-          speaker: args.speaker || 'Codex',
-          content: message,
-        }]
-      : []
+  const newEntries =
+    providedEntries && providedEntries.length > 0
+      ? providedEntries
+      : message
+        ? [
+            {
+              timestamp: new Date().toISOString(),
+              speaker: args.speaker || 'Codex',
+              content: message,
+            },
+          ]
+        : []
 
   if (newEntries.length === 0) {
-    console.error('No transcript content provided. Use --message-file <path>, pipe text via stdin, or pass --entries-file <path>.')
+    console.error(
+      'No transcript content provided. Use --message-file <path>, pipe text via stdin, or pass --entries-file <path>.'
+    )
     process.exit(1)
   }
 
   const nextEntries = [...newEntries, ...existingEntries].slice(0, MAX_ENTRIES)
 
   await fs.writeFile(outputPath, renderMarkdown(nextEntries), 'utf8')
-  console.log(`Updated ${outputPath} with ${nextEntries.length} entr${nextEntries.length === 1 ? 'y' : 'ies'}.`)
+  console.log(
+    `Updated ${outputPath} with ${nextEntries.length} entr${nextEntries.length === 1 ? 'y' : 'ies'}.`
+  )
 }
 
 main().catch((error) => {
