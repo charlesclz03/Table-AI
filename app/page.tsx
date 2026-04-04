@@ -340,7 +340,7 @@ function StepSection({
               href="#start"
               className="glass-button inline-flex min-h-11 items-center justify-center gap-2 rounded-full px-6 py-3 text-sm font-semibold text-white transition hover:bg-white/12"
             >
-              Start Free
+              See pricing
               <ArrowRight className="h-4 w-4" />
             </Link>
             <span className="glass-chip inline-flex min-h-11 items-center rounded-full px-4 py-3 text-sm text-white/70">
@@ -400,7 +400,7 @@ export default function HomePage() {
                 href="#start"
                 className="glass-button inline-flex min-h-11 items-center justify-center gap-2 rounded-full px-6 py-4 text-sm font-semibold text-white transition hover:bg-white/12"
               >
-                Start Free
+                Choose your plan
                 <ArrowRight className="h-4 w-4" />
               </Link>
               <Link
@@ -744,6 +744,13 @@ export default function HomePage() {
                 Cancel anytime after activation
               </div>
             </div>
+            <Link
+              href="/auth/login?plan=monthly"
+              className="glass-button-amber mt-6 inline-flex min-h-11 items-center justify-center gap-2 rounded-full px-6 py-4 text-sm font-semibold text-amber-50 transition hover:bg-amber-300/24"
+            >
+              Start Monthly
+              <ArrowRight className="h-4 w-4" />
+            </Link>
           </motion.article>
 
           <motion.article
@@ -792,6 +799,13 @@ export default function HomePage() {
                 Clear activation plus predictable subscription
               </div>
             </div>
+            <Link
+              href="/auth/login?plan=annual"
+              className="mt-6 inline-flex min-h-11 items-center justify-center gap-2 rounded-full border border-amber-200/18 bg-amber-200/12 px-6 py-4 text-sm font-semibold text-amber-50 transition hover:bg-amber-200/18"
+            >
+              Start Annual
+              <ArrowRight className="h-4 w-4" />
+            </Link>
           </motion.article>
         </div>
       </SectionShell>
@@ -859,8 +873,8 @@ export default function HomePage() {
               Launch Gustia with a clean activation and no long contract.
             </h2>
             <p className="mt-5 text-base leading-8 text-white/76 sm:text-lg">
-              Keep the call to action simple for owners: start free, talk to the
-              team, and get the restaurant live when the setup feels right.
+              Pick monthly or annual, create your owner account, and continue
+              into Stripe with the right email and plan already selected.
             </p>
 
             <div className="mt-8 grid gap-3 sm:grid-cols-2">
@@ -897,17 +911,17 @@ export default function HomePage() {
             className="flex w-full max-w-sm flex-col gap-3"
           >
             <Link
-              href="/contact"
+              href="/auth/login?plan=monthly"
               className="glass-button inline-flex min-h-11 items-center justify-center gap-2 rounded-full px-6 py-4 text-sm font-semibold text-white transition hover:bg-white/12"
             >
-              Start Free
+              Start Monthly
               <ArrowRight className="h-4 w-4" />
             </Link>
             <Link
-              href="mailto:contact@gustia.wine?subject=Start%20Free%20with%20Gustia"
+              href="/auth/login?plan=annual"
               className="glass-button inline-flex min-h-11 items-center justify-center gap-2 rounded-full px-6 py-4 text-sm font-semibold text-white/82 transition hover:bg-white/12"
             >
-              contact@gustia.wine
+              Start Annual
             </Link>
           </motion.div>
         </div>

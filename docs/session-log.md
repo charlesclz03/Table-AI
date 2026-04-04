@@ -37,6 +37,14 @@ Related docs:
 
 ## Entries
 
+### 2026-04-04 - Pricing Auth Gate Before Stripe
+
+- audited the landing-to-billing flow and found two main mismatches: the public pricing CTAs were still sending owners to contact-style entry points, and Stripe Checkout still used the legacy `EUR 299` activation amount
+- added public `/auth/login` and `/auth/checkout` routes so owners now choose monthly or annual pricing first, authenticate through Supabase email/password or Google OAuth, and then enter Stripe with the selected plan and signed-in email
+- updated `/api/stripe/checkout` to require `?plan=monthly|annual`, charge the corrected `EUR 99` activation, attach the selected plan to Stripe metadata, and support both the new public flow and the existing admin billing screen
+- aligned the homepage pricing CTAs, admin billing buttons, terms copy, Stripe integration notes, and a new `docs/PRICING_DECISION.md` record with the auth-before-checkout decision
+- verified `npm run type-check`, `npm run lint`, and `npm run build` all pass, then browser-smoked `/`, `/auth/login?plan=monthly`, `/auth/login?plan=annual`, `/auth/checkout?plan=annual` redirect behavior, and the `/admin/dashboard` alias route
+
 ### 2026-04-04 - Azulejos-Only Glass System
 
 - moved the azulejos image into one shared fixed backdrop in the root layout so pages no longer render their own patterned background elements above content

@@ -1,18 +1,23 @@
 import { NextResponse } from 'next/server'
 import { getAdminRestaurantForRequest } from '@/lib/admin/server'
 import type { AdminRestaurantRecord } from '@/lib/admin/types'
+import {
+  ACTIVATION_FEE_AMOUNT,
+  BILLING_DELAY_DAYS,
+  formatEuroAmount,
+  getCheckoutPlan,
+} from '@/lib/billing/plans'
 import { ensureStripeCustomer } from '@/lib/billing/customer'
 import { getPublicEnv } from '@/lib/env'
+import { getServerEnv } from '@/lib/server-env'
 import { getStripeServerClient } from '@/lib/stripe'
 import { getSupabaseServerComponentClient } from '@/lib/supabase/server'
 
-const SETUP_FEE_AMOUNT = 29900
-const MONTHLY_SUBSCRIPTION_AMOUNT = 4900
-const FIRST_MONTH_TRIAL_DAYS = 30
-
 interface CheckoutRequestBody {
+  cancelPath?: string
   restaurantId?: string
   restaurantName?: string
+  successPath?: string
 }
 
 async function persistStripeCustomerId(
@@ -39,19 +44,25 @@ async function persistStripeCustomerId(
   }
 }
 
+function normalizeReturnPath(path: string | undefined, fallbackPath: string) {
+  return typeof path === 'string' && path.startsWith('/') ? path : fallbackPath
+}
+
 export async function POST(request: Request) {
   try {
-    const body = (await request.json()) as CheckoutRequestBody
-    const restaurantId = body.restaurantId?.trim()
-    const restaurantName = body.restaurantName?.trim()
+    const requestUrl = new URL(request.url)
+    const plan = getCheckoutPlan(requestUrl.searchParams.get('plan'))
 
-    if (!restaurantId || !restaurantName) {
-      throw new Error('restaurantId and restaurantName are required.')
+    if (!plan) {
+      throw new Error('A valid plan query is required: monthly or annual.')
     }
 
+    const body = (await request.json()) as CheckoutRequestBody
     const restaurant = await getAdminRestaurantForRequest()
+    const restaurantId = body.restaurantId?.trim() || restaurant.id
+    const restaurantName = body.restaurantName?.trim() || restaurant.name
 
-    if (restaurant.id !== restaurantId) {
+    if (body.restaurantId?.trim() && restaurant.id !== restaurantId) {
       return NextResponse.json(
         {
           error: 'The checkout request does not match this admin account.',
@@ -66,6 +77,7 @@ export async function POST(request: Request) {
       throw new Error('Stripe is not configured.')
     }
 
+    const serverEnv = getServerEnv()
     const { customerId } = await ensureStripeCustomer({
       email: restaurant.email,
       existingCustomerId: restaurant.stripe_customer_id,
@@ -79,6 +91,19 @@ export async function POST(request: Request) {
     await persistStripeCustomerId(restaurant, customerId)
 
     const { siteUrl } = getPublicEnv()
+    const successPath = normalizeReturnPath(
+      body.successPath,
+      `/admin/dashboard?checkout=success&plan=${plan.id}`
+    )
+    const cancelPath = normalizeReturnPath(
+      body.cancelPath,
+      `/auth/login?plan=${plan.id}&canceled=true`
+    )
+    const recurringPriceId =
+      plan.id === 'monthly'
+        ? serverEnv.stripePriceIdMonthly
+        : serverEnv.stripePriceIdYearly
+
     const session = await stripe.checkout.sessions.create({
       mode: 'subscription',
       customer: customerId,
@@ -88,43 +113,56 @@ export async function POST(request: Request) {
           price_data: {
             currency: 'eur',
             product_data: {
-              name: `Gustia setup for ${restaurantName}`,
+              name: `Gustia activation for ${restaurantName}`,
               description:
-                'Founding setup fee covering onboarding, customization, and launch preparation.',
+                'One-time activation covering onboarding, customization, and launch preparation.',
             },
-            unit_amount: SETUP_FEE_AMOUNT,
+            unit_amount: ACTIVATION_FEE_AMOUNT,
           },
           quantity: 1,
         },
-        {
-          price_data: {
-            currency: 'eur',
-            product_data: {
-              name: `Gustia monthly subscription for ${restaurantName}`,
-              description:
-                'Ongoing Gustia concierge access after the included first month.',
+        recurringPriceId
+          ? {
+              price: recurringPriceId,
+              quantity: 1,
+            }
+          : {
+              price_data: {
+                currency: 'eur',
+                product_data: {
+                  name: `Gustia ${plan.name.toLowerCase()} subscription for ${restaurantName}`,
+                  description: `${plan.billingLabel} after the activation period.`,
+                },
+                recurring: {
+                  interval: plan.interval,
+                },
+                unit_amount: plan.recurringAmount,
+              },
+              quantity: 1,
             },
-            recurring: {
-              interval: 'month',
-            },
-            unit_amount: MONTHLY_SUBSCRIPTION_AMOUNT,
-          },
-          quantity: 1,
-        },
       ],
       metadata: {
+        billingLabel: plan.billingLabel,
+        plan: plan.id,
         restaurantId,
-        type: 'setup',
+        type: 'activation-plus-subscription',
       },
       subscription_data: {
-        trial_period_days: FIRST_MONTH_TRIAL_DAYS,
+        trial_period_days: BILLING_DELAY_DAYS,
         metadata: {
+          billingLabel: plan.billingLabel,
+          plan: plan.id,
           restaurantId,
-          type: 'setup',
+          type: 'activation-plus-subscription',
         },
       },
-      success_url: `${siteUrl}/admin/billing?success=true`,
-      cancel_url: `${siteUrl}/admin/billing?canceled=true`,
+      success_url: `${siteUrl}${successPath}`,
+      cancel_url: `${siteUrl}${cancelPath}`,
+      custom_text: {
+        submit: {
+          message: `Today you pay ${formatEuroAmount(ACTIVATION_FEE_AMOUNT)} for activation. Your ${plan.name.toLowerCase()} subscription starts after ${BILLING_DELAY_DAYS} days.`,
+        },
+      },
     })
 
     if (!session.url) {

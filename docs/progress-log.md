@@ -48,6 +48,7 @@ Related docs:
 - Gustia owner admin now includes a dedicated changelog page and navigation badge so restaurant owners can track shipped releases from inside `/admin`
 - Gustia owner admin now includes a dedicated analytics page with live conversation counts, top questions, peak usage windows, language mix, and recommendation tracking powered by anonymized chat metadata
 - Gustia owner admin auth now uses Supabase Auth for email/password and Google OAuth, with owner bootstrap tied to `owners.id = auth.users.id` and `restaurants.owner_id`
+- Gustia public pricing now requires owner auth before Stripe Checkout, using plan-aware `/auth/login` and `/auth/checkout` routes for the monthly and annual paths
 - Gustia owner-facing admin reads and writes now target owner-scoped Supabase access, while guest restaurant profile reads are served through an app route so strict restaurant RLS can stay in place
 - Gustia is now live on the public production domain `https://www.gustia.wine`
 - Gustia now includes a direct Supabase SQL schema document and a Vercel deploy checklist covering env vars and Stripe webhook setup

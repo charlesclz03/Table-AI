@@ -9,11 +9,13 @@ Customers scan a QR code, choose language and theme, and talk to a restaurant-sp
 The repo now contains:
 
 - owner-facing Lisbon-style landing page on `/`
+- public pricing auth flow through `/auth/login` and `/auth/checkout` before Stripe Checkout
 - customer chat flow under `/chat/[restaurantId]`
 - language and orbital wine-theme onboarding
 - azulejos-only background layer with glassmorphism UI surfaces and tinted CTAs
 - owner admin dashboard under `/admin`
 - Supabase owner auth through `/admin/login` with email/password and Google OAuth
+- public plan selection now signs the owner in before Stripe so Checkout stays tied to the right account email
 - first-login owner and restaurant auto-provisioning through Supabase when the owner SQL migration and service-role env are configured
 - menu editor with AI menu photo import
 - onboarding quiz editor
@@ -39,6 +41,7 @@ Commercial model:
 
 - activation: EUR 99
 - then EUR 49/month or EUR 470/year
+- payment flow: choose plan, sign in, then continue to Stripe Checkout
 
 ## Confirmed Stack
 

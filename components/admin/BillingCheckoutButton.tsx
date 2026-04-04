@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import { ArrowUpRight } from 'lucide-react'
 import { Button } from '@/components/atoms/Button'
+import { getCheckoutPlans, type CheckoutPlanId } from '@/lib/billing/plans'
 
 interface BillingCheckoutButtonProps {
   restaurantId: string
@@ -18,19 +19,21 @@ export function BillingCheckoutButton({
   const [status, setStatus] = useState('')
   const [isLoading, setIsLoading] = useState(false)
 
-  async function startCheckout() {
+  async function startCheckout(plan: CheckoutPlanId) {
     setIsLoading(true)
     setStatus('')
 
     try {
-      const response = await fetch('/api/stripe/checkout', {
+      const response = await fetch(`/api/stripe/checkout?plan=${plan}`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
+          cancelPath: '/admin/billing?canceled=true',
           restaurantId,
           restaurantName,
+          successPath: '/admin/billing?success=true',
         }),
       })
 
@@ -57,15 +60,21 @@ export function BillingCheckoutButton({
 
   return (
     <div className="space-y-3">
-      <Button
-        variant="brand"
-        onClick={() => void startCheckout()}
-        isLoading={isLoading}
-        disabled={disabled}
-      >
-        <ArrowUpRight className="mr-2 h-4 w-4" />
-        Get Started - €299 Setup
-      </Button>
+      <div className="grid gap-3 sm:grid-cols-2">
+        {getCheckoutPlans().map((plan) => (
+          <Button
+            key={plan.id}
+            variant={plan.id === 'annual' ? 'glass' : 'brand'}
+            onClick={() => void startCheckout(plan.id)}
+            isLoading={isLoading}
+            disabled={disabled}
+            className={plan.id === 'annual' ? 'border-white/10 text-white' : ''}
+          >
+            <ArrowUpRight className="mr-2 h-4 w-4" />
+            {plan.id === 'monthly' ? 'Start Monthly' : 'Start Annual'}
+          </Button>
+        ))}
+      </div>
       {status ? (
         <p className="rounded-full border border-white/10 bg-black/20 px-4 py-3 text-sm text-white/75">
           {status}

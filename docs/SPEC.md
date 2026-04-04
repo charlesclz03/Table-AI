@@ -35,6 +35,7 @@ Related docs:
 - public guest chat reads restaurant data from Supabase `restaurants`
 - owner admin pages live under `/admin/*`
 - owner admin auth now uses Supabase Auth sessions, with both email/password and Google OAuth supported
+- public pricing now routes owners through `/auth/login` and `/auth/checkout` before Stripe Checkout opens, so the selected plan and authenticated email stay aligned
 - first-time owner auth automatically creates or claims an `owners` row plus a Supabase `restaurants` row linked through `restaurants.owner_id`
 - restaurant content is stored in Supabase, not in the starter Prisma models
 - public guest chat fetches a server-curated restaurant payload instead of relying on direct anon table reads
@@ -69,6 +70,7 @@ Expected fields in `restaurants`:
 - `/admin/quiz`: edit the 7 onboarding answers stored in `quiz_answers`
 - `/admin/qr`: QR preview and download/share/print tools for `/chat/{restaurantId}?table=T{n}`
 - `/admin/billing`: plan, dates, payment method preview, Stripe portal entry, latest invoices
+- public pricing entry: `/` -> `/auth/login?plan=monthly|annual` -> `/auth/checkout?plan=monthly|annual` -> Stripe Checkout -> `/admin/dashboard`
 
 ## Current Boundaries
 

@@ -11,16 +11,31 @@ export async function GET(request: Request) {
   const code = requestUrl.searchParams.get('code')
   const errorDescription = requestUrl.searchParams.get('error_description')
 
+  function getLoginDestination(errorMessage: string) {
+    const nextUrl = new URL(nextPath, requestUrl.origin)
+    const destination = new URL(
+      nextUrl.pathname === '/auth/checkout' ? '/auth/login' : '/admin/login',
+      requestUrl.origin
+    )
+
+    if (nextUrl.pathname === '/auth/checkout') {
+      const plan = nextUrl.searchParams.get('plan')
+
+      if (plan) {
+        destination.searchParams.set('plan', plan)
+      }
+    }
+
+    destination.searchParams.set('error', errorMessage)
+    return destination
+  }
+
   if (errorDescription) {
-    const destination = new URL('/admin/login', requestUrl.origin)
-    destination.searchParams.set('error', errorDescription)
-    return NextResponse.redirect(destination)
+    return NextResponse.redirect(getLoginDestination(errorDescription))
   }
 
   if (!code) {
-    const destination = new URL('/admin/login', requestUrl.origin)
-    destination.searchParams.set('error', 'Missing OAuth code.')
-    return NextResponse.redirect(destination)
+    return NextResponse.redirect(getLoginDestination('Missing OAuth code.'))
   }
 
   const response = NextResponse.redirect(new URL(nextPath, requestUrl.origin))
@@ -53,11 +68,10 @@ export async function GET(request: Request) {
 
     return response
   } catch (error) {
-    const destination = new URL('/admin/login', requestUrl.origin)
-    destination.searchParams.set(
-      'error',
-      error instanceof Error ? error.message : 'Unable to complete sign-in.'
+    return NextResponse.redirect(
+      getLoginDestination(
+        error instanceof Error ? error.message : 'Unable to complete sign-in.'
+      )
     )
-    return NextResponse.redirect(destination)
   }
 }

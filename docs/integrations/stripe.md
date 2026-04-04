@@ -18,8 +18,10 @@ stripe trigger checkout.session.completed
 
 Hosted billing entry points:
 
+- `/auth/login?plan=monthly` and `/auth/login?plan=annual` gate public pricing behind owner auth before payment
+- `/auth/checkout?plan=monthly` and `/auth/checkout?plan=annual` create the authenticated handoff into Stripe Checkout
 - `/admin/billing` shows the setup CTA and billing portal actions
-- `/api/stripe/checkout` creates the founding-offer Checkout Session
+- `/api/stripe/checkout?plan=monthly|annual` creates the activation-plus-subscription Checkout Session
 - `/admin/billing?success=true` and `/admin/billing?canceled=true` reflect the immediate Checkout result
 
 Recommended env vars:

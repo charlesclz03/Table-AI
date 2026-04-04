@@ -35,6 +35,13 @@ Related docs:
 - use this file for release history, `docs/progress-log.md` for durable baseline truth, and `docs/session-log.md` for session chronology
 - until formal semantic versioning starts, date-keyed entries are acceptable
 
+## 2026-04-04 - Auth Before Stripe Checkout
+
+- **BILLING**: Reworked the public pricing flow so plan selection now starts on `/`, continues through `/auth/login`, and hands authenticated owners into `/auth/checkout` before Stripe is opened.
+- **AUTH**: Reused the existing Supabase email/password and Google OAuth owner auth with plan-aware redirect targets so the signed-in owner always lands back in the correct checkout step.
+- **PRICING**: Corrected the Stripe activation amount to `EUR 99`, added monthly versus annual plan handling in Checkout, and aligned the landing plus terms copy with the live pricing decision.
+- **VERIFY**: Re-ran `npm run type-check`, `npm run lint`, and `npm run build`, then browser-smoked `/`, `/auth/login?plan=monthly`, `/auth/login?plan=annual`, and the unauthenticated redirect from `/auth/checkout?plan=annual`.
+
 ## 2026-04-04 - Azulejos-Only Glass System
 
 - **DESIGN**: Moved the azulejos artwork into one shared app backdrop so content no longer mounts its own patterned background layers on top of the interface.

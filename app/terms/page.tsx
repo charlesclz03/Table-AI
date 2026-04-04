@@ -32,12 +32,14 @@ export default function TermsPage() {
       <LegalSection title="2. Pricing and payment terms">
         <p>
           Unless otherwise agreed in writing, Gustia pricing is a one-time setup
-          fee of 299 EUR plus a recurring subscription of 49 EUR per month.
+          fee of 99 EUR plus a recurring subscription of 49 EUR per month or 470
+          EUR per year.
         </p>
         <p>
           Subscription billing may be offered on a monthly or annual basis and
-          is charged in advance for the selected billing cycle. The setup fee is
-          billed separately when the service is activated.
+          is charged in advance for the selected billing cycle after the
+          activation period. The setup fee is billed separately when the service
+          is activated.
         </p>
         <p>
           Restaurants are responsible for keeping payment details valid and up

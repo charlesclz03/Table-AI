@@ -47,6 +47,7 @@ Related docs:
 - Gustia now has a canonical `docs/reference/PATCH_NOTES.md` file for release-level history, in addition to progress and session logs
 - Gustia now includes an owner admin section at `/admin` that authenticates through Supabase Auth, auto-claims the matching owner record, and reads or updates restaurant data through owner-scoped Supabase access
 - the owner flow now includes a public landing page on `/`, a dedicated `/admin/login` screen, Supabase email/password auth, Google OAuth through Supabase Auth, and first-login owner/restaurant auto-provisioning when the Supabase owner migration has been applied
+- the public pricing flow now requires owner auth before Stripe Checkout: landing plan CTAs route into `/auth/login`, authenticated owners continue through `/auth/checkout`, and Stripe is pre-filled from the signed-in owner email
 - the public landing page on `/` is now a mobile-first parallax tutorial for restaurant owners, with a fixed azulejos backdrop, four setup steps, guest-flow preview, and the locked activation-first pricing language
 - the shared UI now follows a stricter glass system: azulejos only in the background layer, then translucent glass panels, chips, alerts, inputs, and tinted CTA surfaces across landing, onboarding, chat, and entry shells
 - the public legal pages, landing CTA, and restaurant contact touchpoints now consistently use `contact@gustia.wine`
@@ -87,4 +88,5 @@ Related docs:
 - verify `/api/chat` end-to-end against the live OpenAI account now that API billing is working again
 - apply `docs/reference/supabase-owner-auth-migration.sql` in the live Supabase project before treating the new owner auth path as production-ready
 - verify Supabase dashboard auth settings still allow both email/password and Google OAuth, with `/auth/callback` added to the allowed redirect URLs
+- live-smoke the full monthly and annual pricing paths with a real owner account, including Google OAuth and Stripe Checkout, because the local browser smoke only verified page routing and unauthenticated redirects
 - if admin reads fail after deploy, check that `owners`, `restaurants.owner_id`, and the RLS policies from the migration are present before debugging the app code

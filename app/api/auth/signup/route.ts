@@ -11,6 +11,7 @@ const signupSchema = z
   .object({
     email: z.string().email().optional(),
     name: z.string().trim().min(1).max(120).optional(),
+    next: z.string().optional(),
     password: z.string().min(8).optional(),
     provider: z.enum(['google']).optional(),
   })
@@ -50,7 +51,7 @@ export async function POST(request: Request) {
       const { data, error } = await client.auth.signInWithOAuth({
         provider: 'google',
         options: {
-          redirectTo: getAuthCallbackUrl(request, '/admin'),
+          redirectTo: getAuthCallbackUrl(request, body.next),
         },
       })
 
@@ -70,7 +71,7 @@ export async function POST(request: Request) {
               full_name: body.name,
             }
           : undefined,
-        emailRedirectTo: getAuthCallbackUrl(request, '/admin'),
+        emailRedirectTo: getAuthCallbackUrl(request, body.next),
       },
     })
 

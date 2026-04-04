@@ -15,6 +15,24 @@ export interface ChangelogEntry {
 
 export const changelog: ChangelogEntry[] = [
   {
+    version: '1.1.0',
+    date: '2026-04-04',
+    changes: [
+      {
+        type: 'feature',
+        text: 'Owners now choose Monthly or Annual pricing on the public landing page before continuing into account creation and payment',
+      },
+      {
+        type: 'improvement',
+        text: 'Stripe Checkout now opens after sign-in and uses the authenticated owner email so billing stays attached to the correct restaurant account',
+      },
+      {
+        type: 'fix',
+        text: 'Activation billing now matches the live offer at EUR 99 instead of the older setup amount',
+      },
+    ],
+  },
+  {
     version: '1.0.9',
     date: '2026-04-04',
     changes: [

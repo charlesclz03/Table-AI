@@ -9,6 +9,7 @@ import {
 const loginSchema = z
   .object({
     email: z.string().email().optional(),
+    next: z.string().optional(),
     password: z.string().min(8).optional(),
     provider: z.enum(['google']).optional(),
   })
@@ -48,7 +49,7 @@ export async function POST(request: Request) {
       const { data, error } = await client.auth.signInWithOAuth({
         provider: 'google',
         options: {
-          redirectTo: getAuthCallbackUrl(request, '/admin'),
+          redirectTo: getAuthCallbackUrl(request, body.next),
         },
       })
 
