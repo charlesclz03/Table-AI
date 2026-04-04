@@ -19,7 +19,7 @@ Source of truth scope:
 
 Last updated:
 
-- 2026-03-24
+- 2026-04-04
 
 Related docs:
 
@@ -36,3 +36,11 @@ Related docs:
 - tests: `npm run test`
 - e2e tests: `npm run test:e2e`
 - production build: `npm run build`
+
+## Deployment Commands
+
+- inspect branch state: `git status --short`
+- sync remote state: `git fetch`
+- push release branch: `git push origin main`
+- pull Vercel production env/project settings: `npx vercel pull --yes --environment=production`
+- deploy directly to Vercel production: `npx vercel --prod --yes`

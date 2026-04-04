@@ -336,6 +336,25 @@ export function SphereAnimationStyles() {
         }
       }
 
+      @keyframes sphereSpeak {
+        0%,
+        100% {
+          transform: translate3d(0, 0, 0) scale(1.01);
+        }
+        20% {
+          transform: translate3d(-1.5%, 0, 0) rotate(-1deg) scale(1.025);
+        }
+        40% {
+          transform: translate3d(1.5%, -1.5%, 0) rotate(1deg) scale(1.03);
+        }
+        60% {
+          transform: translate3d(-1%, 1%, 0) rotate(-0.7deg) scale(1.025);
+        }
+        80% {
+          transform: translate3d(1%, 0, 0) rotate(0.7deg) scale(1.02);
+        }
+      }
+
       @keyframes shimmerSweep {
         0% {
           transform: translateX(-140%) rotate(-18deg);
@@ -382,12 +401,14 @@ export function WineSphere({
   return (
     <div
       className={cn(
-        'relative isolate flex items-center justify-center',
+        'relative isolate flex items-center justify-center transition-all duration-300',
         sizeClasses[size],
         className
       )}
       style={{
-        animation: speaking ? undefined : 'spherePulse 3s ease-in-out infinite',
+        animation: speaking
+          ? 'sphereSpeak 0.9s ease-in-out infinite'
+          : 'spherePulse 3s ease-in-out infinite',
       }}
     >
       <div

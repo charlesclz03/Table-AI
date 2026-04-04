@@ -23,7 +23,7 @@
 
 - `/onboarding`: Interactive setup script for new projects based on this template.
 - `/bug_fix`: Reproduce, fix root cause, verify (lint + tsc), and update patch notes.
-- `/deploy`: Deploy checklist for Vercel (DB schema, lint/types/build, patch notes/version).
+- `/deploy`: Table IA release workflow for GitHub + Vercel with DB/env checks, lint/build/type-check, deploy path selection, and rollback guidance.
 - `/database_migration`: Modify `prisma/schema.prisma` safely, generate client, push/migrate, fix types.
 - `/new_component`: Create UI components adhering to the Atomic Design format in `components/`.
 - `/audit`: Perform deep feature audits to find regressions and plan "forever fixes".

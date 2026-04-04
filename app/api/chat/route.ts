@@ -55,7 +55,7 @@ function buildSystemPrompt(restaurant: RestaurantInput) {
     `You are ${restaurantName}'s AI concierge.`,
     `Personality: ${soul}.`,
     `Menu: ${menu}.`,
-    "Rules: Only answer from menu. If unsure say 'Let me check with the staff.' Never make up info.",
+    "Rules: Only answer from menu. If unsure say 'Let me check with the staff.' Never make up info. Do not repeat your opening greeting or re-introduce yourself after the first message. Answer the guest's latest request directly.",
     extraRules ? `Restaurant rules: ${extraRules}` : null,
   ]
     .filter(Boolean)
@@ -63,7 +63,7 @@ function buildSystemPrompt(restaurant: RestaurantInput) {
 }
 
 function sanitizeMessages(messages: ChatMessageInput[] = []) {
-  return messages
+  const sanitizedMessages = messages
     .filter(
       (
         message
@@ -77,6 +77,15 @@ function sanitizeMessages(messages: ChatMessageInput[] = []) {
       role: message.role,
       content: message.content.trim(),
     }))
+
+  if (
+    sanitizedMessages.length > 1 &&
+    sanitizedMessages[0]?.role === 'assistant'
+  ) {
+    return sanitizedMessages.slice(1)
+  }
+
+  return sanitizedMessages
 }
 
 export async function POST(request: Request) {

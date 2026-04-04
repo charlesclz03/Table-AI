@@ -35,6 +35,7 @@ Related docs:
 - public guest chat reads restaurant data from Supabase `restaurants`
 - owner admin pages live under `/admin/*`
 - owner lookup currently maps the signed-in NextAuth Google email to `restaurants.email`
+- first-time owner Google logins automatically create a placeholder `restaurants` row when Supabase is configured
 - restaurant content is stored in Supabase, not in the starter Prisma models
 
 ## Restaurant Record

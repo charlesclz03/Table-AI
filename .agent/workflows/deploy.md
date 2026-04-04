@@ -1,8 +1,8 @@
 ---
-description: Deployment command for production releases. Pre-flight checks and deployment execution.
+description: Prepare Table IA for a safe GitHub + Vercel release with repo-specific checks, push flow, and rollback guidance.
 ---
 
-# /deploy - Production Deployment
+# /deploy - Table IA Release Workflow
 
 $ARGUMENTS
 
@@ -10,178 +10,186 @@ $ARGUMENTS
 
 ## Purpose
 
-This command handles production deployment with pre-flight checks, deployment execution, and verification.
+Use this workflow before pushing Table IA to GitHub or releasing to Vercel.
+
+This workflow is adapted from the stricter Freestyla release discipline, but only keeps commands and checks that actually exist in this repo.
 
 ---
 
-## Sub-commands
+## Supported Paths
 
-```
-/deploy            - Interactive deployment wizard
-/deploy check      - Run pre-deployment checks only
-/deploy preview    - Deploy to preview/staging
-/deploy production - Deploy to production
-/deploy rollback   - Rollback to previous version
-```
-
----
-
-## Pre-Deployment Checklist
-
-Before any deployment:
-
-```markdown
-## 🚀 Pre-Deploy Checklist
-
-### Code Quality
-
-- [ ] No TypeScript errors (`npx tsc --noEmit`)
-- [ ] ESLint passing (`npx eslint .`)
-- [ ] All tests passing (`npm test`)
-
-### Security
-
-- [ ] No hardcoded secrets
-- [ ] Environment variables documented
-- [ ] Dependencies audited (`npm audit`)
-
-### Performance
-
-- [ ] Bundle size acceptable
-- [ ] No console.log statements
-- [ ] Images optimized
-
-### Documentation
-
-- [ ] README updated
-- [ ] CHANGELOG updated
-- [ ] API docs current
-
-### Ready to deploy? (y/n)
-```
-
----
-
-## Deployment Flow
-
-```
-┌─────────────────┐
-│  /deploy        │
-└────────┬────────┘
-         │
-         ▼
-┌─────────────────┐
-│  Pre-flight     │
-│  checks         │
-└────────┬────────┘
-         │
-    Pass? ──No──► Fix issues
-         │
-        Yes
-         │
-         ▼
-┌─────────────────┐
-│  Build          │
-│  application    │
-└────────┬────────┘
-         │
-         ▼
-┌─────────────────┐
-│  Deploy to      │
-│  platform       │
-└────────┬────────┘
-         │
-         ▼
-┌─────────────────┐
-│  Health check   │
-│  & verify       │
-└────────┬────────┘
-         │
-         ▼
-┌─────────────────┐
-│  ✅ Complete    │
-└─────────────────┘
-```
-
----
-
-## Output Format
-
-### Successful Deploy
-
-```markdown
-## 🚀 Deployment Complete
-
-### Summary
-
-- **Version:** v1.2.3
-- **Environment:** production
-- **Duration:** 47 seconds
-- **Platform:** Vercel
-
-### URLs
-
-- 🌐 Production: https://app.example.com
-- 📊 Dashboard: https://vercel.com/project
-
-### What Changed
-
-- Added user profile feature
-- Fixed login bug
-- Updated dependencies
-
-### Health Check
-
-✅ API responding (200 OK)
-✅ Database connected
-✅ All services healthy
-```
-
-### Failed Deploy
-
-```markdown
-## ❌ Deployment Failed
-
-### Error
-
-Build failed at step: TypeScript compilation
-
-### Details
-```
-
-error TS2345: Argument of type 'string' is not assignable...
-
-```
-
-### Resolution
-1. Fix TypeScript error in `src/services/user.ts:45`
-2. Run `npm run build` locally to verify
-3. Try `/deploy` again
-
-### Rollback Available
-Previous version (v1.2.2) is still active.
-Run `/deploy rollback` if needed.
-```
-
----
-
-## Platform Support
-
-| Platform | Command                | Notes                     |
-| -------- | ---------------------- | ------------------------- |
-| Vercel   | `vercel --prod`        | Auto-detected for Next.js |
-| Railway  | `railway up`           | Needs Railway CLI         |
-| Fly.io   | `fly deploy`           | Needs flyctl              |
-| Docker   | `docker compose up -d` | For self-hosted           |
-
----
-
-## Examples
-
-```
+```text
 /deploy
 /deploy check
-/deploy preview
-/deploy production --skip-tests
+/deploy github
+/deploy vercel
+/deploy production
 /deploy rollback
 ```
+
+- `/deploy` or `/deploy production`: run the full release checklist, then push GitHub and deploy to Vercel
+- `/deploy check`: verification only, no push or deploy
+- `/deploy github`: verify, then push `main`
+- `/deploy vercel`: verify, then deploy through Vercel
+- `/deploy rollback`: document and execute rollback using the previous Git commit or Vercel deployment
+
+---
+
+## Phase 1 - Prepare
+
+### 1. Sync Check
+
+- Confirm the repo state with `git status --short`
+- Fetch remote changes with `git fetch`
+- Verify the branch is the intended release branch, usually `main`
+- If local and remote have diverged, stop and reconcile before deploying
+
+### 2. Database Check
+
+- If `prisma/schema.prisma` changed since the last release, treat that as a deployment blocker until the schema change has been applied safely
+- Verify production-safe migration steps before shipping new code that expects new columns or tables
+- If the database change is not deployed yet, do not push application code that depends on it
+
+### 3. Environment Check
+
+- Confirm `.env.local` contains the values needed for local verification
+- Confirm Vercel has the required production variables before deploying:
+  - `OPENAI_API_KEY`
+  - `STRIPE_SECRET_KEY`
+  - `NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY`
+  - `NEXTAUTH_SECRET`
+  - `NEXTAUTH_URL`
+  - `NEXT_PUBLIC_SUPABASE_URL`
+  - `NEXT_PUBLIC_SUPABASE_ANON_KEY`
+- Never print or commit secret values
+
+---
+
+## Phase 2 - Clean Slate Verification
+
+Run these commands from the repo root and fix every failure before continuing:
+
+```bash
+npm run lint
+npm run build
+npm run type-check
+```
+
+Recommended before production if the change is broader than docs or small UI polish:
+
+```bash
+npm run test
+```
+
+Optional if the release changes core flows that need browser coverage:
+
+```bash
+npm run test:e2e
+```
+
+### Release Rule
+
+- Do not push code that fails `lint`, `build`, or `type-check`
+- If a command fails because the repo needs generated Next.js types, fix the script or workflow first rather than skipping the check
+
+---
+
+## Phase 3 - Documentation Sync
+
+Before release, keep the deploy docs aligned with the actual workflow:
+
+- `AGENTS.md`
+- `docs/DEPLOY_CHECKLIST.md`
+- `docs/reference/commands.md`
+- `docs/runbooks/verification.md`
+- `docs/progress-log.md` if release discipline changed materially
+- `docs/next-session-handoff.md` if the next operator needs updated release context
+
+If you changed the release process, update the docs in the same session.
+
+---
+
+## Phase 4 - Deploy
+
+### GitHub Path
+
+Use this when the Vercel project auto-deploys from GitHub:
+
+```bash
+git add .
+git commit -m "chore(release): <summary>"
+git push origin main
+```
+
+### Vercel CLI Path
+
+Use this when you want a direct deploy from the local workspace:
+
+```powershell
+& "C:/Program Files/nodejs/npx.cmd" vercel pull --yes --environment=production
+& "C:/Program Files/nodejs/npx.cmd" vercel --prod --yes
+```
+
+### Selection Rule
+
+- Prefer the GitHub push path when the project is already connected to Vercel and you want reproducible history
+- Prefer the CLI path for direct production deploys, hotfixes, or when GitHub auto-deploy is unavailable
+
+---
+
+## Phase 5 - Verify
+
+Immediately after deploy:
+
+- Open the production URL
+- Check the main landing page
+- Check `/chat/demo`
+- Check `/admin`
+- Confirm Stripe success/cancel routes still render
+- Confirm the health-sensitive flows affected by the current release
+
+### Minimum Post-Deploy Checks
+
+- No build/runtime errors in Vercel logs
+- Key page loads return `200`
+- Auth still works
+- Database-backed reads still work
+- Any release-specific feature works in production
+
+Monitor actively for at least the first 5 to 15 minutes after release.
+
+---
+
+## Rollback
+
+Rollback immediately if:
+
+- the site is down
+- login or admin access is broken
+- production data flows fail
+- the deployed build has critical runtime errors
+
+### Rollback Paths
+
+- GitHub-connected Vercel project: redeploy the previous known-good commit
+- Manual Vercel deploy: promote or redeploy the previous successful deployment
+
+After rollback:
+
+- confirm production is stable
+- document what failed
+- fix forward in a fresh change, not on top of the broken release
+
+---
+
+## Output Contract
+
+When reporting a completed `/deploy`, include:
+
+- verification commands run
+- whether GitHub was pushed
+- whether Vercel was deployed
+- production or preview URL
+- any blockers or rollback notes
+
+If the user asks for file paths only, return file paths only.

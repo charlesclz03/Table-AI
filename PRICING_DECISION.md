@@ -1,64 +1,65 @@
 # Table IA — Pricing Decision
-**Date:** 2026-04-03
+**Date:** 2026-04-04
 **Status:** LOCKED
 
 ---
 
-## Pricing: FINAL
+## Final Pricing
 
-### Founding Offer (First 3 Restaurants)
-- **€299 setup** — includes first month live
-- After that: **€49/month**
-- "Founding restaurant" angle — exclusive, urgent
+### Setup
+- **€99 setup** — includes first month live
+- 14-day retraction rights (full refund if not satisfied)
 
-### Standard Offer (After First 3)
-- **€349-499 setup** + €59/month
-- Only after testimonials and proof
-
----
-
-## What €299 Setup Includes
-
-1. Menu and knowledge base setup
-2. Concierge customization (soul.md + rules.md)
-3. QR code creation and PDF download
-4. Installation and first configuration
-5. First corrections after launch
+### Monthly
+- **€49/month** — cancel anytime
+- **€470/year** — 2 months free (20% discount)
 
 ---
 
-## Why €29/month Was Wrong
+## Why €99 (not €299)
 
-At €29/month:
-- Need ~35 paying restaurants to hit €1,000 in 30 days
-- Not a real emergency-cash plan
-- Positions as "cheap SaaS" not "custom business tool"
+- €299 blocked small restaurant owners
+- €99 removes friction — "try for €99"
+- Still covers time to set up AI properly
+- 14-day retraction = psychological safety
 
-At €299 setup + €49/month:
-- 3 restaurants = €897 in month 1
-- Real upfront cash
-- Positions as professional installed service
+---
+
+## Math for Survival
+
+| Customer type | Month 1 revenue | Restaurants for €1,000 |
+|--------------|----------------|----------------------|
+| Monthly only | €148 (99+49) | 7 |
+| Annual prepay | €569 (99+470) | 2 |
+
+**Target:** Close 5-6 restaurants in 30 days with monthly, or 2 with annual.
 
 ---
 
 ## Sales Script
 
-**Founding offer:**
-> "€299 for full setup — includes your first month live. After that, €49/month. I'm offering a founding price for the first 3 restaurants."
+**The pitch:**
+> "Pay €99 setup. If you're not happy in 14 days, I refund everything. After that, €49/month — cancel anytime."
 
-**If they hesitate:**
-> "What if I left you a QR code to try at one table for a week? No commitment."
+**Push annual:**
+> "Or pay €470 upfront — that's 2 months free. Lock in €49/month forever."
+
+**Anchor to labor:**
+> "At €18/hour, if we save 3 staff hours/month, we pay for ourselves."
+
+**Positioning:**
+> "Not a QR menu. A multilingual concierge that handles tourist questions while your staff serves tables. Paper menu stays."
 
 ---
 
 ## Guardrails
 
 - Usage cap: 2,000 queries/month (fair-use policy)
-- Not leading with it — just in background if needed
 - Month-to-month after setup — no long contracts
+- Annual discount: 20% (2 months free)
 
 ---
 
 ## Source
 
-Codex analysis + Bidi decision, 2026-04-03
+ChatGPT pricing research + Bidi decision, 2026-04-04

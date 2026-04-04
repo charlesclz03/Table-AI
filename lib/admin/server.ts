@@ -1,6 +1,7 @@
 import { redirect } from 'next/navigation'
 import { getPublicEnv } from '@/lib/env'
 import { auth } from '@/lib/auth'
+import { ensureRestaurantForOwner } from '@/lib/admin/owner-restaurant'
 import { getStripeServerClient } from '@/lib/stripe'
 import { getSupabaseServerClient } from '@/lib/supabase/server'
 import { ensureServerOnly } from '@/lib/server-only'
@@ -175,28 +176,17 @@ function getMostAskedQuestions(conversations: ConversationRecord[]) {
 export async function requireAdminContext(): Promise<AdminContext> {
   const session = await auth()
   const userEmail = session?.user?.email?.trim().toLowerCase()
+  const userName = session?.user?.name
 
   if (!userEmail) {
     redirect('/admin/login')
   }
 
-  const client = getAdminSupabaseClient()
-
-  if (!client) {
-    return {
-      restaurant: null,
-      userEmail,
-    }
-  }
-
-  const { data } = await client
-    .from('restaurants')
-    .select('*')
-    .eq('email', userEmail)
-    .maybeSingle()
-
   return {
-    restaurant: (data as AdminRestaurantRecord | null) ?? null,
+    restaurant: await ensureRestaurantForOwner({
+      email: userEmail,
+      ownerName: userName,
+    }),
     userEmail,
   }
 }
@@ -214,28 +204,22 @@ export async function requireAdminRestaurant() {
 export async function getAdminRestaurantForRequest() {
   const session = await auth()
   const userEmail = session?.user?.email?.trim().toLowerCase()
+  const userName = session?.user?.name
 
   if (!userEmail) {
     throw new Error('You must be signed in to manage the admin dashboard.')
   }
 
-  const client = getAdminSupabaseClient()
+  const restaurant = await ensureRestaurantForOwner({
+    email: userEmail,
+    ownerName: userName,
+  })
 
-  if (!client) {
-    throw new Error('Supabase is not configured.')
-  }
-
-  const { data } = await client
-    .from('restaurants')
-    .select('*')
-    .eq('email', userEmail)
-    .maybeSingle()
-
-  if (!data) {
+  if (!restaurant) {
     throw new Error('No restaurant record was found for this account.')
   }
 
-  return data as AdminRestaurantRecord
+  return restaurant
 }
 
 export async function getDashboardStats(

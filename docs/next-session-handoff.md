@@ -19,7 +19,7 @@ Source of truth scope:
 
 Last updated:
 
-- 2026-03-24
+- 2026-04-04
 
 Related docs:
 
@@ -42,6 +42,7 @@ Related docs:
 - this repo should stay representative of the best reusable baseline, not accumulate product-specific drift
 - Table IA now includes an owner admin section at `/admin` that resolves the restaurant by NextAuth email and reads or updates restaurant data from Supabase
 - the admin build passed `tsc`, targeted eslint, and `next build`; the remaining lint warning is in `app/chat/[restaurantId]/page.tsx` (`react-hooks/exhaustive-deps`)
+- Table IA now has a repo-local `.agent/workflows/deploy.md` adapted from Freestyla for GitHub + Vercel releases; use it instead of the older generic deploy workflow
 
 ## Exact Next Slice
 

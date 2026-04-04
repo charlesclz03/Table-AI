@@ -3,6 +3,7 @@
 import Link from 'next/link'
 import {
   type FormEvent,
+  type PointerEvent as ReactPointerEvent,
   useCallback,
   useDeferredValue,
   useEffect,
@@ -171,10 +172,32 @@ function normalizeText(value: string) {
     .toLowerCase()
 }
 
+function trimInitialGreeting(
+  messages: ChatMessage[],
+  restaurantName: string,
+  tableNumber: string,
+  language: LanguageCode
+) {
+  if (messages.length === 0) {
+    return messages
+  }
+
+  const greeting = CHAT_COPY[language].greeting(restaurantName, tableNumber)
+
+  if (
+    messages[0]?.role === 'assistant' &&
+    messages[0].content.trim() === greeting.trim()
+  ) {
+    return messages.slice(1)
+  }
+
+  return messages
+}
+
 function buildDemoResponse(
   input: string,
   restaurant: RestaurantProfile,
-  language: LanguageCode
+  _language: LanguageCode
 ) {
   const menuItems = getMenuItems(restaurant.menu_json)
   const normalizedInput = normalizeText(input)
@@ -246,8 +269,7 @@ function buildDemoResponse(
     normalizedInput.includes('hi') ||
     normalizedInput.includes('hey')
   ) {
-    const languageCopy = CHAT_COPY[language]
-    return languageCopy.greeting(restaurant.name, 'your table')
+    return 'How can I help with the menu today?'
   }
 
   return 'Let me check with the staff.'
@@ -272,6 +294,7 @@ export default function RestaurantChatPage() {
   const [isLoadingRestaurant, setIsLoadingRestaurant] = useState(true)
   const [isSending, setIsSending] = useState(false)
   const [isSpeaking, setIsSpeaking] = useState(false)
+  const [isHoldingToTalk, setIsHoldingToTalk] = useState(false)
   const [isDemoMode, setIsDemoMode] = useState(false)
   const [userMessageCount, setUserMessageCount] = useState(0)
   const [ctaDismissed, setCtaDismissed] = useState(false)
@@ -284,6 +307,10 @@ export default function RestaurantChatPage() {
   const latestMessageRef = useRef<ChatMessage[]>([])
   const greetingSentRef = useRef(false)
   const voiceReadyRef = useRef(false)
+  const isHoldingToTalkRef = useRef(false)
+  const voiceTranscriptRef = useRef('')
+  const interimTranscriptRef = useRef('')
+  const shouldSubmitVoiceRef = useRef(false)
   const voiceOutputEnabled = hasResolvedDisclaimer && !showHeadphoneDisclaimer
   const deferredInterimTranscript = useDeferredValue(interimTranscript)
 
@@ -301,7 +328,7 @@ export default function RestaurantChatPage() {
 
     setIsSpeechSupported(Boolean(window.webkitSpeechRecognition))
     setShowHeadphoneDisclaimer(
-      window.localStorage.getItem(HEADPHONE_DISCLAIMER_KEY) !== 'true'
+      window.sessionStorage.getItem(HEADPHONE_DISCLAIMER_KEY) !== 'true'
     )
 
     if (!storedLanguage) {
@@ -328,6 +355,32 @@ export default function RestaurantChatPage() {
 
     voiceReadyRef.current = true
   }, [voiceOutputEnabled])
+
+  const handleDismissDisclaimer = useCallback(
+    function handleDismissDisclaimer() {
+      if (typeof window !== 'undefined') {
+        window.sessionStorage.setItem(HEADPHONE_DISCLAIMER_KEY, 'true')
+      }
+
+      setHasResolvedDisclaimer(true)
+      setShowHeadphoneDisclaimer(false)
+    },
+    []
+  )
+
+  useEffect(() => {
+    if (!showHeadphoneDisclaimer || typeof window === 'undefined') {
+      return
+    }
+
+    const timeoutId = window.setTimeout(() => {
+      handleDismissDisclaimer()
+    }, 3000)
+
+    return () => {
+      window.clearTimeout(timeoutId)
+    }
+  }, [handleDismissDisclaimer, showHeadphoneDisclaimer])
 
   useEffect(() => {
     let cancelled = false
@@ -425,7 +478,12 @@ export default function RestaurantChatPage() {
             'Content-Type': 'application/json',
           },
           body: JSON.stringify({
-            messages: latestMessageRef.current,
+            messages: trimInitialGreeting(
+              latestMessageRef.current,
+              activeRestaurant.name,
+              tableNumber,
+              language
+            ),
             restaurant: activeRestaurant,
           }),
           signal: AbortSignal.timeout(12000),
@@ -450,7 +508,7 @@ export default function RestaurantChatPage() {
         return buildDemoResponse(userInput, activeRestaurant, language ?? 'en')
       }
     },
-    [language, theme]
+    [language, tableNumber, theme]
   )
 
   const speakAssistantReply = useCallback(
@@ -534,13 +592,41 @@ export default function RestaurantChatPage() {
     [getAssistantResponse, isSending, restaurant, speakAssistantReply]
   )
 
+  const finalizeVoiceInput = useCallback(
+    function finalizeVoiceInput() {
+      const transcript = [
+        voiceTranscriptRef.current,
+        interimTranscriptRef.current,
+      ]
+        .filter(Boolean)
+        .join(' ')
+        .trim()
+
+      shouldSubmitVoiceRef.current = false
+      voiceTranscriptRef.current = ''
+      interimTranscriptRef.current = ''
+      setInterimTranscript('')
+      setIsListening(false)
+      setIsHoldingToTalk(false)
+
+      if (!transcript) {
+        setInputValue('')
+        return
+      }
+
+      setInputValue(transcript)
+      void submitMessage(transcript)
+    },
+    [submitMessage]
+  )
+
   useEffect(() => {
     if (typeof window === 'undefined' || !window.webkitSpeechRecognition) {
       return
     }
 
     const recognition = new window.webkitSpeechRecognition()
-    recognition.continuous = false
+    recognition.continuous = true
     recognition.interimResults = true
     recognition.lang =
       language ??
@@ -561,30 +647,66 @@ export default function RestaurantChatPage() {
         const transcript = result[0]?.transcript ?? ''
 
         if (result.isFinal) {
-          finalTranscript += transcript
+          finalTranscript += ` ${transcript}`
         } else {
-          partialTranscript += transcript
+          partialTranscript += ` ${transcript}`
         }
       }
 
-      setInterimTranscript(partialTranscript)
+      const finalizedText = finalTranscript.trim()
+      const partialText = partialTranscript.trim()
 
-      if (finalTranscript.trim()) {
-        setInputValue(finalTranscript.trim())
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-        void submitMessage(finalTranscript.trim())
+      if (finalizedText) {
+        voiceTranscriptRef.current = [voiceTranscriptRef.current, finalizedText]
+          .filter(Boolean)
+          .join(' ')
+          .trim()
       }
+
+      interimTranscriptRef.current = partialText
+      setInterimTranscript(partialText)
+      setInputValue(
+        [voiceTranscriptRef.current, partialText]
+          .filter(Boolean)
+          .join(' ')
+          .trim()
+      )
     }
 
     recognition.onerror = () => {
+      if (shouldSubmitVoiceRef.current) {
+        finalizeVoiceInput()
+        return
+      }
+
       setIsListening(false)
+      setIsHoldingToTalk(false)
+      isHoldingToTalkRef.current = false
       setErrorMessage(
-        'Voice input was interrupted. You can tap the mic again or type below.'
+        'Voice input was interrupted. Hold the mic to try again or type below.'
       )
     }
 
     recognition.onend = () => {
+      if (isHoldingToTalkRef.current && !shouldSubmitVoiceRef.current) {
+        try {
+          recognition.start()
+          setIsListening(true)
+          return
+        } catch {
+          setIsListening(false)
+        }
+      }
+
+      if (shouldSubmitVoiceRef.current) {
+        finalizeVoiceInput()
+        return
+      }
+
+      voiceTranscriptRef.current = ''
+      interimTranscriptRef.current = ''
       setIsListening(false)
+      setIsHoldingToTalk(false)
       setInterimTranscript('')
     }
 
@@ -594,9 +716,8 @@ export default function RestaurantChatPage() {
       recognitionRef.current?.abort?.()
       recognitionRef.current = null
     }
-  }, [isSending, language, restaurant, submitMessage])
+  }, [finalizeVoiceInput, language])
 
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {
     return () => {
       if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
@@ -607,30 +728,116 @@ export default function RestaurantChatPage() {
     }
   }, [])
 
-  function handleDismissDisclaimer() {
-    if (typeof window !== 'undefined') {
-      window.localStorage.setItem(HEADPHONE_DISCLAIMER_KEY, 'true')
-    }
+  const startVoiceInput = useCallback(
+    function startVoiceInput(event: ReactPointerEvent<HTMLButtonElement>) {
+      if (!isSpeechSupported || !recognitionRef.current || isSending) {
+        return
+      }
 
-    setShowHeadphoneDisclaimer(false)
-  }
+      event.preventDefault()
+      event.currentTarget.setPointerCapture(event.pointerId)
+      setErrorMessage('')
+      shouldSubmitVoiceRef.current = false
+      isHoldingToTalkRef.current = true
+      voiceTranscriptRef.current = ''
+      interimTranscriptRef.current = ''
+      setInputValue('')
+      setInterimTranscript('')
+      setIsHoldingToTalk(true)
 
-  function handleToggleListening() {
-    if (!isSpeechSupported || !recognitionRef.current || isSending) {
-      return
-    }
+      try {
+        recognitionRef.current.start()
+        setIsListening(true)
+      } catch {
+        setIsHoldingToTalk(false)
+        isHoldingToTalkRef.current = false
+      }
+    },
+    [isSending, isSpeechSupported]
+  )
 
-    setErrorMessage('')
+  const stopVoiceInput = useCallback(
+    function stopVoiceInput(event?: ReactPointerEvent<HTMLButtonElement>) {
+      if (event && event.currentTarget.hasPointerCapture(event.pointerId)) {
+        event.currentTarget.releasePointerCapture(event.pointerId)
+      }
 
-    if (isListening) {
+      if (!isHoldingToTalkRef.current && !isListening) {
+        return
+      }
+
+      shouldSubmitVoiceRef.current = true
+      isHoldingToTalkRef.current = false
+
+      if (!recognitionRef.current || !isListening) {
+        finalizeVoiceInput()
+        return
+      }
+
       recognitionRef.current.stop()
-      setIsListening(false)
+    },
+    [finalizeVoiceInput, isListening]
+  )
+
+  const cancelVoiceInput = useCallback(function cancelVoiceInput(
+    event?: ReactPointerEvent<HTMLButtonElement>
+  ) {
+    if (event && event.currentTarget.hasPointerCapture(event.pointerId)) {
+      event.currentTarget.releasePointerCapture(event.pointerId)
+    }
+
+    shouldSubmitVoiceRef.current = false
+    isHoldingToTalkRef.current = false
+    voiceTranscriptRef.current = ''
+    interimTranscriptRef.current = ''
+    setIsListening(false)
+    setIsHoldingToTalk(false)
+    setInterimTranscript('')
+    setInputValue('')
+
+    recognitionRef.current?.stop()
+  }, [])
+
+  useEffect(() => {
+    if (typeof window === 'undefined') {
       return
     }
 
-    recognitionRef.current.start()
-    setIsListening(true)
-  }
+    const handlePointerUp = () => {
+      if (!isHoldingToTalkRef.current) {
+        return
+      }
+
+      shouldSubmitVoiceRef.current = true
+      isHoldingToTalkRef.current = false
+      recognitionRef.current?.stop()
+    }
+
+    window.addEventListener('pointerup', handlePointerUp)
+
+    return () => {
+      window.removeEventListener('pointerup', handlePointerUp)
+    }
+  }, [])
+
+  useEffect(() => {
+    if (showHeadphoneDisclaimer && typeof window !== 'undefined') {
+      window.speechSynthesis?.cancel()
+      setIsSpeaking(false)
+    }
+  }, [showHeadphoneDisclaimer])
+
+  useEffect(() => {
+    if (messages.length !== 1) {
+      return
+    }
+
+    const onlyMessage = messages[0]
+
+    if (onlyMessage?.role === 'assistant') {
+      setLatestSubtitle(onlyMessage.content)
+    }
+  }, [messages])
 
   function handleTextSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
@@ -669,39 +876,39 @@ export default function RestaurantChatPage() {
         }}
       />
 
-      <div className="relative flex h-full flex-col">
-        <header className="px-4 pb-3 pt-6 sm:px-6">
-          <div className="mx-auto flex w-full max-w-md items-start justify-between rounded-[28px] border border-white/10 bg-white/6 px-4 py-3 backdrop-blur">
-            <div>
+      <div className="relative flex h-full flex-col overflow-hidden">
+        <header className="px-4 pb-3 pt-4">
+          <div className="mx-auto flex w-full max-w-md flex-col gap-3 rounded-[28px] border border-white/10 bg-white/6 px-4 py-3 backdrop-blur sm:flex-row sm:items-start sm:justify-between">
+            <div className="min-w-0">
               <p className="text-[11px] uppercase tracking-[0.32em] text-amber-200/70">
                 TableIA Concierge
               </p>
-              <h1 className="mt-1 text-xl font-semibold text-white">
+              <h1 className="mt-1 break-words text-xl font-semibold text-white">
                 {restaurant?.name ?? 'Loading restaurant...'}
               </h1>
               <p className="mt-1 text-sm text-white/65">Table {tableNumber}</p>
             </div>
 
-            <div className="flex items-center gap-2">
+            <div className="flex w-full flex-wrap items-center gap-2 sm:w-auto sm:justify-end">
               <Link
                 href={buildOnboardingPath(
                   restaurantId,
                   'language',
                   tableNumber
                 )}
-                className="flex h-10 w-10 items-center justify-center rounded-full border border-white/10 bg-black/20 text-white/75 transition hover:bg-white/10 hover:text-white"
+                className="flex h-11 w-11 items-center justify-center rounded-full border border-white/10 bg-black/20 text-white/75 transition hover:bg-white/10 hover:text-white"
                 aria-label="Change language"
               >
                 <Globe2 className="h-4 w-4" />
               </Link>
               <Link
                 href={buildOnboardingPath(restaurantId, 'theme', tableNumber)}
-                className="flex h-10 w-10 items-center justify-center rounded-full border border-white/10 bg-black/20 text-white/75 transition hover:bg-white/10 hover:text-white"
+                className="flex h-11 w-11 items-center justify-center rounded-full border border-white/10 bg-black/20 text-white/75 transition hover:bg-white/10 hover:text-white"
                 aria-label="Change theme"
               >
                 <Paintbrush className="h-4 w-4" />
               </Link>
-              <div className="flex items-center gap-2 rounded-full border border-white/10 bg-black/20 px-3 py-1.5 text-xs text-white/70">
+              <div className="flex min-h-11 w-full items-center justify-center gap-2 rounded-full border border-white/10 bg-black/20 px-3 py-2 text-center text-xs text-white/70 sm:w-auto">
                 <Volume2 className="h-3.5 w-3.5" />
                 <span>
                   {activeLanguage.flag}{' '}
@@ -719,14 +926,14 @@ export default function RestaurantChatPage() {
                   Please use headphones for voice replies.
                 </p>
                 <p className="mt-1 text-amber-50/75">
-                  This only shows once, so guests can keep the restaurant
-                  atmosphere calm.
+                  This auto-closes after a few seconds and only appears once per
+                  session so guests can keep the restaurant atmosphere calm.
                 </p>
               </div>
               <button
                 type="button"
                 onClick={handleDismissDisclaimer}
-                className="rounded-full p-1 text-amber-100/80 transition hover:bg-white/10 hover:text-white"
+                className="flex h-11 w-11 items-center justify-center rounded-full text-amber-100/80 transition hover:bg-white/10 hover:text-white"
                 aria-label="Dismiss headphone reminder"
               >
                 <X className="h-4 w-4" />
@@ -741,27 +948,30 @@ export default function RestaurantChatPage() {
           ) : null}
         </header>
 
-        <main className="flex min-h-0 flex-1 flex-col px-4 pb-4 sm:px-6">
+        <main className="flex min-h-0 flex-1 flex-col overflow-hidden px-4 pb-4">
           <div className="mx-auto flex h-full w-full max-w-md min-h-0 flex-col">
-            <section className="rounded-[32px] border border-white/10 bg-white/6 px-5 pb-5 pt-6 backdrop-blur">
+            <section className="overflow-hidden rounded-[32px] border border-white/10 bg-white/6 px-4 pb-5 pt-5 backdrop-blur sm:px-5 sm:pt-6">
               <div className="flex flex-col items-center text-center">
                 <WineSphere
                   themeKey={theme}
                   speaking={isSpeaking}
                   size="xl"
-                  className={cn(isListening && 'scale-[1.02]')}
+                  className={cn(
+                    'transition-all duration-300',
+                    (isListening || isHoldingToTalk) && 'scale-[1.02]'
+                  )}
                 />
 
-                <div className="mt-4 w-full rounded-[24px] border border-white/10 bg-black/20 px-4 py-4">
+                <div className="mt-4 w-full overflow-hidden rounded-[24px] border border-white/10 bg-black/20 px-4 py-4">
                   <p className="text-[11px] uppercase tracking-[0.3em] text-amber-200/70">
                     {localizedCopy.subtitlesLabel}
                   </p>
-                  <p className="mt-3 text-base leading-7 text-white">
+                  <p className="mt-3 break-words text-sm leading-7 text-white sm:text-base">
                     {visibleSubtitle}
                   </p>
                 </div>
 
-                <div className="mt-4 flex items-center gap-2 text-xs text-white/55">
+                <div className="mt-4 flex flex-wrap items-center justify-center gap-2 text-center text-xs text-white/55">
                   <span
                     className={cn(
                       'inline-block h-2.5 w-2.5 rounded-full',
@@ -781,8 +991,8 @@ export default function RestaurantChatPage() {
                         ? 'Concierge is thinking'
                         : isSpeaking
                           ? `${activeTheme.label} sphere is speaking`
-                          : isListening
-                            ? 'Listening now'
+                          : isHoldingToTalk || isListening
+                            ? 'Listening while held'
                             : isDemoMode
                               ? 'Demo mode'
                               : 'Live mode'}
@@ -791,13 +1001,13 @@ export default function RestaurantChatPage() {
               </div>
             </section>
 
-            <section className="mt-4 min-h-0 flex-1 overflow-y-auto rounded-[28px] border border-white/10 bg-white/6 p-3 backdrop-blur">
-              <div className="space-y-3">
+            <section className="mt-4 min-h-0 flex-1 overflow-hidden rounded-[28px] border border-white/10 bg-white/6 p-3 backdrop-blur">
+              <div className="h-full space-y-3 overflow-y-auto overscroll-contain pr-1">
                 {messages.map((message) => (
                   <div
                     key={message.id}
                     className={cn(
-                      'max-w-[88%] rounded-[24px] px-4 py-3 text-sm leading-6',
+                      'w-fit max-w-[92%] break-words rounded-[24px] px-4 py-3 text-sm leading-6 sm:max-w-[88%]',
                       message.role === 'assistant'
                         ? 'bg-white/10 text-white'
                         : 'ml-auto bg-amber-300 text-[#1d1309]'
@@ -808,7 +1018,7 @@ export default function RestaurantChatPage() {
                 ))}
 
                 {deferredInterimTranscript ? (
-                  <div className="max-w-[88%] rounded-[24px] border border-dashed border-white/15 bg-white/5 px-4 py-3 text-sm italic text-white/60">
+                  <div className="max-w-[92%] break-words rounded-[24px] border border-dashed border-white/15 bg-white/5 px-4 py-3 text-sm italic text-white/60 sm:max-w-[88%]">
                     {deferredInterimTranscript}
                   </div>
                 ) : null}
@@ -827,19 +1037,19 @@ export default function RestaurantChatPage() {
                   Founding setup includes the first month live, QR deployment,
                   and concierge tuning.
                 </p>
-                <div className="mt-4 flex gap-3">
+                <div className="mt-4 flex flex-col gap-3 sm:flex-row">
                   <a
                     href={`mailto:hello@tableia.ai?subject=${encodeURIComponent(
                       `I want TableIA for ${restaurant?.name ?? 'my restaurant'}`
                     )}`}
-                    className="flex-1 rounded-full bg-emerald-300 px-4 py-3 text-center text-sm font-semibold text-[#0b261b] transition hover:bg-emerald-200"
+                    className="flex min-h-11 flex-1 items-center justify-center rounded-full bg-emerald-300 px-4 py-3 text-center text-sm font-semibold text-[#0b261b] transition hover:bg-emerald-200"
                   >
                     Yes, I want this
                   </a>
                   <button
                     type="button"
                     onClick={() => setCtaDismissed(true)}
-                    className="flex-1 rounded-full border border-white/15 bg-white/5 px-4 py-3 text-sm text-white/75 transition hover:bg-white/10 hover:text-white"
+                    className="flex min-h-11 flex-1 items-center justify-center rounded-full border border-white/15 bg-white/5 px-4 py-3 text-sm text-white/75 transition hover:bg-white/10 hover:text-white"
                   >
                     No, thanks
                   </button>
@@ -849,36 +1059,48 @@ export default function RestaurantChatPage() {
           </div>
         </main>
 
-        <footer className="px-4 pb-6 sm:px-6">
-          <div className="mx-auto w-full max-w-md rounded-[32px] border border-white/10 bg-white/8 p-3 backdrop-blur">
-            <form onSubmit={handleTextSubmit} className="flex items-end gap-3">
+        <footer className="px-4 pb-4 pt-2 sm:pb-6">
+          <div className="mx-auto w-full max-w-md overflow-hidden rounded-[32px] border border-white/10 bg-white/8 p-3 backdrop-blur">
+            <form
+              onSubmit={handleTextSubmit}
+              className="flex items-end gap-2 sm:gap-3"
+            >
               <button
                 type="button"
-                onClick={handleToggleListening}
+                onPointerDown={startVoiceInput}
+                onPointerUp={stopVoiceInput}
+                onPointerCancel={cancelVoiceInput}
+                onPointerLeave={(event) => {
+                  if (isHoldingToTalk) {
+                    stopVoiceInput(event)
+                  }
+                }}
                 disabled={
                   !isSpeechSupported || isLoadingRestaurant || isSending
                 }
                 className={cn(
-                  'flex h-14 w-14 shrink-0 items-center justify-center rounded-full border transition',
-                  isListening
-                    ? 'border-rose-300/40 bg-rose-400/20 text-rose-100'
+                  'flex h-14 w-14 shrink-0 items-center justify-center rounded-full border transition-all duration-300',
+                  isHoldingToTalk || isListening
+                    ? 'border-rose-300/50 bg-rose-400/25 text-rose-50 shadow-[0_0_24px_rgba(251,113,133,0.35)]'
                     : 'border-white/10 bg-white/8 text-white',
                   (!isSpeechSupported || isLoadingRestaurant || isSending) &&
                     'cursor-not-allowed opacity-45'
                 )}
-                aria-pressed={isListening}
+                aria-pressed={isHoldingToTalk || isListening}
                 aria-label={
-                  isListening ? 'Stop voice input' : 'Start voice input'
+                  isHoldingToTalk || isListening
+                    ? 'Release to send voice input'
+                    : 'Press and hold to talk'
                 }
               >
-                {isListening ? (
+                {isHoldingToTalk || isListening ? (
                   <MicOff className="h-5 w-5" />
                 ) : (
                   <Mic className="h-5 w-5" />
                 )}
               </button>
 
-              <label className="flex-1">
+              <label className="min-w-0 flex-1">
                 <span className="sr-only">Type your message</span>
                 <textarea
                   value={inputValue}
@@ -905,8 +1127,8 @@ export default function RestaurantChatPage() {
               </button>
             </form>
 
-            <p className="mt-3 px-1 text-xs text-white/45">
-              {localizedCopy.helper}
+            <p className="mt-3 px-1 text-xs leading-5 text-white/45">
+              Hold the mic to talk, then release to send. {localizedCopy.helper}
             </p>
           </div>
         </footer>
