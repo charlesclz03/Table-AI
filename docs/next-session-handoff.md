@@ -51,9 +51,11 @@ Related docs:
 - the latest production deployment is `dpl_FzNTKtpWkXdKeBPBPPLuWR9uten3`, verified on `https://www.gustia.wine` and `https://gustia.wine`
 - the full documented workspace was pushed to `origin/main` in commit `2295105` (`chore(release): gustia production launch`)
 - the guest chat now uses OpenAI TTS for concierge voice replies through `/api/tts`, with browser speech fallback if API synthesis or playback fails
+- the owner menu editor now includes an `Upload Photo` flow backed by `/api/menu/parse`, where OpenAI `gpt-4o` extracts menu items from uploaded menu images or PDFs before owner review and save
 - the owner dashboard now includes `/admin/changelog`, backed by `lib/changelog.ts` and `/api/changelog`, with a latest-version badge in the admin navigation
 - the current build now passes `npm run type-check`, `npm run lint`, and `npm run build`, and the new `/api/changelog` route was smoke-checked locally from a production start
 - local runtime smoke reached `/api/tts`, but the current OpenAI account returned a quota `429`, so natural voice playback still needs live verification after billing/quota is restored
+- the AI menu import flow was verified through `npm run type-check`, `npm run lint`, and `npm run build`, but live parsing still needs an authenticated owner session plus available OpenAI quota for a real upload test
 - `/deploy` should now default to pushing `main` to GitHub and letting Vercel auto-deploy; direct CLI deploys are fallback-only
 - after the GitHub push, a fresh auto-deploy was not yet visible via the Vercel CLI polling window, so the GitHub-to-Vercel integration should be rechecked if that automation is expected to be immediate
 - Gustia now has a repo-local `.agent/workflows/deploy.md` adapted from Freestyla for GitHub + Vercel releases; use it instead of the older generic deploy workflow
@@ -67,6 +69,7 @@ Related docs:
 - remove or archive sample artifacts that stop representing the real baseline
 - document any new integration or workflow change in the patch notes, progress log, session log, handoff, commands, env reference, and deploy docs when relevant
 - keep `/deploy` and `docs/DEPLOY_CHECKLIST.md` aligned with the current reporting contract so deploy summaries stay concise and non-redundant
+- live-smoke the new `/admin/menu` photo import with a real owner account and a real menu PDF once OpenAI quota is confirmed healthy
 - apply `docs/reference/supabase-owner-auth-migration.sql` in the live Supabase project before treating the new owner auth path as production-ready
 - verify Supabase dashboard auth settings still allow both email/password and Google OAuth, with `/auth/callback` added to the allowed redirect URLs
 - if admin reads fail after deploy, check that `owners`, `restaurants.owner_id`, and the RLS policies from the migration are present before debugging the app code

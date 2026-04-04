@@ -15,6 +15,24 @@ export interface ChangelogEntry {
 
 export const changelog: ChangelogEntry[] = [
   {
+    version: '1.0.2',
+    date: '2026-04-04',
+    changes: [
+      {
+        type: 'feature',
+        text: 'Owners can now upload menu photos or PDFs and let AI draft menu items automatically',
+      },
+      {
+        type: 'improvement',
+        text: 'Imported menu pages are merged, deduped, and reviewed before they replace the live menu',
+      },
+      {
+        type: 'fix',
+        text: 'Menu setup is faster for multilingual restaurants that previously had to enter every dish by hand',
+      },
+    ],
+  },
+  {
     version: '1.0.1',
     date: '2026-04-04',
     changes: [

@@ -35,6 +35,12 @@ Related docs:
 - use this file for release history, `docs/progress-log.md` for durable baseline truth, and `docs/session-log.md` for session chronology
 - until formal semantic versioning starts, date-keyed entries are acceptable
 
+## 2026-04-04 - AI Menu Photo Import
+
+- **ADMIN**: Added an `Upload Photo` flow in `/admin/menu` so owners can upload one or more menu pages as PDF, JPG, PNG, or WebP instead of typing every item manually.
+- **AI**: Added `/api/menu/parse`, backed by OpenAI vision on `gpt-4o`, to extract dishes, prices, categories, descriptions, and allergens from multilingual menus before owner review.
+- **UX**: Added an editable review step with deduping, manual fixes, and save-to-Supabase handoff so imported items can replace the live menu safely.
+
 ## 2026-04-04 - Owner Changelog Dashboard
 
 - **ADMIN**: Added a dedicated `/admin/changelog` page so restaurant owners can review released features, fixes, and improvements without leaving the dashboard.

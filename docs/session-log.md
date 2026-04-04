@@ -37,6 +37,12 @@ Related docs:
 
 ## Entries
 
+### 2026-04-04 - AI Menu Photo Import
+
+- added an authenticated `app/api/menu/parse` route that accepts multipart PDF/image uploads, sends each file through OpenAI `gpt-4o`, normalizes the structured extraction, and dedupes repeated items across pages
+- built a new owner-facing photo upload workflow inside `/admin/menu` with drag-and-drop, file previews, editable parsed rows, AI notes, and save-through to the existing Supabase-backed menu endpoint
+- kept the manual menu editor intact behind a mode switch so owners can still fall back to direct entry when parsing fails or prices need extra cleanup
+- verified `npm run type-check`, `npm run lint`, and `npm run build` all pass; live end-to-end parsing still depends on an authenticated owner session plus active OpenAI quota
 ### 2026-04-04 - Supabase Owner Auth Migration
 
 - replaced the owner admin's active auth path with Supabase Auth routes for email/password login, signup, logout, Google OAuth, and an SSR callback exchange

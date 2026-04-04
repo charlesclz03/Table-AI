@@ -14,7 +14,7 @@ export default async function AdminMenuPage() {
     <AdminPageShell
       eyebrow="Menu Editor"
       title="Shape what the concierge knows"
-      description="Keep pricing, categories, allergens, and dietary tags accurate so recommendations stay trustworthy."
+      description="Keep pricing, categories, allergens, and dietary tags accurate so recommendations stay trustworthy, whether you enter items manually or import them from a menu photo."
     >
       <MenuEditor initialItems={normalizeMenuItems(restaurant.menu_json)} />
     </AdminPageShell>
