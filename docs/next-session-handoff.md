@@ -48,6 +48,7 @@ Related docs:
 - Gustia now includes an owner admin section at `/admin` that authenticates through Supabase Auth, auto-claims the matching owner record, and reads or updates restaurant data through owner-scoped Supabase access
 - the owner flow now includes a public landing page on `/`, a dedicated `/admin/login` screen, Supabase email/password auth, Google OAuth through Supabase Auth, and first-login owner/restaurant auto-provisioning when the Supabase owner migration has been applied
 - the public landing page on `/` is now a mobile-first parallax tutorial for restaurant owners, with a fixed azulejos backdrop, four setup steps, guest-flow preview, and the locked activation-first pricing language
+- the shared UI now follows a stricter glass system: azulejos only in the background layer, then translucent glass panels, chips, alerts, inputs, and tinted CTA surfaces across landing, onboarding, chat, and entry shells
 - the public legal pages, landing CTA, and restaurant contact touchpoints now consistently use `contact@gustia.wine`
 - the public production domain is now live at `https://www.gustia.wine`
 - check Vercel for the current production deployment id before debugging a live incident, because `/deploy` can advance production after this handoff was last edited

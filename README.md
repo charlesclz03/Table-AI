@@ -11,7 +11,7 @@ The repo now contains:
 - owner-facing Lisbon-style landing page on `/`
 - customer chat flow under `/chat/[restaurantId]`
 - language and orbital wine-theme onboarding
-- dark glassmorphism mobile UI
+- azulejos-only background layer with glassmorphism UI surfaces and tinted CTAs
 - owner admin dashboard under `/admin`
 - Supabase owner auth through `/admin/login` with email/password and Google OAuth
 - first-login owner and restaurant auto-provisioning through Supabase when the owner SQL migration and service-role env are configured
@@ -37,8 +37,8 @@ Gustia is designed as a concierge layer for restaurants:
 
 Commercial model:
 
-- founding offer: EUR 299 setup including first month
-- after month one: EUR 49/month
+- activation: EUR 99
+- then EUR 49/month or EUR 470/year
 
 ## Confirmed Stack
 

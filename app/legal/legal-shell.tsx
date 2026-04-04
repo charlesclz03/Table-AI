@@ -41,7 +41,7 @@ export function LegalPageShell({
   children,
 }: LegalPageShellProps) {
   return (
-    <div className="relative isolate overflow-hidden rounded-[36px] border border-white/12 bg-[linear-gradient(160deg,rgba(255,255,255,0.1),rgba(255,255,255,0.03))] px-5 py-6 shadow-[0_30px_120px_rgba(0,0,0,0.35)] backdrop-blur-2xl sm:px-8 sm:py-8 lg:px-10">
+    <div className="glass-panel relative isolate overflow-hidden rounded-[36px] px-5 py-6 sm:px-8 sm:py-8 lg:px-10">
       <div className="pointer-events-none absolute inset-0">
         <div className="absolute left-0 top-0 h-56 w-56 rounded-full bg-[#b85a2f]/20 blur-3xl" />
         <div className="absolute bottom-0 right-0 h-64 w-64 rounded-full bg-[#0ea5e9]/12 blur-3xl" />
@@ -52,7 +52,7 @@ export function LegalPageShell({
           <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
             <Link
               href="/"
-              className="inline-flex items-center gap-2 self-start rounded-full border border-white/12 bg-black/20 px-4 py-2 text-sm font-medium text-white/82 transition hover:border-white/20 hover:bg-black/30 hover:text-white"
+              className="glass-button inline-flex items-center gap-2 self-start rounded-full px-4 py-2 text-sm font-medium text-white/82 transition hover:bg-white/12 hover:text-white"
             >
               <ArrowLeft className="h-4 w-4" />
               Back to home
@@ -76,7 +76,7 @@ export function LegalPageShell({
             </div>
           </div>
 
-          <div className="rounded-[28px] border border-white/10 bg-black/20 px-5 py-6 sm:px-7">
+          <div className="glass-panel-soft rounded-[28px] px-5 py-6 sm:px-7">
             <p className="text-[11px] uppercase tracking-[0.34em] text-amber-100/72">
               {eyebrow}
             </p>

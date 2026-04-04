@@ -652,7 +652,7 @@ export function OnboardingShell({
 
   return (
     <OnboardingContext.Provider value={value}>
-      <div className="min-h-screen overflow-hidden bg-[#050508] text-white">
+      <div className="min-h-screen overflow-hidden text-white">
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(247,197,122,0.18),_transparent_28%),radial-gradient(circle_at_20%_80%,_rgba(114,47,55,0.3),_transparent_34%),radial-gradient(circle_at_80%_20%,_rgba(240,180,130,0.12),_transparent_26%),linear-gradient(180deg,_#130d0b_0%,_#09080b_52%,_#040406_100%)]" />
         <div
           className="pointer-events-none absolute inset-x-[-15%] top-[18%] h-[28rem] rounded-full blur-3xl"
@@ -664,7 +664,7 @@ export function OnboardingShell({
         />
 
         <div className="relative mx-auto flex min-h-screen w-full max-w-md flex-col px-5 pb-[max(1.75rem,env(safe-area-inset-bottom))] pt-[max(1.25rem,env(safe-area-inset-top))]">
-          <header className="rounded-[32px] border border-white/10 bg-white/[0.06] px-4 py-4 shadow-[0_22px_80px_rgba(0,0,0,0.28)] backdrop-blur-xl">
+          <header className="glass-panel rounded-[32px] px-4 py-4">
             <div className="flex items-start justify-between gap-4">
               <div className="min-w-0">
                 <p className="text-[10px] uppercase tracking-[0.38em] text-amber-100/65">
@@ -677,7 +677,7 @@ export function OnboardingShell({
                   Table {tableNumber}
                 </p>
               </div>
-              <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full border border-white/10 bg-black/20 text-amber-100/85">
+              <div className="glass-chip flex h-12 w-12 shrink-0 items-center justify-center rounded-full text-amber-100/85">
                 <Sparkles className="h-5 w-5" />
               </div>
             </div>

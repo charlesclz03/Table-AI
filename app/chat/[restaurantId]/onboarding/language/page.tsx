@@ -85,7 +85,7 @@ function LanguageSelectionScreen() {
             }
           }}
         >
-          <div className="rounded-[34px] border border-white/10 bg-white/[0.05] px-6 py-8 text-center shadow-[0_24px_80px_rgba(0,0,0,0.28)] backdrop-blur-xl">
+          <div className="glass-panel rounded-[34px] px-6 py-8 text-center">
             <p className="text-[11px] uppercase tracking-[0.34em] text-amber-100/62">
               Welcome
             </p>
@@ -106,7 +106,7 @@ function LanguageSelectionScreen() {
             <button
               type="button"
               onClick={handleAdvance}
-              className="mt-8 flex min-h-14 w-full items-center justify-center rounded-full bg-amber-200 px-5 py-4 text-base font-semibold text-[#24160d] transition hover:bg-amber-100 active:scale-[0.99]"
+              className="glass-button-amber mt-8 flex min-h-14 w-full items-center justify-center rounded-full px-5 py-4 text-base font-semibold text-amber-50 transition hover:bg-amber-300/24 active:scale-[0.99]"
             >
               Tap to start
             </button>
@@ -149,7 +149,7 @@ function LanguageSelectionScreen() {
                 onClick={() => handleSelectLanguage(language.code)}
                 whileTap={{ scale: 0.98 }}
                 disabled={isRouting}
-                className="flex min-h-[110px] min-w-[60px] flex-col justify-between rounded-[28px] border border-white/10 bg-white/[0.06] px-4 py-4 text-left shadow-[0_18px_48px_rgba(0,0,0,0.18)] backdrop-blur-xl transition hover:border-amber-200/35 hover:bg-white/[0.1] disabled:pointer-events-none"
+                className="glass-panel-soft flex min-h-[110px] min-w-[60px] flex-col justify-between rounded-[28px] px-4 py-4 text-left transition hover:border-amber-200/35 hover:bg-white/[0.1] disabled:pointer-events-none"
                 initial={{ y: 28 }}
                 animate={{ y: 0 }}
                 transition={{

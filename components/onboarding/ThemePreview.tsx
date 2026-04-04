@@ -63,7 +63,7 @@ export function ThemePreview({
   return (
     <div
       className={cn(
-        'rounded-[34px] border border-white/10 bg-white/[0.05] px-5 py-6 text-center shadow-[0_24px_80px_rgba(0,0,0,0.26)] backdrop-blur-xl',
+        'glass-panel rounded-[34px] px-5 py-6 text-center',
         className
       )}
     >
@@ -93,7 +93,7 @@ export function ThemePreview({
       </p>
       <p className="mt-2 text-sm leading-6 text-white/55">{theme.subtitle}</p>
 
-      <div className="mt-5 rounded-[24px] border border-white/10 bg-black/20 px-4 py-4 text-left">
+      <div className="glass-panel-soft mt-5 rounded-[24px] px-4 py-4 text-left">
         <div className="flex items-center justify-between gap-3">
           <p className="text-[11px] uppercase tracking-[0.3em] text-amber-200/70">
             Personality
@@ -115,7 +115,7 @@ export function ThemePreview({
           type="button"
           onClick={onReplay}
           disabled={isLoading}
-          className="flex min-h-12 flex-1 items-center justify-center gap-2 rounded-full border border-white/12 bg-white/8 px-4 py-3 text-sm font-medium text-white transition hover:bg-white/12 disabled:cursor-wait disabled:opacity-60"
+          className="glass-button flex min-h-12 flex-1 items-center justify-center gap-2 rounded-full px-4 py-3 text-sm font-medium text-white transition hover:bg-white/12 disabled:cursor-wait disabled:opacity-60"
         >
           {isLoading ? (
             <span className="h-4 w-4 rounded-full border-2 border-white/25 border-t-white/80 animate-spin" />
@@ -127,7 +127,7 @@ export function ThemePreview({
         <button
           type="button"
           onClick={onConfirm}
-          className="flex min-h-12 flex-1 items-center justify-center gap-2 rounded-full bg-emerald-300 px-4 py-3 text-sm font-semibold text-[#0d2618] transition hover:bg-emerald-200"
+          className="glass-button-emerald flex min-h-12 flex-1 items-center justify-center gap-2 rounded-full px-4 py-3 text-sm font-semibold text-emerald-50 transition hover:bg-emerald-300/24"
         >
           <Check className="h-4 w-4" />
           Select theme

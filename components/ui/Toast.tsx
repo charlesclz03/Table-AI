@@ -22,14 +22,14 @@ export function Toast({ message, type, onClose, duration = 4000 }: ToastProps) {
   }, [duration, onClose])
 
   const typeStyles = {
-    success: 'bg-green-600',
-    error: 'bg-red-600',
-    info: 'bg-accent-primary',
+    success: 'glass-alert-emerald text-emerald-50',
+    error: 'glass-alert-rose text-rose-50',
+    info: 'glass-button text-white',
   }
 
   return (
     <div
-      className={`${typeStyles[type]} text-white px-6 py-4 rounded-lg shadow-soft flex items-center gap-3 min-w-[300px] animate-bounce-in`}
+      className={`${typeStyles[type]} flex min-w-[300px] items-center gap-3 rounded-lg px-6 py-4 shadow-soft animate-bounce-in`}
       role="alert"
     >
       <p className="flex-1 font-medium">{message}</p>

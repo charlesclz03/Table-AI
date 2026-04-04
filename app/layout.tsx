@@ -42,11 +42,11 @@ export default function RootLayout({
       <body
         className={`${sans.variable} ${mono.variable} bg-surface-base font-sans text-text-primary antialiased`}
       >
+        <div className="azulejo-backdrop" aria-hidden="true" />
         <Providers>
           <div className="relative min-h-screen overflow-hidden">
-            <div className="pointer-events-none absolute inset-0 bg-gradient-aurora opacity-20 blur-3xl" />
             <div className="relative mx-auto flex min-h-screen max-w-6xl flex-col px-6 py-8">
-              <header className="mb-10 flex flex-col gap-6 rounded-full border border-stroke-soft bg-surface-elevated/60 px-6 py-4 backdrop-blur-medium md:flex-row md:items-center md:justify-between">
+              <header className="glass-panel mb-10 flex flex-col gap-6 rounded-full px-6 py-4 md:flex-row md:items-center md:justify-between">
                 <div>
                   <p className="text-xs uppercase tracking-[0.3em] text-text-secondary">
                     Gustia
@@ -60,7 +60,7 @@ export default function RootLayout({
                     <Link
                       key={item.href}
                       href={item.href}
-                      className="rounded-full px-4 py-2 transition hover:bg-surface-base hover:text-text-primary"
+                      className="glass-chip-muted rounded-full px-4 py-2 transition hover:bg-white/12 hover:text-text-primary"
                     >
                       {item.label}
                     </Link>
@@ -68,7 +68,7 @@ export default function RootLayout({
                 </nav>
               </header>
               <main className="flex-1">{children}</main>
-              <footer className="mt-10 border-t border-stroke-soft pt-6 text-sm text-text-secondary">
+              <footer className="mt-10 border-t border-white/10 pt-6 text-sm text-text-secondary">
                 Built for guest conversations, menu guidance, and owner control.
               </footer>
             </div>

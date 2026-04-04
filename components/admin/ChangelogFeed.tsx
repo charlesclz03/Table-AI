@@ -83,7 +83,7 @@ export function ChangelogFeed({ entries }: { entries: ChangelogEntry[] }) {
                       v{entry.version}
                     </h4>
                   </div>
-                  <span className="inline-flex w-fit rounded-full border border-white/10 bg-black/25 px-4 py-2 text-sm text-white/70">
+                  <span className="glass-chip-muted inline-flex w-fit rounded-full px-4 py-2 text-sm text-white/70">
                     {formatVersionDate(entry.date)}
                   </span>
                 </div>

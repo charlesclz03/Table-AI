@@ -15,6 +15,20 @@ export interface ChangelogEntry {
 
 export const changelog: ChangelogEntry[] = [
   {
+    version: '1.0.9',
+    date: '2026-04-04',
+    changes: [
+      {
+        type: 'improvement',
+        text: 'Azulejos now lives in one shared background layer so the app keeps the Portuguese tile texture behind the interface instead of inside content panels',
+      },
+      {
+        type: 'improvement',
+        text: 'Buttons, cards, inputs, alerts, and navigation now use a stricter glass system with tinted translucent surfaces instead of solid fills',
+      },
+    ],
+  },
+  {
     version: '1.0.8',
     date: '2026-04-04',
     changes: [

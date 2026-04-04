@@ -31,6 +31,7 @@ Related docs:
 ## Current Baseline
 
 - Next.js 15 App Router shell with `/`, `/dashboard`, auth routes, and health endpoint
+- the shared visual system now uses one fixed azulejos background layer plus glassmorphism panels, controls, and tinted CTA surfaces across the core public and guest-facing flows
 - typed env access and helpers for Prisma, NextAuth, Supabase, and Stripe
 - onboarding suggestion flow with optional InsForge-backed recommendations
 - reusable UI primitives, Vitest coverage, and Playwright smoke coverage

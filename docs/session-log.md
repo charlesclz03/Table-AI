@@ -37,6 +37,13 @@ Related docs:
 
 ## Entries
 
+### 2026-04-04 - Azulejos-Only Glass System
+
+- moved the azulejos image into one shared fixed backdrop in the root layout so pages no longer render their own patterned background elements above content
+- added reusable glass utilities in `app/globals.css` for panels, chips, buttons, inputs, and tinted alerts, then rewired the main landing, onboarding, chat, legal, contact, and admin entry shells to use them
+- converted the remaining solid white and solid accent CTAs in the main guest and owner-facing flows into tinted glass buttons so the UI stays translucent over the shared background
+- verified `npm run build` passes after the styling pass
+
 ### 2026-04-04 - Deploy Docs Impact Gate Hardened
 
 - tightened `.agent/workflows/deploy.md` and `docs/DEPLOY_CHECKLIST.md` so `/deploy` now explicitly reviews the changed files and blocks release until every impacted doc has been updated or confirmed current

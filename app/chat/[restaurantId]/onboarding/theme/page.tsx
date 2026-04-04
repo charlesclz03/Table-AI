@@ -174,7 +174,7 @@ function OrbitalThemeSelector({
   }
 
   return (
-    <div className="rounded-[38px] border border-white/10 bg-white/[0.05] px-4 py-5 shadow-[0_24px_80px_rgba(0,0,0,0.26)] backdrop-blur-xl">
+    <div className="glass-panel rounded-[38px] px-4 py-5">
       <div className="flex items-center justify-between gap-3">
         <span className="inline-flex min-h-9 items-center gap-2 rounded-full border border-white/12 bg-white/8 px-4 py-2 text-[11px] font-medium uppercase tracking-[0.18em] text-white/78">
           <Sparkles className="h-3.5 w-3.5" />
@@ -212,7 +212,7 @@ function OrbitalThemeSelector({
         <button
           type="button"
           onClick={onPrevious}
-          className="absolute left-0 top-1/2 z-50 flex h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full border border-white/12 bg-black/35 text-white/86 shadow-[0_18px_36px_rgba(0,0,0,0.24)] transition hover:bg-white/12"
+          className="glass-button absolute left-0 top-1/2 z-50 flex h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full text-white/86 transition hover:bg-white/12"
           aria-label="Show previous theme"
         >
           <ArrowLeft className="h-4 w-4" />
@@ -221,7 +221,7 @@ function OrbitalThemeSelector({
         <button
           type="button"
           onClick={onNext}
-          className="absolute right-0 top-1/2 z-50 flex h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full border border-white/12 bg-black/35 text-white/86 shadow-[0_18px_36px_rgba(0,0,0,0.24)] transition hover:bg-white/12"
+          className="glass-button absolute right-0 top-1/2 z-50 flex h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full text-white/86 transition hover:bg-white/12"
           aria-label="Show next theme"
         >
           <ArrowRight className="h-4 w-4" />
@@ -681,7 +681,7 @@ function ThemeSelectionScreen({
           transition={ONBOARDING_SLIDE_TRANSITION}
           className="flex min-h-0 flex-1 flex-col justify-center"
         >
-          <div className="rounded-[36px] border border-white/10 bg-white/[0.05] px-6 py-10 text-center shadow-[0_24px_80px_rgba(0,0,0,0.3)] backdrop-blur-xl">
+          <div className="glass-panel rounded-[36px] px-6 py-10 text-center">
             <motion.div
               initial={{ y: 100, scale: 0.88 }}
               animate={{ y: 0, scale: 1 }}

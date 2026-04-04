@@ -274,7 +274,7 @@ function StepSection({
           variants={fadeUp}
           className={reverse ? 'lg:order-2' : ''}
         >
-          <div className="relative min-h-[23rem] overflow-hidden rounded-[2rem] border border-white/15 bg-black/25 shadow-[0_30px_120px_rgba(0,0,0,0.3)] sm:min-h-[28rem]">
+          <div className="glass-panel-soft relative min-h-[23rem] overflow-hidden rounded-[2rem] sm:min-h-[28rem]">
             <div
               className="absolute inset-0 scale-105 bg-cover bg-center"
               style={{ backgroundImage: `url("${step.imageUrl}")` }}
@@ -282,7 +282,7 @@ function StepSection({
             <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(7,7,10,0.04),rgba(7,7,10,0.7))]" />
             <div className="relative flex h-full flex-col justify-between p-5 sm:p-7">
               <div className="flex items-start justify-between gap-4">
-                <span className="rounded-full border border-white/20 bg-black/30 px-4 py-2 text-[11px] uppercase tracking-[0.32em] text-white/82">
+                <span className="glass-chip-muted rounded-full px-4 py-2 text-[11px] uppercase tracking-[0.32em] text-white/82">
                   {step.imageKicker}
                 </span>
                 <span className="rounded-full border border-white/15 bg-white/10 px-3 py-2 text-xs font-medium text-white/78">
@@ -290,7 +290,7 @@ function StepSection({
                 </span>
               </div>
 
-              <div className="max-w-xs rounded-[1.5rem] border border-white/15 bg-black/30 p-4 backdrop-blur-sm">
+              <div className="glass-panel-soft max-w-xs rounded-[1.5rem] p-4">
                 <p className="text-xs uppercase tracking-[0.28em] text-white/58">
                   Gustia setup
                 </p>
@@ -325,7 +325,7 @@ function StepSection({
             {step.bullets.map((bullet) => (
               <div
                 key={bullet}
-                className="flex items-start gap-3 rounded-[1.35rem] border border-white/10 bg-black/15 px-4 py-4 backdrop-blur-sm"
+                className="glass-panel-soft flex items-start gap-3 rounded-[1.35rem] px-4 py-4"
               >
                 <span className="mt-0.5 rounded-full border border-white/15 bg-white/12 p-1 text-white">
                   <Check className="h-4 w-4" />
@@ -338,12 +338,12 @@ function StepSection({
           <div className="mt-8 flex flex-wrap gap-3">
             <Link
               href="#start"
-              className="inline-flex min-h-11 items-center justify-center gap-2 rounded-full bg-white px-6 py-3 text-sm font-semibold text-[#111119] transition hover:bg-white/90"
+              className="glass-button inline-flex min-h-11 items-center justify-center gap-2 rounded-full px-6 py-3 text-sm font-semibold text-white transition hover:bg-white/12"
             >
               Start Free
               <ArrowRight className="h-4 w-4" />
             </Link>
-            <span className="inline-flex min-h-11 items-center rounded-full border border-white/12 bg-white/8 px-4 py-3 text-sm text-white/70">
+            <span className="glass-chip inline-flex min-h-11 items-center rounded-full px-4 py-3 text-sm text-white/70">
               {step.label}
             </span>
           </div>
@@ -356,16 +356,6 @@ function StepSection({
 export default function HomePage() {
   const shouldReduceMotion = useReducedMotion()
   const { scrollYProgress } = useScroll()
-  const backdropY = useTransform(
-    scrollYProgress,
-    [0, 1],
-    shouldReduceMotion ? [0, 0] : [0, -120]
-  )
-  const backdropScale = useTransform(
-    scrollYProgress,
-    [0, 1],
-    shouldReduceMotion ? [1, 1] : [1, 1.08]
-  )
   const heroCardY = useTransform(
     scrollYProgress,
     [0, 0.35],
@@ -378,16 +368,7 @@ export default function HomePage() {
   )
 
   return (
-    <div className="relative left-1/2 right-1/2 -mx-[50vw] w-screen overflow-x-clip bg-[#05050a] text-white">
-      <motion.div
-        style={{ y: backdropY, scale: backdropScale }}
-        className="pointer-events-none fixed inset-0"
-      >
-        <div className="absolute inset-0 bg-[#05050a]" />
-        <div className="absolute inset-0 bg-[url('/azulejos-light.png')] bg-cover bg-center opacity-[0.22]" />
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(255,255,255,0.18),transparent_32%),linear-gradient(180deg,rgba(6,6,10,0.45),rgba(6,6,10,0.92))]" />
-      </motion.div>
-
+    <div className="relative left-1/2 right-1/2 -mx-[50vw] w-screen overflow-x-clip text-white">
       <SectionShell
         overlayClass="bg-[linear-gradient(180deg,rgba(99,58,154,0.74),rgba(22,14,34,0.92))]"
         className="border-t-0"
@@ -399,7 +380,7 @@ export default function HomePage() {
             variants={fadeUp}
             className="max-w-2xl"
           >
-            <div className="inline-flex min-h-11 items-center gap-3 rounded-full border border-white/14 bg-black/20 px-4 py-3 text-[11px] uppercase tracking-[0.32em] text-white/76 backdrop-blur-sm">
+            <div className="glass-chip inline-flex min-h-11 items-center gap-3 rounded-full px-4 py-3 text-[11px] uppercase tracking-[0.32em] text-white/76">
               <MapPin className="h-4 w-4 text-[#f0d9ff]" />
               Luxury AI for restaurant owners
             </div>
@@ -417,24 +398,24 @@ export default function HomePage() {
             <div className="mt-8 flex flex-col gap-3 sm:flex-row">
               <Link
                 href="#start"
-                className="inline-flex min-h-11 items-center justify-center gap-2 rounded-full bg-white px-6 py-4 text-sm font-semibold text-[#111119] transition hover:bg-white/92"
+                className="glass-button inline-flex min-h-11 items-center justify-center gap-2 rounded-full px-6 py-4 text-sm font-semibold text-white transition hover:bg-white/12"
               >
                 Start Free
                 <ArrowRight className="h-4 w-4" />
               </Link>
               <Link
                 href="#guest-preview"
-                className="inline-flex min-h-11 items-center justify-center gap-2 rounded-full border border-white/14 bg-black/15 px-6 py-4 text-sm font-semibold text-white/82 transition hover:bg-white/10"
+                className="glass-button inline-flex min-h-11 items-center justify-center gap-2 rounded-full px-6 py-4 text-sm font-semibold text-white/82 transition hover:bg-white/12"
               >
                 See the guest journey
               </Link>
             </div>
 
             <div className="mt-8 grid gap-3 text-sm text-white/72 sm:grid-cols-2">
-              <div className="rounded-[1.5rem] border border-white/10 bg-black/15 px-4 py-4 backdrop-blur-sm">
+              <div className="glass-panel-soft rounded-[1.5rem] px-4 py-4">
                 Answers tourist questions, allergens, and pairing doubts.
               </div>
-              <div className="rounded-[1.5rem] border border-white/10 bg-black/15 px-4 py-4 backdrop-blur-sm">
+              <div className="glass-panel-soft rounded-[1.5rem] px-4 py-4">
                 Keeps your team focused on service, not repetitive explaining.
               </div>
             </div>
@@ -447,9 +428,9 @@ export default function HomePage() {
             transition={{ duration: 0.9, ease: smoothEase, delay: 0.1 }}
             className="mx-auto w-full max-w-md lg:mx-0 lg:justify-self-end"
           >
-            <div className="relative overflow-hidden rounded-[2.2rem] border border-white/15 bg-[linear-gradient(180deg,rgba(255,255,255,0.14),rgba(255,255,255,0.05))] p-4 shadow-[0_35px_120px_rgba(0,0,0,0.34)] backdrop-blur-xl">
+            <div className="glass-panel relative overflow-hidden rounded-[2.2rem] p-4">
               <div className="absolute inset-x-6 top-0 h-36 rounded-full bg-white/16 blur-3xl" />
-              <div className="relative rounded-[1.8rem] border border-white/10 bg-[#0d0b16]/80 p-5">
+              <div className="glass-panel-soft relative rounded-[1.8rem] p-5">
                 <div className="flex items-center justify-between gap-4">
                   <div>
                     <p className="text-[11px] uppercase tracking-[0.32em] text-white/55">
@@ -475,7 +456,7 @@ export default function HomePage() {
                         delay: 0.18 + index * 0.1,
                         ease: smoothEase,
                       }}
-                      className="flex items-start gap-4 rounded-[1.4rem] border border-white/10 bg-white/[0.05] px-4 py-4"
+                      className="glass-panel-soft flex items-start gap-4 rounded-[1.4rem] px-4 py-4"
                     >
                       <span className="inline-flex h-9 w-9 flex-none items-center justify-center rounded-full border border-white/15 bg-white/12 text-xs font-semibold text-white">
                         0{index + 1}
@@ -485,7 +466,7 @@ export default function HomePage() {
                   ))}
                 </div>
 
-                <div className="mt-5 flex items-center justify-between rounded-[1.4rem] border border-white/10 bg-black/20 px-4 py-4 text-sm text-white/72">
+                <div className="glass-panel-soft mt-5 flex items-center justify-between rounded-[1.4rem] px-4 py-4 text-sm text-white/72">
                   <span>Built for launch at 375px and up</span>
                   <ChevronDownHint />
                 </div>
@@ -536,7 +517,7 @@ export default function HomePage() {
                     delay: index * 0.08,
                     ease: smoothEase,
                   }}
-                  className="rounded-[1.8rem] border border-white/10 bg-black/15 px-5 py-5 backdrop-blur-sm"
+                  className="glass-panel-soft rounded-[1.8rem] px-5 py-5"
                 >
                   <div className="flex items-start gap-4">
                     <span className="rounded-full border border-white/12 bg-white/10 p-3 text-white">
@@ -587,7 +568,7 @@ export default function HomePage() {
             </p>
 
             <div className="mt-8 space-y-3">
-              <div className="flex items-start gap-3 rounded-[1.5rem] border border-white/10 bg-black/15 px-4 py-4">
+              <div className="glass-panel-soft flex items-start gap-3 rounded-[1.5rem] px-4 py-4">
                 <span className="rounded-full border border-white/12 bg-white/10 p-2 text-white">
                   <QrCode className="h-4 w-4" />
                 </span>
@@ -595,7 +576,7 @@ export default function HomePage() {
                   Show that scanning is the first step, not an awkward detour.
                 </p>
               </div>
-              <div className="flex items-start gap-3 rounded-[1.5rem] border border-white/10 bg-black/15 px-4 py-4">
+              <div className="glass-panel-soft flex items-start gap-3 rounded-[1.5rem] px-4 py-4">
                 <span className="rounded-full border border-white/12 bg-white/10 p-2 text-white">
                   <Languages className="h-4 w-4" />
                 </span>
@@ -614,8 +595,8 @@ export default function HomePage() {
             transition={{ duration: 0.8, ease: smoothEase }}
             className="mx-auto w-full max-w-md"
           >
-            <div className="rounded-[2.4rem] border border-white/15 bg-[linear-gradient(180deg,rgba(255,255,255,0.12),rgba(255,255,255,0.05))] p-4 shadow-[0_35px_120px_rgba(0,0,0,0.35)] backdrop-blur-xl">
-              <div className="rounded-[2rem] border border-white/10 bg-[#0d0b14]/80 p-4">
+            <div className="glass-panel rounded-[2.4rem] p-4">
+              <div className="glass-panel-soft rounded-[2rem] p-4">
                 <div className="flex items-center justify-between gap-4">
                   <div>
                     <p className="text-[11px] uppercase tracking-[0.32em] text-white/52">
@@ -647,7 +628,7 @@ export default function HomePage() {
                         }}
                         className={`rounded-[1.4rem] border border-white/10 bg-gradient-to-r ${item.colorClass} p-[1px]`}
                       >
-                        <div className="flex items-center gap-4 rounded-[1.35rem] bg-[#0f0d17]/92 px-4 py-4">
+                        <div className="glass-panel-soft flex items-center gap-4 rounded-[1.35rem] px-4 py-4">
                           <span className="rounded-full border border-white/10 bg-white/10 p-3 text-white">
                             <Icon className="h-4 w-4" />
                           </span>
@@ -706,7 +687,7 @@ export default function HomePage() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, amount: 0.25 }}
           transition={{ duration: 0.75, ease: smoothEase }}
-          className="mt-8 rounded-[2rem] border border-white/12 bg-[linear-gradient(135deg,rgba(255,255,255,0.14),rgba(255,255,255,0.05))] p-5 backdrop-blur-xl sm:p-6"
+          className="glass-panel mt-8 rounded-[2rem] p-5 sm:p-6"
         >
           <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
             <div>
@@ -722,7 +703,7 @@ export default function HomePage() {
               </p>
             </div>
 
-            <div className="inline-flex min-h-11 items-center rounded-full border border-emerald-300/20 bg-emerald-300/10 px-4 py-3 text-sm font-medium text-emerald-100">
+            <div className="glass-alert-emerald inline-flex min-h-11 items-center rounded-full px-4 py-3 text-sm font-medium text-emerald-100">
               14-day guarantee
             </div>
           </div>
@@ -734,7 +715,7 @@ export default function HomePage() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, amount: 0.25 }}
             transition={{ duration: 0.7, ease: smoothEase }}
-            className="rounded-[2rem] border border-white/10 bg-black/20 p-5 backdrop-blur-sm sm:p-6"
+            className="glass-panel-soft rounded-[2rem] p-5 sm:p-6"
           >
             <p className="text-[11px] uppercase tracking-[0.32em] text-white/56">
               Monthly
@@ -847,7 +828,7 @@ export default function HomePage() {
                 delay: index * 0.08,
                 ease: smoothEase,
               }}
-              className="rounded-[1.8rem] border border-white/10 bg-black/20 p-5 backdrop-blur-sm"
+              className="glass-panel-soft rounded-[1.8rem] p-5"
             >
               <Star className="h-5 w-5 text-amber-100" />
               <p className="mt-4 text-base leading-8 text-white/78">{quote}</p>
@@ -883,7 +864,7 @@ export default function HomePage() {
             </p>
 
             <div className="mt-8 grid gap-3 sm:grid-cols-2">
-              <div className="rounded-[1.5rem] border border-white/10 bg-black/15 px-4 py-4 backdrop-blur-sm">
+              <div className="glass-panel-soft rounded-[1.5rem] px-4 py-4">
                 <div className="flex items-center gap-3 text-white">
                   <FileText className="h-4 w-4" />
                   <span className="text-sm font-medium">
@@ -894,7 +875,7 @@ export default function HomePage() {
                   Everything you need to go live, with a 14-day guarantee.
                 </p>
               </div>
-              <div className="rounded-[1.5rem] border border-white/10 bg-black/15 px-4 py-4 backdrop-blur-sm">
+              <div className="glass-panel-soft rounded-[1.5rem] px-4 py-4">
                 <div className="flex items-center gap-3 text-white">
                   <PhoneCall className="h-4 w-4" />
                   <span className="text-sm font-medium">
@@ -917,14 +898,14 @@ export default function HomePage() {
           >
             <Link
               href="/contact"
-              className="inline-flex min-h-11 items-center justify-center gap-2 rounded-full bg-white px-6 py-4 text-sm font-semibold text-[#111119] transition hover:bg-white/92"
+              className="glass-button inline-flex min-h-11 items-center justify-center gap-2 rounded-full px-6 py-4 text-sm font-semibold text-white transition hover:bg-white/12"
             >
               Start Free
               <ArrowRight className="h-4 w-4" />
             </Link>
             <Link
               href="mailto:contact@gustia.wine?subject=Start%20Free%20with%20Gustia"
-              className="inline-flex min-h-11 items-center justify-center gap-2 rounded-full border border-white/14 bg-black/15 px-6 py-4 text-sm font-semibold text-white/82 transition hover:bg-white/10"
+              className="glass-button inline-flex min-h-11 items-center justify-center gap-2 rounded-full px-6 py-4 text-sm font-semibold text-white/82 transition hover:bg-white/12"
             >
               contact@gustia.wine
             </Link>
@@ -932,7 +913,7 @@ export default function HomePage() {
         </div>
       </SectionShell>
 
-      <footer className="relative border-t border-white/10 bg-black/25">
+      <footer className="relative border-t border-white/10">
         <div className="mx-auto flex max-w-6xl flex-col gap-6 px-5 py-8 sm:px-8 lg:flex-row lg:items-center lg:justify-between lg:px-10">
           <div>
             <p className="text-sm font-medium text-white">Gustia</p>

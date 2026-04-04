@@ -4,13 +4,21 @@
 
 :root {
   color-scheme: dark;
+  --glass-border: rgba(255, 255, 255, 0.14);
+  --glass-border-strong: rgba(255, 255, 255, 0.2);
+  --glass-surface: rgba(255, 255, 255, 0.06);
+  --glass-surface-strong: rgba(255, 255, 255, 0.1);
+  --glass-surface-soft: rgba(255, 255, 255, 0.04);
+  --glass-shadow: 0 22px 80px rgba(3, 6, 18, 0.28);
+  --glass-shadow-soft: 0 18px 50px rgba(3, 6, 18, 0.18);
+  --page-filter:
+    linear-gradient(180deg, rgba(70, 40, 119, 0.38), rgba(8, 8, 12, 0.82)),
+    radial-gradient(circle at top, rgba(255, 255, 255, 0.12), transparent 34%);
 }
 
 html {
   min-height: 100%;
-  background:
-    radial-gradient(circle at top, rgba(10, 132, 255, 0.18), transparent 40%),
-    linear-gradient(180deg, #05060a 0%, #09090b 100%);
+  background: #05060a;
 }
 
 body {
@@ -27,9 +35,131 @@ a {
   background: rgba(50, 211, 255, 0.3);
 }
 
+.azulejo-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: -20;
+  background:
+    var(--page-filter),
+    url('/azulejos-light.png') center / cover no-repeat,
+    linear-gradient(180deg, #05060a 0%, #09090b 100%);
+}
+
 .glass-card {
-  background: rgba(255, 255, 255, 0.03);
-  backdrop-filter: blur(12px);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: var(--glass-surface);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid var(--glass-border);
   border-radius: 16px;
+  box-shadow: var(--glass-shadow-soft);
+}
+
+.glass-panel {
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.14),
+    rgba(255, 255, 255, 0.05)
+  );
+  border: 1px solid var(--glass-border);
+  box-shadow: var(--glass-shadow);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+}
+
+.glass-panel-soft {
+  background: var(--glass-surface);
+  border: 1px solid var(--glass-border);
+  box-shadow: var(--glass-shadow-soft);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+}
+
+.glass-chip {
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+}
+
+.glass-chip-muted {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+}
+
+.glass-input {
+  background: rgba(255, 255, 255, 0.07);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+}
+
+.glass-button {
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.16),
+    rgba(255, 255, 255, 0.06)
+  );
+  border: 1px solid var(--glass-border-strong);
+  box-shadow: var(--glass-shadow-soft);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+}
+
+.glass-button-amber {
+  background: linear-gradient(
+    135deg,
+    rgba(251, 191, 36, 0.24),
+    rgba(255, 255, 255, 0.08)
+  );
+  border: 1px solid rgba(251, 191, 36, 0.26);
+  box-shadow: 0 18px 50px rgba(251, 191, 36, 0.12);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+}
+
+.glass-button-emerald {
+  background: linear-gradient(
+    135deg,
+    rgba(52, 211, 153, 0.24),
+    rgba(255, 255, 255, 0.08)
+  );
+  border: 1px solid rgba(52, 211, 153, 0.24);
+  box-shadow: 0 18px 50px rgba(52, 211, 153, 0.12);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+}
+
+.glass-alert-amber {
+  background: linear-gradient(
+    135deg,
+    rgba(251, 191, 36, 0.16),
+    rgba(255, 255, 255, 0.06)
+  );
+  border: 1px solid rgba(251, 191, 36, 0.24);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+}
+
+.glass-alert-emerald {
+  background: linear-gradient(
+    135deg,
+    rgba(52, 211, 153, 0.16),
+    rgba(255, 255, 255, 0.06)
+  );
+  border: 1px solid rgba(52, 211, 153, 0.22);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+}
+
+.glass-alert-rose {
+  background: linear-gradient(
+    135deg,
+    rgba(251, 113, 133, 0.16),
+    rgba(255, 255, 255, 0.06)
+  );
+  border: 1px solid rgba(251, 113, 133, 0.22);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
 }

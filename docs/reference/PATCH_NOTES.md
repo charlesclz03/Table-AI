@@ -35,6 +35,12 @@ Related docs:
 - use this file for release history, `docs/progress-log.md` for durable baseline truth, and `docs/session-log.md` for session chronology
 - until formal semantic versioning starts, date-keyed entries are acceptable
 
+## 2026-04-04 - Azulejos-Only Glass System
+
+- **DESIGN**: Moved the azulejos artwork into one shared app backdrop so content no longer mounts its own patterned background layers on top of the interface.
+- **UI**: Added reusable glass tokens for panels, chips, inputs, alerts, and CTAs, then applied them across the shared layout, landing, onboarding, chat, legal, contact, and admin entry shells.
+- **VERIFY**: Re-ran `npm run build` after the styling pass and confirmed the Next.js production build completes successfully.
+
 ## 2026-04-04 - Deploy Docs Impact Gate Hardened
 
 - **DEPLOY**: Hardened `/deploy` so release prep now explicitly requires a changed-files review plus updates for every impacted doc before push or deploy.

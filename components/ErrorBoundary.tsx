@@ -56,10 +56,10 @@ function DefaultErrorFallback({
   resetError: () => void
 }) {
   return (
-    <div className="min-h-screen flex items-center justify-center bg-surface-base">
-      <div className="max-w-md w-full bg-surface-elevated rounded-lg shadow-soft p-6 border border-stroke-soft">
+    <div className="flex min-h-screen items-center justify-center">
+      <div className="glass-panel mx-4 w-full max-w-md rounded-[28px] p-6">
         <div className="text-center">
-          <div className="w-16 h-16 bg-red-100/10 rounded-full flex items-center justify-center mx-auto mb-4">
+          <div className="glass-alert-rose mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full">
             <svg
               className="w-8 h-8 text-red-500"
               fill="none"
@@ -85,14 +85,14 @@ function DefaultErrorFallback({
               <summary className="cursor-pointer text-sm text-text-tertiary hover:text-text-secondary">
                 Technical details
               </summary>
-              <pre className="mt-2 text-xs bg-surface-base p-2 rounded overflow-auto border border-stroke-subtle text-text-secondary">
+              <pre className="glass-panel-soft mt-2 overflow-auto rounded-2xl p-2 text-xs text-text-secondary">
                 {error.message}
               </pre>
             </details>
           )}
           <button
             onClick={resetError}
-            className="w-full bg-accent-primary text-white font-semibold py-2 px-4 rounded-md hover:bg-opacity-90 transition-colors"
+            className="glass-button w-full rounded-full px-4 py-3 font-semibold text-white transition-colors hover:bg-white/12"
           >
             Try Again
           </button>

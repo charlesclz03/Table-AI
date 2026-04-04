@@ -2,7 +2,7 @@ import Link from 'next/link'
 
 export default function ContactPage() {
   return (
-    <div className="mx-auto max-w-3xl space-y-6 rounded-[32px] border border-white/10 bg-white/6 px-6 py-10 text-white backdrop-blur">
+    <div className="glass-panel mx-auto max-w-3xl space-y-6 rounded-[32px] px-6 py-10 text-white">
       <p className="text-[11px] uppercase tracking-[0.34em] text-amber-200/70">
         Contact
       </p>
@@ -13,7 +13,7 @@ export default function ContactPage() {
       </p>
       <Link
         href="mailto:contact@gustia.wine"
-        className="inline-flex rounded-full border border-white/10 bg-black/20 px-5 py-3 text-sm font-semibold text-white transition hover:bg-black/30"
+        className="glass-button inline-flex rounded-full px-5 py-3 text-sm font-semibold text-white transition hover:bg-white/12"
       >
         contact@gustia.wine
       </Link>

@@ -6,25 +6,24 @@ import { Loader2 } from 'lucide-react'
 
 // Generic Premium Button Component
 const buttonVariants = cva(
-  'group relative inline-flex items-center justify-center overflow-hidden whitespace-nowrap rounded-full text-sm font-semibold transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent-primary focus-visible:ring-offset-2 focus-visible:ring-offset-surface-base disabled:pointer-events-none active:scale-[0.98]',
+  'group relative inline-flex items-center justify-center overflow-hidden whitespace-nowrap rounded-full text-sm font-semibold text-white transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/40 focus-visible:ring-offset-2 focus-visible:ring-offset-transparent disabled:pointer-events-none active:scale-[0.98]',
   {
     variants: {
       variant: {
-        default:
-          'bg-accent-primary text-text-primary hover:bg-accent-primary/90 shadow-glow disabled:opacity-50',
+        default: 'glass-button hover:bg-white/12 disabled:opacity-50',
         brand:
-          'bg-accent-brand text-text-primary hover:bg-accent-brand/90 shadow-glow disabled:opacity-50',
+          'glass-button-amber text-amber-50 hover:bg-amber-300/24 disabled:opacity-50',
         destructive:
-          'bg-accent-error text-text-primary hover:bg-accent-error/90 disabled:opacity-50',
+          'glass-alert-rose text-rose-50 hover:bg-rose-400/18 disabled:opacity-50',
         outline:
-          'border border-stroke-strong bg-transparent hover:bg-surface-elevated text-text-primary disabled:opacity-50',
+          'border border-white/14 bg-transparent text-text-primary hover:bg-white/10 disabled:opacity-50',
         secondary:
-          'bg-surface-elevated text-text-primary hover:bg-stroke-strong disabled:opacity-50',
+          'glass-panel-soft text-text-primary hover:bg-white/10 disabled:opacity-50',
         ghost:
-          'hover:bg-surface-elevated hover:text-text-primary text-text-secondary disabled:opacity-50',
+          'text-text-secondary hover:bg-white/10 hover:text-text-primary disabled:opacity-50',
         link: 'text-accent-primary underline-offset-4 hover:underline disabled:opacity-50',
         glass:
-          'bg-surface-elevated/40 backdrop-blur-md border border-stroke-subtle text-text-primary hover:bg-surface-elevated/60 disabled:opacity-50',
+          'glass-button text-text-primary hover:bg-white/12 disabled:opacity-50',
       },
       size: {
         default: 'h-12 px-6 py-2',
@@ -81,7 +80,7 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
         {!asChild &&
           (variant === 'default' || variant === 'brand') &&
           !isLoading && (
-            <div className="absolute inset-0 -z-10 rounded-full bg-inherit blur-md opacity-40 group-hover:opacity-60 transition-opacity" />
+            <div className="absolute inset-0 -z-10 rounded-full bg-inherit blur-md opacity-50 transition-opacity group-hover:opacity-70" />
           )}
       </Comp>
     )

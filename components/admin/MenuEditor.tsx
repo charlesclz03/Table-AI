@@ -160,7 +160,7 @@ export function MenuEditor({ initialItems }: MenuEditorProps) {
                 className={cn(
                   'inline-flex items-center rounded-full px-4 py-2 text-sm transition',
                   activeMode === 'manual'
-                    ? 'bg-amber-300 text-[#1d1309]'
+                    ? 'glass-button-amber text-amber-50'
                     : 'text-white/70 hover:bg-white/10 hover:text-white'
                 )}
               >
@@ -173,7 +173,7 @@ export function MenuEditor({ initialItems }: MenuEditorProps) {
                 className={cn(
                   'inline-flex items-center rounded-full px-4 py-2 text-sm transition',
                   activeMode === 'upload'
-                    ? 'bg-amber-300 text-[#1d1309]'
+                    ? 'glass-button-amber text-amber-50'
                     : 'text-white/70 hover:bg-white/10 hover:text-white'
                 )}
               >

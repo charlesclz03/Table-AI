@@ -955,7 +955,7 @@ export default function RestaurantChatPage() {
 
   if (!isPreferenceGateReady || !language || !theme) {
     return (
-      <div className="fixed inset-0 overflow-hidden bg-[#05060a] text-white">
+      <div className="fixed inset-0 overflow-hidden text-white">
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(245,158,11,0.18),_transparent_30%),linear-gradient(180deg,_#0b0908_0%,_#05060a_100%)]" />
         <div className="relative flex min-h-screen items-center justify-center">
           <div className="text-center">
@@ -977,7 +977,7 @@ export default function RestaurantChatPage() {
   const shouldShowDemoCta = userMessageCount >= 3 && !ctaDismissed
 
   return (
-    <div className="fixed inset-0 z-50 overflow-hidden bg-[#05060a] text-white">
+    <div className="fixed inset-0 z-50 overflow-hidden text-white">
       <div
         className="absolute inset-0"
         style={{
@@ -987,7 +987,7 @@ export default function RestaurantChatPage() {
 
       <div className="relative flex h-full flex-col overflow-hidden">
         <header className="px-4 pb-3 pt-4">
-          <div className="mx-auto flex w-full max-w-md flex-col gap-3 rounded-[28px] border border-white/10 bg-white/6 px-4 py-3 backdrop-blur sm:flex-row sm:items-start sm:justify-between">
+          <div className="glass-panel mx-auto flex w-full max-w-md flex-col gap-3 rounded-[28px] px-4 py-3 sm:flex-row sm:items-start sm:justify-between">
             <div className="min-w-0">
               <p className="text-[11px] uppercase tracking-[0.32em] text-amber-200/70">
                 Gustia Concierge
@@ -1005,19 +1005,19 @@ export default function RestaurantChatPage() {
                   'language',
                   tableNumber
                 )}
-                className="flex h-11 w-11 items-center justify-center rounded-full border border-white/10 bg-black/20 text-white/75 transition hover:bg-white/10 hover:text-white"
+                className="glass-chip flex h-11 w-11 items-center justify-center rounded-full text-white/75 transition hover:bg-white/12 hover:text-white"
                 aria-label="Change language"
               >
                 <Globe2 className="h-4 w-4" />
               </Link>
               <Link
                 href={buildOnboardingPath(restaurantId, 'theme', tableNumber)}
-                className="flex h-11 w-11 items-center justify-center rounded-full border border-white/10 bg-black/20 text-white/75 transition hover:bg-white/10 hover:text-white"
+                className="glass-chip flex h-11 w-11 items-center justify-center rounded-full text-white/75 transition hover:bg-white/12 hover:text-white"
                 aria-label="Change theme"
               >
                 <Paintbrush className="h-4 w-4" />
               </Link>
-              <div className="flex min-h-11 w-full items-center justify-center gap-2 rounded-full border border-white/10 bg-black/20 px-3 py-2 text-center text-xs text-white/70 sm:w-auto">
+              <div className="glass-chip flex min-h-11 w-full items-center justify-center gap-2 rounded-full px-3 py-2 text-center text-xs text-white/70 sm:w-auto">
                 <Volume2 className="h-3.5 w-3.5" />
                 <span>
                   {activeLanguage.flag}{' '}
@@ -1028,7 +1028,7 @@ export default function RestaurantChatPage() {
           </div>
 
           {showHeadphoneDisclaimer ? (
-            <div className="mx-auto mt-3 flex w-full max-w-md items-start gap-3 rounded-[24px] border border-amber-300/20 bg-amber-100/10 px-4 py-3 text-sm text-amber-50 backdrop-blur">
+            <div className="glass-alert-amber mx-auto mt-3 flex w-full max-w-md items-start gap-3 rounded-[24px] px-4 py-3 text-sm text-amber-50">
               <Headphones className="mt-0.5 h-5 w-5 shrink-0 text-amber-200" />
               <div className="min-w-0 flex-1">
                 <p className="font-medium">
@@ -1051,7 +1051,7 @@ export default function RestaurantChatPage() {
           ) : null}
 
           {errorMessage ? (
-            <div className="mx-auto mt-3 w-full max-w-md rounded-[20px] border border-white/10 bg-white/8 px-4 py-3 text-sm text-white/75">
+            <div className="glass-panel-soft mx-auto mt-3 w-full max-w-md rounded-[20px] px-4 py-3 text-sm text-white/75">
               {errorMessage}
             </div>
           ) : null}
@@ -1059,7 +1059,7 @@ export default function RestaurantChatPage() {
 
         <main className="flex min-h-0 flex-1 flex-col overflow-hidden px-4 pb-4">
           <div className="mx-auto flex h-full w-full max-w-md min-h-0 flex-col">
-            <section className="overflow-hidden rounded-[32px] border border-white/10 bg-white/6 px-4 pb-5 pt-5 backdrop-blur sm:px-5 sm:pt-6">
+            <section className="glass-panel overflow-hidden rounded-[32px] px-4 pb-5 pt-5 sm:px-5 sm:pt-6">
               <div className="flex flex-col items-center text-center">
                 <WineSphere
                   themeKey={theme}
@@ -1071,7 +1071,7 @@ export default function RestaurantChatPage() {
                   )}
                 />
 
-                <div className="mt-4 w-full overflow-hidden rounded-[24px] border border-white/10 bg-black/20 px-4 py-4">
+                <div className="glass-panel-soft mt-4 w-full overflow-hidden rounded-[24px] px-4 py-4">
                   <p className="text-[11px] uppercase tracking-[0.3em] text-amber-200/70">
                     {localizedCopy.subtitlesLabel}
                   </p>
@@ -1110,7 +1110,7 @@ export default function RestaurantChatPage() {
               </div>
             </section>
 
-            <section className="mt-4 min-h-0 flex-1 overflow-hidden rounded-[28px] border border-white/10 bg-white/6 p-3 backdrop-blur">
+            <section className="glass-panel mt-4 min-h-0 flex-1 overflow-hidden rounded-[28px] p-3">
               <div className="h-full space-y-3 overflow-y-auto overscroll-contain pr-1">
                 {messages.map((message) => (
                   <div
@@ -1118,8 +1118,8 @@ export default function RestaurantChatPage() {
                     className={cn(
                       'w-fit max-w-[92%] break-words rounded-[24px] px-4 py-3 text-sm leading-6 sm:max-w-[88%]',
                       message.role === 'assistant'
-                        ? 'bg-white/10 text-white'
-                        : 'ml-auto bg-amber-300 text-[#1d1309]'
+                        ? 'glass-panel-soft text-white'
+                        : 'glass-button-amber ml-auto text-amber-50'
                     )}
                   >
                     {message.content}
@@ -1127,7 +1127,7 @@ export default function RestaurantChatPage() {
                 ))}
 
                 {deferredInterimTranscript ? (
-                  <div className="max-w-[92%] break-words rounded-[24px] border border-dashed border-white/15 bg-white/5 px-4 py-3 text-sm italic text-white/60 sm:max-w-[88%]">
+                  <div className="glass-panel-soft max-w-[92%] break-words rounded-[24px] border-dashed px-4 py-3 text-sm italic text-white/60 sm:max-w-[88%]">
                     {deferredInterimTranscript}
                   </div>
                 ) : null}
@@ -1135,7 +1135,7 @@ export default function RestaurantChatPage() {
             </section>
 
             {shouldShowDemoCta ? (
-              <section className="mt-4 rounded-[28px] border border-emerald-300/20 bg-emerald-200/10 px-4 py-4 text-white">
+              <section className="glass-alert-emerald mt-4 rounded-[28px] px-4 py-4 text-white">
                 <p className="text-[11px] uppercase tracking-[0.3em] text-emerald-200/70">
                   Demo CTA
                 </p>
@@ -1151,14 +1151,14 @@ export default function RestaurantChatPage() {
                     href={`mailto:contact@gustia.wine?subject=${encodeURIComponent(
                       `I want Gustia for ${restaurant?.name ?? 'my restaurant'}`
                     )}`}
-                    className="flex min-h-11 flex-1 items-center justify-center rounded-full bg-emerald-300 px-4 py-3 text-center text-sm font-semibold text-[#0b261b] transition hover:bg-emerald-200"
+                    className="glass-button-emerald flex min-h-11 flex-1 items-center justify-center rounded-full px-4 py-3 text-center text-sm font-semibold text-emerald-50 transition hover:bg-emerald-300/24"
                   >
                     Yes, I want this
                   </a>
                   <button
                     type="button"
                     onClick={() => setCtaDismissed(true)}
-                    className="flex min-h-11 flex-1 items-center justify-center rounded-full border border-white/15 bg-white/5 px-4 py-3 text-sm text-white/75 transition hover:bg-white/10 hover:text-white"
+                    className="glass-button flex min-h-11 flex-1 items-center justify-center rounded-full px-4 py-3 text-sm text-white/75 transition hover:bg-white/12 hover:text-white"
                   >
                     No, thanks
                   </button>
@@ -1169,7 +1169,7 @@ export default function RestaurantChatPage() {
         </main>
 
         <footer className="px-4 pb-4 pt-2 sm:pb-6">
-          <div className="mx-auto w-full max-w-md overflow-hidden rounded-[32px] border border-white/10 bg-white/8 p-3 backdrop-blur">
+          <div className="glass-panel mx-auto w-full max-w-md overflow-hidden rounded-[32px] p-3">
             <form
               onSubmit={handleTextSubmit}
               className="flex items-end gap-2 sm:gap-3"
@@ -1190,8 +1190,8 @@ export default function RestaurantChatPage() {
                 className={cn(
                   'flex h-14 w-14 shrink-0 items-center justify-center rounded-full border transition-all duration-300',
                   isHoldingToTalk || isListening
-                    ? 'border-rose-300/50 bg-rose-400/25 text-rose-50 shadow-[0_0_24px_rgba(251,113,133,0.35)]'
-                    : 'border-white/10 bg-white/8 text-white',
+                    ? 'border-rose-300/50 bg-rose-400/20 text-rose-50 shadow-[0_0_24px_rgba(251,113,133,0.25)] backdrop-blur-xl'
+                    : 'glass-chip text-white',
                   (!isSpeechSupported || isLoadingRestaurant || isSending) &&
                     'cursor-not-allowed opacity-45'
                 )}
@@ -1216,7 +1216,7 @@ export default function RestaurantChatPage() {
                   onChange={(event) => setInputValue(event.target.value)}
                   rows={1}
                   placeholder={localizedCopy.placeholder}
-                  className="min-h-14 w-full resize-none rounded-[24px] border border-white/10 bg-black/20 px-4 py-4 text-sm text-white outline-none transition placeholder:text-white/35 focus:border-amber-300/40"
+                  className="glass-input min-h-14 w-full resize-none rounded-[24px] px-4 py-4 text-sm text-white outline-none transition placeholder:text-white/35 focus:border-amber-300/40"
                 />
               </label>
 
@@ -1226,7 +1226,7 @@ export default function RestaurantChatPage() {
                   !inputValue.trim() || isSending || isLoadingRestaurant
                 }
                 className={cn(
-                  'flex h-14 w-14 shrink-0 items-center justify-center rounded-full bg-amber-300 text-[#251609] transition hover:bg-amber-200',
+                  'glass-button-amber flex h-14 w-14 shrink-0 items-center justify-center rounded-full text-amber-50 transition hover:bg-amber-300/24',
                   (!inputValue.trim() || isSending || isLoadingRestaurant) &&
                     'cursor-not-allowed opacity-45'
                 )}
