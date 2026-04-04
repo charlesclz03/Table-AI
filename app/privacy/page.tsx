@@ -78,10 +78,10 @@ export default function PrivacyPage() {
         <p>
           For privacy questions, contact{' '}
           <Link
-            href="mailto:support@gustia.com"
+            href="mailto:contact@gustia.wine"
             className="font-medium text-amber-100 transition hover:text-white"
           >
-            support@gustia.com
+            contact@gustia.wine
           </Link>
           .
         </p>

@@ -923,10 +923,10 @@ export default function HomePage() {
               <ArrowRight className="h-4 w-4" />
             </Link>
             <Link
-              href="mailto:support@gustia.com?subject=Start%20Free%20with%20Gustia"
+              href="mailto:contact@gustia.wine?subject=Start%20Free%20with%20Gustia"
               className="inline-flex min-h-11 items-center justify-center gap-2 rounded-full border border-white/14 bg-black/15 px-6 py-4 text-sm font-semibold text-white/82 transition hover:bg-white/10"
             >
-              support@gustia.com
+              contact@gustia.wine
             </Link>
           </motion.div>
         </div>

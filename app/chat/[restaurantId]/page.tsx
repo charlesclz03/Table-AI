@@ -1148,7 +1148,7 @@ export default function RestaurantChatPage() {
                 </p>
                 <div className="mt-4 flex flex-col gap-3 sm:flex-row">
                   <a
-                    href={`mailto:hello@gustia.ai?subject=${encodeURIComponent(
+                    href={`mailto:contact@gustia.wine?subject=${encodeURIComponent(
                       `I want Gustia for ${restaurant?.name ?? 'my restaurant'}`
                     )}`}
                     className="flex min-h-11 flex-1 items-center justify-center rounded-full bg-emerald-300 px-4 py-3 text-center text-sm font-semibold text-[#0b261b] transition hover:bg-emerald-200"

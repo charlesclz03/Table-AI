@@ -27,8 +27,8 @@ const legalLinks = [
     icon: Scale,
   },
   {
-    href: 'mailto:support@gustia.com',
-    label: 'support@gustia.com',
+    href: 'mailto:contact@gustia.wine',
+    label: 'contact@gustia.wine',
     icon: Mail,
   },
 ] as const

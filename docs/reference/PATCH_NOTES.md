@@ -122,7 +122,7 @@ Related docs:
 
 - **LEGAL**: Replaced the placeholder privacy and terms pages with Gustia-specific legal copy covering restaurant data, chat logs, Supabase-backed storage, no data resale, service scope, pricing, payment terms, cancellation, and liability limits.
 - **UX**: Added a shared glassmorphism legal shell with a back-to-home link and consistent legal/support navigation.
-- **CONTENT**: Updated public legal and contact touchpoints to use `support@gustia.com` and expanded the landing page footer labels to the full legal page names.
+- **CONTENT**: Updated public legal and contact touchpoints to use `contact@gustia.wine` and expanded the landing page footer labels to the full legal page names.
 
 ## 2026-04-04 - Reply Memory Workflow Removed
 

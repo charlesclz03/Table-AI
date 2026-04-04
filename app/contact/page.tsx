@@ -12,10 +12,10 @@ export default function ContactPage() {
         walk through the guest experience together.
       </p>
       <Link
-        href="mailto:support@gustia.com"
+        href="mailto:contact@gustia.wine"
         className="inline-flex rounded-full border border-white/10 bg-black/20 px-5 py-3 text-sm font-semibold text-white transition hover:bg-black/30"
       >
-        support@gustia.com
+        contact@gustia.wine
       </Link>
     </div>
   )

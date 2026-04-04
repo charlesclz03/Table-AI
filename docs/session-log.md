@@ -135,7 +135,7 @@ Related docs:
 ### 2026-04-04 - Legal Pages and Footer Alignment
 
 - replaced the placeholder `/privacy` and `/terms` pages with Gustia-specific legal copy and a shared glassmorphism legal shell
-- aligned public support contact details to `support@gustia.com`
+- aligned public support contact details to `contact@gustia.wine`
 - expanded the homepage footer labels to `Privacy Policy` and `Terms of Service`
 
 ### 2026-04-04 - File-List Reporting Removed

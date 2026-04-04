@@ -38,7 +38,7 @@ Related docs:
 - canonical release tracking now lives in `docs/reference/PATCH_NOTES.md`, alongside `docs/progress-log.md` for baseline truth and `docs/session-log.md` for chronology
 - Gustia owner admin area shipped under `/admin`, including menu editing, onboarding quiz editing, QR poster generation, and billing overview pages backed by Supabase + Stripe helpers
 - Gustia owner Google login now auto-provisions a placeholder Supabase `restaurants` row, and the public landing page now presents a mobile-first parallax owner tutorial with demo and legal/contact entry points
-- Gustia public legal pages now include product-specific privacy and terms copy with shared premium styling, pricing details, and a support contact path for restaurant owners
+- Gustia public legal pages now include product-specific privacy and terms copy with shared premium styling, pricing details, and the canonical `contact@gustia.wine` contact path for restaurant owners
 - Gustia billing now includes a hosted Stripe Checkout setup CTA, success/cancel states, and dedicated result pages for the founding-offer flow
 - Gustia customer chat now routes GPT-4o mini calls through a server API with restaurant context and automatic demo fallback on failures
 - Gustia concierge voice replies now use an OpenAI TTS server route with browser speech fallback for smoother audio playback on guest devices, and production `/api/tts` has been re-verified successfully after the OpenAI billing update

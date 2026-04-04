@@ -15,6 +15,16 @@ export interface ChangelogEntry {
 
 export const changelog: ChangelogEntry[] = [
   {
+    version: '1.0.7',
+    date: '2026-04-04',
+    changes: [
+      {
+        type: 'improvement',
+        text: 'Public contact links now point to contact@gustia.wine across the homepage, legal pages, and restaurant contact touchpoints',
+      },
+    ],
+  },
+  {
     version: '1.0.6',
     date: '2026-04-04',
     changes: [
