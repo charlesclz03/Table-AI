@@ -56,6 +56,8 @@ Related docs:
 
 - updated `.agent/workflows/deploy.md` and `docs/DEPLOY_CHECKLIST.md` so `/deploy` now explicitly defaults to commit-plus-push on `main` and relies on Vercel auto-deploy from GitHub
 - kept the direct Vercel CLI path documented only as a fallback or emergency release path
+- pushed the full current workspace to `origin/main` as commit `2295105` (`chore(release): gustia production launch`)
+- polled Vercel after the push; the latest visible production deployment remained the manually triggered `dpl_FzNTKtpWkXdKeBPBPPLuWR9uten3`, so GitHub-to-Vercel auto-deploy still needs connector-level confirmation in a future session
 
 ### 2026-04-04 - Gustia Rename Sweep
 

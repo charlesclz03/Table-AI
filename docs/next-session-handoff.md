@@ -49,10 +49,12 @@ Related docs:
 - the owner flow now includes a public landing page on `/`, a dedicated `/admin/login` screen, and first-login restaurant auto-provisioning when Google + Supabase service-role envs are configured
 - the public production domain is now live at `https://www.gustia.wine`
 - the latest production deployment is `dpl_FzNTKtpWkXdKeBPBPPLuWR9uten3`, verified on `https://www.gustia.wine` and `https://gustia.wine`
+- the full documented workspace was pushed to `origin/main` in commit `2295105` (`chore(release): gustia production launch`)
 - the guest chat now uses OpenAI TTS for concierge voice replies through `/api/tts`, with browser speech fallback if API synthesis or playback fails
 - the current chat build now passes `npm run type-check`, `npm run lint`, and `npm run build` after the OpenAI TTS reply upgrade
 - local runtime smoke reached `/api/tts`, but the current OpenAI account returned a quota `429`, so natural voice playback still needs live verification after billing/quota is restored
 - `/deploy` should now default to pushing `main` to GitHub and letting Vercel auto-deploy; direct CLI deploys are fallback-only
+- after the GitHub push, a fresh auto-deploy was not yet visible via the Vercel CLI polling window, so the GitHub-to-Vercel integration should be rechecked if that automation is expected to be immediate
 - Gustia now has a repo-local `.agent/workflows/deploy.md` adapted from Freestyla for GitHub + Vercel releases; use it instead of the older generic deploy workflow
 - Gustia now includes `docs/session-log.md` for chronological session notes alongside the baseline-focused `docs/progress-log.md`, and `/deploy` should treat those plus patch notes as a release gate
 - normal final answers should summarize the work and verification without enumerating edited files unless the user explicitly asks for paths
