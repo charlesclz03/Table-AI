@@ -10,15 +10,26 @@ interface RestaurantRouteProps {
 export async function GET(_: Request, { params }: RestaurantRouteProps) {
   try {
     const { restaurantId } = await params
-    const client = getSupabaseServerClient({ serviceRole: true })
+    const client = getSupabaseServerClient()
 
     if (!client) {
       throw new Error('Supabase is not configured.')
     }
 
+    if (
+      !/^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(
+        restaurantId
+      )
+    ) {
+      return NextResponse.json(
+        { error: 'Restaurant not found.' },
+        { status: 404 }
+      )
+    }
+
     const { data, error } = await client
-      .from('restaurants')
-      .select('id, name, soul_md, rules_md, menu_json, subscription_status')
+      .from('restaurant_public_profiles')
+      .select('id, name, menu_json, subscription_status')
       .eq('id', restaurantId)
       .maybeSingle()
 
@@ -42,7 +53,7 @@ export async function GET(_: Request, { params }: RestaurantRouteProps) {
             ? error.message
             : 'Unable to load the restaurant.',
       },
-      { status: 400 }
+      { status: 500 }
     )
   }
 }

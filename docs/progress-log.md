@@ -19,7 +19,7 @@ Source of truth scope:
 
 Last updated:
 
-- 2026-04-04
+- 2026-04-05
 
 Related docs:
 
@@ -59,3 +59,6 @@ Related docs:
 - Gustia final reports are now summary-first by default, and `/deploy` reports documentation-sync status instead of a file-by-file artifact list
 - Gustia now includes a repo-specific `/deploy` workflow adapted from the Freestyla release process for GitHub push, Vercel deploy, rollback, and verification discipline
 - Gustia `/deploy` now favors a fast release path: update the session docs, push `main`, and immediately run the Vercel production deploy instead of waiting on GitHub auto-trigger timing
+- Gustia security hardening now includes server-only chat prompt context, invite-based restaurant claiming, shared API abuse protection, audit logging hooks, and persisted Stripe webhook plus billing-ledger state
+- Gustia now includes app-level `error.tsx` and `global-error.tsx` boundaries plus route-level loading states for admin, auth, chat, and chat onboarding flows
+- Gustia verification assets now target real product routes instead of the older starter copy, including refreshed Playwright smoke coverage and a refreshed production launch audit script

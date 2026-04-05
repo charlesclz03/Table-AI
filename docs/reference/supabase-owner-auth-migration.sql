@@ -50,6 +50,99 @@ create index if not exists restaurants_owner_id_idx
 create index if not exists conversations_restaurant_id_idx
   on public.conversations (restaurant_id);
 
+create table if not exists public.restaurant_owner_invites (
+  id uuid primary key default gen_random_uuid(),
+  restaurant_id uuid not null references public.restaurants (id) on delete cascade,
+  invitee_email text not null,
+  invited_by_owner_id uuid references public.owners (id) on delete set null,
+  accepted_by_owner_id uuid references public.owners (id) on delete set null,
+  invite_token text unique,
+  accepted_at timestamp with time zone,
+  created_at timestamp with time zone not null default now()
+);
+
+create index if not exists restaurant_owner_invites_email_idx
+  on public.restaurant_owner_invites (lower(invitee_email));
+
+create index if not exists restaurant_owner_invites_restaurant_id_idx
+  on public.restaurant_owner_invites (restaurant_id);
+
+create table if not exists public.audit_logs (
+  id uuid primary key default gen_random_uuid(),
+  action text not null,
+  status text not null default 'info',
+  source text,
+  reason text,
+  actor_id uuid,
+  restaurant_id uuid references public.restaurants (id) on delete set null,
+  target_id text,
+  ip_address text,
+  user_agent text,
+  metadata jsonb not null default '{}'::jsonb,
+  created_at timestamp with time zone not null default now()
+);
+
+create index if not exists audit_logs_action_idx
+  on public.audit_logs (action);
+
+create index if not exists audit_logs_restaurant_id_idx
+  on public.audit_logs (restaurant_id);
+
+create index if not exists audit_logs_created_at_idx
+  on public.audit_logs (created_at desc);
+
+create table if not exists public.stripe_webhook_events (
+  id text primary key,
+  event_type text not null,
+  restaurant_id uuid references public.restaurants (id) on delete set null,
+  payload jsonb not null,
+  processing_status text not null default 'processing',
+  processing_error text,
+  result_detail text,
+  processed_at timestamp with time zone,
+  created_at timestamp with time zone not null default now()
+);
+
+create index if not exists stripe_webhook_events_restaurant_id_idx
+  on public.stripe_webhook_events (restaurant_id);
+
+create index if not exists stripe_webhook_events_processed_at_idx
+  on public.stripe_webhook_events (processed_at desc);
+
+create table if not exists public.billing_ledger (
+  id uuid primary key default gen_random_uuid(),
+  restaurant_id uuid not null references public.restaurants (id) on delete cascade,
+  stripe_event_id text references public.stripe_webhook_events (id) on delete set null,
+  entry_type text not null,
+  status text,
+  amount_minor integer,
+  currency text,
+  stripe_customer_id text,
+  stripe_subscription_id text,
+  stripe_invoice_id text,
+  stripe_checkout_session_id text,
+  period_start timestamp with time zone,
+  period_end timestamp with time zone,
+  metadata jsonb not null default '{}'::jsonb,
+  created_at timestamp with time zone not null default now()
+);
+
+create index if not exists billing_ledger_restaurant_id_idx
+  on public.billing_ledger (restaurant_id);
+
+create index if not exists billing_ledger_created_at_idx
+  on public.billing_ledger (created_at desc);
+
+create or replace view public.restaurant_public_profiles as
+select
+  id,
+  name,
+  menu_json,
+  subscription_status
+from public.restaurants;
+
+grant select on public.restaurant_public_profiles to anon, authenticated;
+
 create table if not exists public.conversation_analytics (
   id uuid primary key default gen_random_uuid(),
   restaurant_id uuid not null references public.restaurants (id) on delete cascade,
@@ -80,6 +173,10 @@ alter table public.owners enable row level security;
 alter table public.restaurants enable row level security;
 alter table public.conversations enable row level security;
 alter table public.conversation_analytics enable row level security;
+alter table public.billing_ledger enable row level security;
+alter table public.audit_logs enable row level security;
+alter table public.restaurant_owner_invites enable row level security;
+alter table public.stripe_webhook_events enable row level security;
 
 drop policy if exists owners_own on public.owners;
 create policy owners_own
@@ -160,6 +257,18 @@ using (
   )
 )
 with check (
+  restaurant_id in (
+    select id
+    from public.restaurants
+    where owner_id = auth.uid()
+  )
+);
+
+drop policy if exists billing_ledger_owner_select on public.billing_ledger;
+create policy billing_ledger_owner_select
+on public.billing_ledger
+for select
+using (
   restaurant_id in (
     select id
     from public.restaurants

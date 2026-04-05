@@ -2,7 +2,10 @@ import { NextResponse } from 'next/server'
 import OpenAI from 'openai'
 import { persistConversationAnalytics } from '@/lib/analytics'
 import type { ConversationMessage } from '@/lib/admin/types'
+import { guardApiRoute } from '@/lib/security/api-protection'
+import { RequestGuardError } from '@/lib/security/request-guards'
 import { getServerEnv } from '@/lib/server-env'
+import { getSupabaseServerClient } from '@/lib/supabase/server'
 
 type ChatRole = 'assistant' | 'user'
 
@@ -22,26 +25,26 @@ interface ChatMessageInput {
   role?: ChatRole
 }
 
-interface RestaurantInput {
-  id?: string
+interface RestaurantPromptContext {
+  id: string
   menu_json?: MenuItem[] | { items?: MenuItem[] }
-  name?: string
-  rules_md?: string
-  soul_md?: string
+  name: string
+  rules_md?: string | null
+  soul_md?: string | null
 }
 
 interface ChatRequestBody {
   conversationId?: string
   language?: string
   messages?: ChatMessageInput[]
-  restaurant?: RestaurantInput
+  restaurantId?: string
   tableNumber?: string
 }
 
 const UUID_PATTERN =
   /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i
 
-function getMenuItems(menu: RestaurantInput['menu_json']) {
+function getMenuItems(menu: RestaurantPromptContext['menu_json']) {
   if (Array.isArray(menu)) {
     return menu
   }
@@ -53,7 +56,7 @@ function getMenuItems(menu: RestaurantInput['menu_json']) {
   return []
 }
 
-function buildSystemPrompt(restaurant: RestaurantInput) {
+function buildSystemPrompt(restaurant: RestaurantPromptContext) {
   const restaurantName = restaurant.name?.trim() || 'the restaurant'
   const soul = restaurant.soul_md?.trim() || 'Warm, helpful, and concise.'
   const menu = JSON.stringify(getMenuItems(restaurant.menu_json))
@@ -68,6 +71,34 @@ function buildSystemPrompt(restaurant: RestaurantInput) {
   ]
     .filter(Boolean)
     .join(' ')
+}
+
+async function getRestaurantPromptContext(restaurantId: string) {
+  if (!UUID_PATTERN.test(restaurantId)) {
+    return null
+  }
+
+  const client = getSupabaseServerClient({ serviceRole: true })
+
+  if (!client) {
+    throw new Error('Supabase is not configured.')
+  }
+
+  const { data, error } = await client
+    .from('restaurants')
+    .select('id, name, soul_md, rules_md, menu_json')
+    .eq('id', restaurantId)
+    .maybeSingle()
+
+  if (error) {
+    throw new Error(error.message)
+  }
+
+  if (!data?.name || !data?.soul_md || !data?.menu_json) {
+    return null
+  }
+
+  return data as RestaurantPromptContext
 }
 
 function sanitizeMessages(messages: ChatMessageInput[] = []) {
@@ -98,6 +129,13 @@ function sanitizeMessages(messages: ChatMessageInput[] = []) {
 
 export async function POST(request: Request) {
   try {
+    const protection = guardApiRoute(request, {
+      bucket: 'chat',
+      limit: 30,
+      maxBodyBytes: 20 * 1024,
+      rateLimitSource: 'api.chat',
+      windowMs: 5 * 60 * 1000,
+    })
     const { openAiApiKey } = getServerEnv()
 
     if (!openAiApiKey) {
@@ -108,13 +146,13 @@ export async function POST(request: Request) {
     }
 
     const body = (await request.json()) as ChatRequestBody
-    const restaurant = body.restaurant
     const messages = sanitizeMessages(body.messages)
     const conversationId = body.conversationId?.trim() || crypto.randomUUID()
+    const restaurantId = body.restaurantId?.trim()
 
-    if (!restaurant?.name || !restaurant.soul_md || !restaurant.menu_json) {
+    if (!restaurantId) {
       return NextResponse.json(
-        { error: 'Restaurant context is required.' },
+        { error: 'Restaurant ID is required.' },
         { status: 400 }
       )
     }
@@ -123,6 +161,15 @@ export async function POST(request: Request) {
       return NextResponse.json(
         { error: 'At least one message is required.' },
         { status: 400 }
+      )
+    }
+
+    const restaurant = await getRestaurantPromptContext(restaurantId)
+
+    if (!restaurant) {
+      return NextResponse.json(
+        { error: 'Restaurant context is unavailable.' },
+        { status: 404 }
       )
     }
 
@@ -158,11 +205,7 @@ export async function POST(request: Request) {
       .reverse()
       .find((message) => message.role === 'user')
 
-    if (
-      restaurant.id &&
-      UUID_PATTERN.test(restaurant.id) &&
-      lastUserMessage?.content
-    ) {
+    if (UUID_PATTERN.test(restaurant.id) && lastUserMessage?.content) {
       const conversationMessages: ConversationMessage[] = [
         ...messages,
         {
@@ -189,7 +232,12 @@ export async function POST(request: Request) {
       })
     }
 
-    return NextResponse.json({ conversationId, reply })
+    return NextResponse.json(
+      { conversationId, reply },
+      {
+        headers: protection.headers,
+      }
+    )
   } catch (error) {
     return NextResponse.json(
       {
@@ -198,7 +246,9 @@ export async function POST(request: Request) {
             ? error.message
             : 'Unable to generate a reply.',
       },
-      { status: 500 }
+      {
+        status: error instanceof RequestGuardError ? error.status : 500,
+      }
     )
   }
 }

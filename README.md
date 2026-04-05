@@ -24,6 +24,10 @@ The repo now contains:
 - billing overview with Stripe portal entry
 - owner changelog feed in the admin dashboard
 - owner analytics dashboard in the admin area
+- server-fetched guest chat context so concierge prompts are no longer client-controlled
+- invite-based owner restaurant claiming with audit-log support for sensitive account changes
+- shared API abuse protection for auth, chat, TTS, menu parsing, and billing routes
+- persisted Stripe webhook state plus a billing ledger for reliable checkout and subscription syncing
 - public privacy, terms, and contact pages
 - live production site on `https://www.gustia.wine`
 
@@ -51,11 +55,12 @@ Commercial model:
 - React 18
 - TypeScript
 - Tailwind CSS
-- NextAuth
 - Prisma
 - Supabase
 - Stripe
 - OpenAI TTS with browser fallback
+
+Active runtime auth and restaurant data now rely on Supabase. Legacy NextAuth starter code is still present in the repo, but it is no longer the primary product auth path.
 
 ## Main App Areas
 
@@ -182,13 +187,16 @@ If commands, env requirements, verification steps, product behavior, or workflow
 
 ## Current Known Gaps
 
+- the updated Supabase SQL migration must be applied in production before invite-based claiming, public restaurant projection reads, audit logs, and billing ledger persistence are fully live
 - live production verification of the orbital onboarding swipe flow still needs a real-device pass
 - live owner analytics still depend on the production `conversation_analytics` SQL changes being applied
 - live verification for the new owner auth flow still depends on the Supabase owner SQL migration being applied plus valid Supabase Auth provider settings
+- local browser smoke for `/chat/demo` exposed a `_next/static` hydration issue that still needs investigation before relying on local browser verification alone
 
 ## Recommended Next Steps
 
-1. Apply `docs/reference/supabase-owner-auth-migration.sql` in the live Supabase project and verify the owner RLS policies against real accounts.
-2. Live-smoke the guest onboarding theme selector and voice previews on a real mobile device.
-3. Expand analytics and owner insight surfaces after the production SQL update.
-4. Remove or downgrade any leftover NextAuth-only starter references once the broader starter no longer needs them.
+1. Apply `docs/reference/supabase-owner-auth-migration.sql` in the live Supabase project and verify the owner RLS policies, invite tables, public profile view, audit logs, and billing ledger against real accounts.
+2. Investigate the local `/chat/demo` hydration issue so browser verification can cover the full guest flow again.
+3. Live-smoke the guest onboarding theme selector and voice previews on a real mobile device.
+4. Expand analytics and owner insight surfaces after the production SQL update.
+5. Remove or downgrade any leftover NextAuth-only starter references once the broader starter no longer needs them.

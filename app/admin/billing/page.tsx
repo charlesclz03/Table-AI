@@ -121,7 +121,7 @@ export default async function AdminBillingPage({
           <p className="mt-2 text-sm text-white/65">
             Payment method:{' '}
             {billing.paymentMethodLast4
-              ? `â€¢â€¢â€¢â€¢ ${billing.paymentMethodLast4}`
+              ? `**** ${billing.paymentMethodLast4}`
               : 'Not available'}
           </p>
         </article>

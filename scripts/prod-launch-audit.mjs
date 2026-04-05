@@ -56,7 +56,7 @@ async function checkOnboardingFallback(page) {
           {
             path: 'README.md',
             content:
-              '# Studio Atlas\nA planning workspace for creative teams.\nUse Supabase and Stripe.',
+              '# Gustia\nAI concierge for restaurants.\nUse Supabase and Stripe.',
           },
         ],
       },
@@ -112,10 +112,9 @@ async function main() {
   const context = browser.contexts()[0] ?? (await browser.newContext())
   const page = context.pages()[0] ?? (await context.newPage())
 
-  results.push(await checkHeading(page, '/', /ship from a working baseline/i))
-  results.push(
-    await checkHeading(page, '/dashboard', /integration status at a glance/i)
-  )
+  results.push(await checkHeading(page, '/', /your restaurant's ai concierge/i))
+  results.push(await checkHeading(page, '/auth/login', /owner login/i))
+  results.push(await checkHeading(page, '/chat/demo', /gustia concierge/i))
   results.push(await checkHealth(page))
   results.push(await checkOnboardingFallback(page))
   results.push(await check404(page))

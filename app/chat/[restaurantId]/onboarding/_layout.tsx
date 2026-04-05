@@ -91,7 +91,7 @@ export interface MenuItem {
 export interface RestaurantProfile {
   id: string
   name: string
-  soul_md: string
+  soul_md?: string
   menu_json: MenuItem[] | { items?: MenuItem[] }
   rules_md?: string
   subscription_status?: string

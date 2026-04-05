@@ -20,7 +20,6 @@ import {
   QrCode,
   ShieldCheck,
   Sparkles,
-  Star,
   TabletSmartphone,
   Wine,
 } from 'lucide-react'
@@ -171,12 +170,6 @@ const guestJourney = [
     colorClass: 'from-rose-500/80 to-fuchsia-600/70',
     icon: Sparkles,
   },
-] as const
-
-const testimonialPlaceholders = [
-  'Reserved for the first Lisbon restaurant owner story.',
-  'Reserved for a quote about fewer repetitive guest questions.',
-  'Reserved for a quote about smoother wine and pairing guidance.',
 ] as const
 
 const smoothEase = [0.22, 1, 0.36, 1] as const
@@ -819,21 +812,35 @@ export default function HomePage() {
           className="max-w-3xl"
         >
           <p className="text-[11px] uppercase tracking-[0.34em] text-white/65">
-            Testimonials
+            Pilot Program
           </p>
           <h2 className="mt-4 text-4xl font-semibold tracking-[-0.05em] text-white sm:text-5xl">
-            Placeholder space for the first owner success stories.
+            Gustia is opening its first owner pilots now.
           </h2>
           <p className="mt-5 text-base leading-8 text-white/74 sm:text-lg">
-            The structure is ready for real restaurant quotes as soon as pilot
-            venues start reporting results.
+            We are not publishing made-up testimonials. Early partner venues
+            will shape the first public case studies once live service data is
+            available.
           </p>
         </motion.div>
 
         <div className="mt-8 grid gap-4 lg:grid-cols-3">
-          {testimonialPlaceholders.map((quote, index) => (
+          {[
+            {
+              title: 'First-wave onboarding',
+              body: 'Pilot partners get the fastest path to live menu import, concierge tuning, and QR deployment.',
+            },
+            {
+              title: 'Operational feedback loop',
+              body: 'Every pilot helps refine recommendations, guest onboarding, and the owner dashboard before broader rollout.',
+            },
+            {
+              title: 'Honest launch posture',
+              body: 'Proof points will be published only after real restaurants report measurable results from live service.',
+            },
+          ].map((item, index) => (
             <motion.article
-              key={quote}
+              key={item.title}
               initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, amount: 0.25 }}
@@ -844,10 +851,9 @@ export default function HomePage() {
               }}
               className="glass-panel-soft rounded-[1.8rem] p-5"
             >
-              <Star className="h-5 w-5 text-amber-100" />
-              <p className="mt-4 text-base leading-8 text-white/78">{quote}</p>
-              <p className="mt-5 text-[11px] uppercase tracking-[0.3em] text-white/42">
-                Future partner voice
+              <p className="text-lg font-semibold text-white">{item.title}</p>
+              <p className="mt-4 text-base leading-8 text-white/78">
+                {item.body}
               </p>
             </motion.article>
           ))}
@@ -956,7 +962,7 @@ export default function HomePage() {
               Contact
             </Link>
             <span className="inline-flex min-h-11 items-center rounded-full border border-white/10 px-4 py-3 text-white/52">
-              Socials coming soon
+              Pilot updates shared privately with partner venues
             </span>
           </div>
         </div>

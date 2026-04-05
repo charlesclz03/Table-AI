@@ -1,6 +1,8 @@
 import { NextResponse } from 'next/server'
 import OpenAI from 'openai'
 import { DEFAULT_TTS_VOICE, type OpenAITtsVoice } from '@/lib/themes'
+import { guardApiRoute } from '@/lib/security/api-protection'
+import { RequestGuardError } from '@/lib/security/request-guards'
 import { getServerEnv } from '@/lib/server-env'
 
 interface TtsRequestBody {
@@ -10,6 +12,13 @@ interface TtsRequestBody {
 
 export async function POST(request: Request) {
   try {
+    const protection = guardApiRoute(request, {
+      bucket: 'tts',
+      limit: 20,
+      maxBodyBytes: 8 * 1024,
+      rateLimitSource: 'api.tts',
+      windowMs: 5 * 60 * 1000,
+    })
     const { openAiApiKey } = getServerEnv()
 
     if (!openAiApiKey) {
@@ -25,6 +34,13 @@ export async function POST(request: Request) {
 
     if (!text) {
       return NextResponse.json({ error: 'Text is required.' }, { status: 400 })
+    }
+
+    if (text.length > 1_200) {
+      return NextResponse.json(
+        { error: 'Keep TTS requests under 1200 characters.' },
+        { status: 413 }
+      )
     }
 
     const client = new OpenAI({
@@ -48,6 +64,7 @@ export async function POST(request: Request) {
       headers: {
         'Cache-Control': 'no-store',
         'Content-Type': 'audio/mpeg',
+        ...protection.headers,
       },
     })
   } catch (error) {
@@ -58,7 +75,9 @@ export async function POST(request: Request) {
             ? error.message
             : 'Unable to synthesize audio.',
       },
-      { status: 500 }
+      {
+        status: error instanceof RequestGuardError ? error.status : 500,
+      }
     )
   }
 }

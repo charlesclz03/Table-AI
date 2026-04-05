@@ -19,7 +19,7 @@ Source of truth scope:
 
 Last updated:
 
-- 2026-04-04
+- 2026-04-05
 
 Related docs:
 
@@ -55,6 +55,11 @@ Related docs:
 - check Vercel for the current production deployment id before debugging a live incident, because `/deploy` can advance production after this handoff was last edited
 - check `origin/main` for the current release commit before debugging release-specific regressions
 - the guest chat now uses OpenAI TTS for concierge voice replies through `/api/tts`, with browser speech fallback if API synthesis or playback fails
+- the guest chat API no longer trusts restaurant prompt context from the browser; clients send only `restaurantId` and the server fetches `soul_md`, `rules_md`, and `menu_json` itself
+- public restaurant bootstrap data now comes from the `restaurant_public_profiles` projection instead of a service-role read of the full `restaurants` row
+- owner restaurant claiming is now invite-based through `restaurant_owner_invites`; direct email-based claiming should be considered retired
+- shared request hardening now covers signup, login, logout, checkout, billing portal, chat, TTS, and menu parse with trusted-origin checks, payload caps, rate limits, and audit-log hooks
+- Stripe webhooks now persist idempotent event rows plus append-only billing ledger entries, and sync the stored restaurant billing state from checkout, subscription, and invoice events
 - the guest onboarding theme step now previews localized AI greetings with per-theme OpenAI voices, a separate confirm button, and text-only fallback if preview audio is unavailable
 - the guest onboarding theme step now uses an orbital planet-style selector with swipe and arrow navigation, blurred side states, and directional wine slosh on the center preview sphere
 - the owner menu editor now includes an `Upload Photo` flow backed by `/api/menu/parse`, where OpenAI `gpt-4o` extracts menu items from uploaded menu images or PDFs before owner review and save
@@ -73,6 +78,7 @@ Related docs:
 - Gustia now has a repo-local `.agent/workflows/deploy.md` adapted from Freestyla for GitHub + Vercel releases; use it instead of the older generic deploy workflow
 - Gustia now includes `docs/session-log.md` for chronological session notes alongside the baseline-focused `docs/progress-log.md`, and `/deploy` should treat those plus patch notes as a release gate
 - normal final answers should summarize the work and verification without enumerating edited files unless the user explicitly asks for paths
+- local browser smoke on `/auth/login` succeeded after the hardening sprint, but `/chat/demo` hydration still needs investigation because `_next/static` asset requests returned `400` during the local smoke even though `npm run build` passed
 
 ## Exact Next Slice
 
@@ -92,3 +98,4 @@ Related docs:
 - verify Supabase dashboard auth settings still allow both email/password and Google OAuth, with `/auth/callback` added to the allowed redirect URLs
 - live-smoke the full monthly and annual pricing paths with a real owner account, including Google OAuth and Stripe Checkout, because the local browser smoke only verified page routing and unauthenticated redirects
 - if admin reads fail after deploy, check that `owners`, `restaurants.owner_id`, and the RLS policies from the migration are present before debugging the app code
+- investigate why local `/chat/demo` hydration requested `_next/static` assets that returned `400` during browser smoke, even after a successful production build and updated audit scripts

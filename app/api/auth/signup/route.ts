@@ -1,11 +1,13 @@
 import { NextResponse } from 'next/server'
 import { z } from 'zod'
-import { ensureOwnerAccountForUser } from '@/lib/admin/owner-account'
+import { writeAuditLogAsync } from '@/lib/audit/server'
 import {
   copyResponseCookies,
   getAuthCallbackUrl,
   getSupabaseAuthRouteClient,
 } from '@/lib/admin/auth-session'
+import { guardApiRoute } from '@/lib/security/api-protection'
+import { RequestGuardError } from '@/lib/security/request-guards'
 
 const signupSchema = z
   .object({
@@ -39,6 +41,13 @@ const signupSchema = z
 
 export async function POST(request: Request) {
   try {
+    const protection = guardApiRoute(request, {
+      bucket: 'auth-signup',
+      limit: 5,
+      maxBodyBytes: 8 * 1024,
+      rateLimitSource: 'api.auth.signup',
+      windowMs: 15 * 60 * 1000,
+    })
     const body = signupSchema.parse(await request.json())
     const cookieResponse = NextResponse.next()
     const client = await getSupabaseAuthRouteClient(cookieResponse)
@@ -79,20 +88,29 @@ export async function POST(request: Request) {
       throw new Error(error.message)
     }
 
-    if (data.user?.email) {
-      await ensureOwnerAccountForUser({
-        userId: data.user.id,
-        email: data.user.email,
-        ownerName: body.name || null,
-      })
-    }
+    writeAuditLogAsync({
+      action: 'auth.signup_created',
+      actorId: data.user?.id || null,
+      metadata: {
+        needsEmailConfirmation: !data.session,
+        provider: body.provider || 'password',
+      },
+      request,
+      source: 'api.auth.signup',
+      status: 'success',
+    })
 
     return copyResponseCookies(
       cookieResponse,
-      NextResponse.json({
-        success: true,
-        needsEmailConfirmation: !data.session,
-      })
+      NextResponse.json(
+        {
+          success: true,
+          needsEmailConfirmation: !data.session,
+        },
+        {
+          headers: protection.headers,
+        }
+      )
     )
   } catch (error) {
     return NextResponse.json(
@@ -102,7 +120,9 @@ export async function POST(request: Request) {
             ? error.message
             : 'Unable to create the owner account.',
       },
-      { status: 400 }
+      {
+        status: error instanceof RequestGuardError ? error.status : 400,
+      }
     )
   }
 }

@@ -3,11 +3,20 @@ import {
   constructStripeWebhookEvent,
   handleStripeWebhookEvent,
 } from '@/lib/stripe/webhooks'
+import {
+  RequestGuardError,
+  assertContentLength,
+} from '@/lib/security/request-guards'
 
 export async function POST(request: Request) {
-  const payload = await request.text()
-
   try {
+    assertContentLength(
+      request,
+      256 * 1024,
+      'Stripe webhook payload is too large.'
+    )
+
+    const payload = await request.text()
     const event = constructStripeWebhookEvent(
       payload,
       request.headers.get('stripe-signature')
@@ -38,7 +47,15 @@ export async function POST(request: Request) {
         message:
           error instanceof Error ? error.message : 'Invalid Stripe webhook',
       },
-      { status: 400 }
+      {
+        status:
+          error instanceof RequestGuardError
+            ? error.status
+            : error instanceof Error &&
+                error.message.includes('stripe-signature')
+              ? 400
+              : 500,
+      }
     )
   }
 }

@@ -5,6 +5,8 @@ import {
   getAuthCallbackUrl,
   getSupabaseAuthRouteClient,
 } from '@/lib/admin/auth-session'
+import { guardApiRoute } from '@/lib/security/api-protection'
+import { RequestGuardError } from '@/lib/security/request-guards'
 
 const loginSchema = z
   .object({
@@ -37,8 +39,20 @@ const loginSchema = z
 
 export async function POST(request: Request) {
   try {
+    const protection = guardApiRoute(request, {
+      bucket: 'auth-login',
+      limit: 10,
+      maxBodyBytes: 8 * 1024,
+      rateLimitSource: 'api.auth.login',
+      windowMs: 15 * 60 * 1000,
+    })
     const body = loginSchema.parse(await request.json())
-    const response = NextResponse.json({ success: true })
+    const response = NextResponse.json(
+      { success: true },
+      {
+        headers: protection.headers,
+      }
+    )
     const client = await getSupabaseAuthRouteClient(response)
 
     if (!client) {
@@ -91,7 +105,9 @@ export async function POST(request: Request) {
             ? error.message
             : 'Unable to log in right now.',
       },
-      { status: 400 }
+      {
+        status: error instanceof RequestGuardError ? error.status : 400,
+      }
     )
   }
 }

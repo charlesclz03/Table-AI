@@ -3,12 +3,14 @@ import {
   type AdminOwnerRecord,
   type AdminRestaurantRecord,
 } from '@/lib/admin/types'
+import { writeAuditLogAsync } from '@/lib/audit/server'
 import { ensureServerOnly } from '@/lib/server-only'
 import { getSupabaseServerClient } from '@/lib/supabase/server'
 
 ensureServerOnly('lib/admin/owner-account')
 
 interface EnsureOwnerAccountParams {
+  allowRestaurantClaim?: boolean
   userId: string
   email?: string | null
   ownerName?: string | null
@@ -52,7 +54,11 @@ function getDefaultRestaurantPayload({
   userId,
   email,
   ownerName,
-}: Required<EnsureOwnerAccountParams>) {
+}: {
+  userId: string
+  email: string
+  ownerName: string | null
+}) {
   const displayName = getOwnerDisplayName({ email, ownerName })
 
   return {
@@ -66,7 +72,21 @@ function getDefaultRestaurantPayload({
   }
 }
 
+function isMissingTableError(
+  errorMessage: string | undefined,
+  tableName: string
+) {
+  const message = errorMessage?.toLowerCase() || ''
+
+  return (
+    message.includes(tableName.toLowerCase()) &&
+    (message.includes('does not exist') ||
+      message.includes('could not find the table'))
+  )
+}
+
 export async function ensureOwnerAccountForUser({
+  allowRestaurantClaim = true,
   userId,
   email,
   ownerName,
@@ -129,10 +149,78 @@ export async function ensureOwnerAccountForUser({
     }
   }
 
+  if (allowRestaurantClaim) {
+    const { data: invite, error: inviteError } = await client
+      .from('restaurant_owner_invites')
+      .select('id, restaurant_id')
+      .eq('invitee_email', normalizedEmail)
+      .is('accepted_at', null)
+      .order('created_at', { ascending: false })
+      .limit(1)
+      .maybeSingle()
+
+    if (
+      inviteError &&
+      !isMissingTableError(inviteError.message, 'restaurant_owner_invites')
+    ) {
+      throw new Error(inviteError.message)
+    }
+
+    if (invite?.restaurant_id) {
+      const { data: claimedRestaurant, error: claimRestaurantError } =
+        await client
+          .from('restaurants')
+          .update({
+            owner_id: userId,
+            email: normalizedEmail,
+          })
+          .eq('id', invite.restaurant_id)
+          .is('owner_id', null)
+          .select('*')
+          .single()
+
+      if (claimRestaurantError) {
+        throw new Error(claimRestaurantError.message)
+      }
+
+      const { error: inviteUpdateError } = await client
+        .from('restaurant_owner_invites')
+        .update({
+          accepted_at: new Date().toISOString(),
+          accepted_by_owner_id: userId,
+        })
+        .eq('id', invite.id)
+
+      if (
+        inviteUpdateError &&
+        !isMissingTableError(
+          inviteUpdateError.message,
+          'restaurant_owner_invites'
+        )
+      ) {
+        throw new Error(inviteUpdateError.message)
+      }
+
+      writeAuditLogAsync({
+        action: 'owner.restaurant_claimed',
+        actorId: userId,
+        restaurantId: claimedRestaurant.id,
+        source: 'owner-account.ensure',
+        status: 'success',
+        targetId: invite.id,
+      })
+
+      return {
+        owner: owner as AdminOwnerRecord,
+        restaurant: claimedRestaurant as AdminRestaurantRecord,
+      }
+    }
+  }
+
   const { data: restaurantByEmail, error: restaurantByEmailError } =
     await client
       .from('restaurants')
-      .select('*')
+      .select('id, owner_id')
       .eq('email', normalizedEmail)
       .maybeSingle()
 
@@ -140,26 +228,18 @@ export async function ensureOwnerAccountForUser({
     throw new Error(restaurantByEmailError.message)
   }
 
-  if (restaurantByEmail) {
-    const { data: claimedRestaurant, error: claimRestaurantError } =
-      await client
-        .from('restaurants')
-        .update({
-          owner_id: userId,
-          email: normalizedEmail,
-        })
-        .eq('id', restaurantByEmail.id)
-        .select('*')
-        .single()
-
-    if (claimRestaurantError) {
-      throw new Error(claimRestaurantError.message)
-    }
-
-    return {
-      owner: owner as AdminOwnerRecord,
-      restaurant: claimedRestaurant as AdminRestaurantRecord,
-    }
+  if (restaurantByEmail && !restaurantByEmail.owner_id) {
+    writeAuditLogAsync({
+      action: 'owner.restaurant_claim_blocked',
+      actorId: userId,
+      metadata: {
+        email: normalizedEmail,
+      },
+      reason: 'matching_restaurant_requires_invite',
+      restaurantId: restaurantByEmail.id,
+      source: 'owner-account.ensure',
+      status: 'blocked',
+    })
   }
 
   const { data: createdRestaurant, error: createRestaurantError } = await client
@@ -177,6 +257,14 @@ export async function ensureOwnerAccountForUser({
   if (createRestaurantError) {
     throw new Error(createRestaurantError.message)
   }
+
+  writeAuditLogAsync({
+    action: 'owner.restaurant_created',
+    actorId: userId,
+    restaurantId: createdRestaurant.id,
+    source: 'owner-account.ensure',
+    status: 'success',
+  })
 
   return {
     owner: owner as AdminOwnerRecord,

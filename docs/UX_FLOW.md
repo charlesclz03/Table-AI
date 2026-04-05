@@ -1,4 +1,5 @@
 # Gustia â€” UX/UX Flow
+
 **Date:** 2026-04-03
 **Status:** DOCUMENTED
 
@@ -7,11 +8,13 @@
 ## Customer Journey â€” From QR to Conversation
 
 ### Step 1: QR Code Scan
+
 - Customer scans QR code on table
 - Opens: `/chat/[restaurantId]?table=T2`
 - URL includes restaurant ID + table number
 
 ### Step 2: Language Selection
+
 **Screen:** Full-page language picker
 
 Available languages:
@@ -31,6 +34,7 @@ Available languages:
 ---
 
 ### Step 3: Wine Theme Selection
+
 **Screen:** Theme picker (4 options)
 
 Theme options:
@@ -38,7 +42,7 @@ Theme options:
 |-------|--------|----------------|
 | Red Wine | Deep burgundy sphere | Warm, full-bodied |
 | White Wine | Pale gold sphere | Light, crisp |
-| RosÃ© | Pink sphere | Fresh, fruity |
+| Rose | Pink sphere | Fresh, fruity |
 | Champagne | Gold sparkle sphere | Bright, effervescent |
 | Green Wine ðŸ‡µðŸ‡¹ | Pale green sphere | Fresh, youthful, Portuguese specialty |
 
@@ -49,9 +53,11 @@ Theme options:
 ---
 
 ### Step 4: Chat Interface
+
 **Screen:** Full chat experience
 
 Layout:
+
 ```
 â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”
 â”‚  [Restaurant Name]       â”‚
@@ -78,24 +84,28 @@ Layout:
 ## Theme-Specific Voice
 
 ### Red Wine Theme
+
 - **Voice:** Warm, deep, authoritative
 - **Character:** Sophisticated waiter
 - **Example:** "Good evening. I am your concierge this evening."
 - **Tone:** Full-bodied, like a bold red
 
 ### White Wine Theme
+
 - **Voice:** Light, crisp, refreshing
 - **Character:** Friendly sommelier
 - **Example:** "Hello! Let me help you explore our menu."
 - **Tone:** Clean, like a chilled white
 
-### RosÃ© Theme
+### Rose Theme
+
 - **Voice:** Fresh, friendly, approachable
 - **Character:** Young, energetic host
 - **Example:** "Hey! Looking for recommendations?"
 - **Tone:** Fruity and fun
 
 ### Champagne Theme
+
 - **Voice:** Bright, celebratory, premium
 - **Character:** Elegant maitre d'
 - **Example:** "Good evening! What brings you in tonight?"
@@ -106,19 +116,23 @@ Layout:
 ## Technical Notes
 
 ### Language Persistence
+
 - Store selected language in sessionStorage
 - Pass language in API calls to GPT-4o mini
 - System prompt uses selected language
 
 ### Theme Persistence
+
 - Store selected theme in sessionStorage
 - Sphere color/animation reflects theme
 - Voice selection tied to theme
 
 ### QR Code Data
+
 ```
 /chat/[restaurantId]?table=[TABLE_NUMBER]&lang=[DEFAULT]
 ```
+
 - Default language: EN
 - Customer can change on arrival
 
@@ -127,6 +141,7 @@ Layout:
 ## Splash Screen (Optional)
 
 While loading:
+
 ```
 â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”
 â”‚                         â”‚

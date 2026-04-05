@@ -612,7 +612,7 @@ export default function RestaurantChatPage() {
               tableNumber,
               language
             ),
-            restaurant: activeRestaurant,
+            restaurantId: activeRestaurant.id,
             tableNumber,
           }),
           signal: AbortSignal.timeout(12000),

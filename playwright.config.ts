@@ -31,9 +31,6 @@ export default defineConfig({
     reuseExistingServer: !process.env.CI,
     env: {
       ...process.env,
-      NEXTAUTH_URL: 'http://localhost:3000',
-      NEXTAUTH_SECRET: 'playwright-local-secret',
-      NEXTAUTH_DEBUG: 'false',
       NEXT_PUBLIC_SESSION_DURATION_SECONDS: '15',
     },
   },

@@ -19,7 +19,7 @@ Source of truth scope:
 
 Last updated:
 
-- 2026-04-04
+- 2026-04-05
 
 Related docs:
 
@@ -36,6 +36,15 @@ Related docs:
 - use `docs/progress-log.md` for durable shipped baseline, and this file for session history
 
 ## Entries
+
+### 2026-04-05 - Enterprise Audit Remediation
+
+- removed the client-trusted restaurant payload from `/api/chat`, switched public restaurant reads to a public-safe projection, and tightened the owner-account flow so restaurant claiming now depends on invite records instead of email matching
+- added shared rate-limit and trusted-origin guards, then applied them to signup, login, logout, checkout, billing portal, chat, TTS, and menu parsing; rate-limit hits now emit audit-log entries
+- replaced the Stripe webhook stub with persisted webhook-event records, restaurant billing-state sync, and append-only billing ledger entries, plus stateful Vitest coverage for checkout, subscription, invoice, and idempotency transitions
+- added app error boundaries, route loading states, honest pilot-program copy, microphone permissions support, fixed invalid `.agent/mcp_config.json`, refreshed the architecture doc, and updated stale Playwright plus launch-audit scripts
+- verified `npm run lint`, `npm run type-check`, `npm run test -- --run`, and `npm run build` all pass
+- browser-smoked `/auth/login` successfully; local `/chat/demo` hydration still needs follow-up because `_next/static` assets returned `400` during the smoke run even after a successful production build
 
 ### 2026-04-04 - Google Maps Concierge Training Flow
 

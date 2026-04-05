@@ -15,6 +15,24 @@ export interface ChangelogEntry {
 
 export const changelog: ChangelogEntry[] = [
   {
+    version: '1.1.2',
+    date: '2026-04-05',
+    changes: [
+      {
+        type: 'improvement',
+        text: 'Guest chat now builds concierge prompts only from server-fetched restaurant data instead of trusting browser-sent restaurant context',
+      },
+      {
+        type: 'improvement',
+        text: 'Stripe billing is now more reliable with persisted webhook replay protection and a billing ledger for checkout, subscription, and invoice events',
+      },
+      {
+        type: 'fix',
+        text: 'Error screens, loading states, and microphone permissions are now handled more gracefully across the owner and guest flows',
+      },
+    ],
+  },
+  {
     version: '1.1.1',
     date: '2026-04-04',
     changes: [

@@ -1,288 +1,136 @@
-# Antigravity Kit Architecture
-
-> Comprehensive AI Agent Capability Expansion Toolkit
+# Gustia Architecture
 
----
+Last updated: 2026-04-05
 
-## 📋 Overview
+## Product Shape
 
-Antigravity Kit is a modular system consisting of:
-
-- **20 Specialist Agents** - Role-based AI personas
-- **36 Skills** - Domain-specific knowledge modules
-- **11 Workflows** - Slash command procedures
-
----
+Gustia is a Next.js 15 App Router application for restaurant owners and their guests.
 
-## 🏗️ Directory Structure
-
-```plaintext
-.agent/
-├── ARCHITECTURE.md          # This file
-├── agents/                  # 20 Specialist Agents
-├── skills/                  # 36 Skills
-├── workflows/               # 11 Slash Commands
-├── rules/                   # Global Rules
-└── scripts/                 # Master Validation Scripts
-```
-
----
-
-## 🤖 Agents (20)
+- Public marketing site: `/`
+- Owner auth and billing entry: `/auth/*`, `/admin/*`
+- Guest concierge flow: `/chat/[restaurantId]`
+- Guest onboarding flow: `/chat/[restaurantId]/onboarding/*`
 
-Specialist AI personas for different domains.
-
-| Agent                    | Focus                      | Skills Used                                              |
-| ------------------------ | -------------------------- | -------------------------------------------------------- |
-| `orchestrator`           | Multi-agent coordination   | parallel-agents, behavioral-modes                        |
-| `project-planner`        | Discovery, task planning   | brainstorming, plan-writing, architecture                |
-| `frontend-specialist`    | Web UI/UX                  | frontend-design, react-best-practices, tailwind-patterns |
-| `backend-specialist`     | API, business logic        | api-patterns, nodejs-best-practices, database-design     |
-| `database-architect`     | Schema, SQL                | database-design, prisma-expert                           |
-| `mobile-developer`       | iOS, Android, RN           | mobile-design                                            |
-| `game-developer`         | Game logic, mechanics      | game-development                                         |
-| `devops-engineer`        | CI/CD, Docker              | deployment-procedures, docker-expert                     |
-| `security-auditor`       | Security compliance        | vulnerability-scanner, red-team-tactics                  |
-| `penetration-tester`     | Offensive security         | red-team-tactics                                         |
-| `test-engineer`          | Testing strategies         | testing-patterns, tdd-workflow, webapp-testing           |
-| `debugger`               | Root cause analysis        | systematic-debugging                                     |
-| `performance-optimizer`  | Speed, Web Vitals          | performance-profiling                                    |
-| `seo-specialist`         | Ranking, visibility        | seo-fundamentals, geo-fundamentals                       |
-| `documentation-writer`   | Manuals, docs              | documentation-templates                                  |
-| `product-manager`        | Requirements, user stories | plan-writing, brainstorming                              |
-| `product-owner`          | Strategy, backlog, MVP     | plan-writing, brainstorming                              |
-| `qa-automation-engineer` | E2E testing, CI pipelines  | webapp-testing, testing-patterns                         |
-| `code-archaeologist`     | Legacy code, refactoring   | clean-code, code-review-checklist                        |
-| `explorer-agent`         | Codebase analysis          | -                                                        |
+## Core Stack
 
----
+- Next.js 15 App Router
+- TypeScript
+- Tailwind CSS
+- Supabase Auth + Postgres
+- Stripe Checkout + Billing Portal
+- OpenAI chat + TTS
+- Prisma remains present for legacy starter surfaces and should not be treated as the primary product data source
 
-## 🧩 Skills (36)
+## Runtime Boundaries
 
-Modular knowledge domains that agents can load on-demand. based on task context.
+### Public browser
 
-### Frontend & UI
+- Reads only public-safe restaurant profile data through `/api/restaurants/[restaurantId]`
+- Sends only `restaurantId` to `/api/chat`
+- Uses `/api/tts` for synthesized concierge audio
+- Never receives `soul_md` or `rules_md`
 
-| Skill                   | Description                                                           |
-| ----------------------- | --------------------------------------------------------------------- |
-| `react-best-practices`  | React & Next.js performance optimization (Vercel - 57 rules)          |
-| `web-design-guidelines` | Web UI audit - 100+ rules for accessibility, UX, performance (Vercel) |
-| `tailwind-patterns`     | Tailwind CSS v4 utilities                                             |
-| `frontend-design`       | UI/UX patterns, design systems                                        |
-| `ui-ux-pro-max`         | 50 styles, 21 palettes, 50 fonts                                      |
+### Server routes
 
-### Backend & API
+- Build concierge prompts from server-fetched restaurant records
+- Persist anonymized conversation analytics
+- Enforce rate limits, origin checks, and payload caps on sensitive endpoints
+- Write audit logs for sensitive operations and abuse blocks
 
-| Skill                   | Description                    |
-| ----------------------- | ------------------------------ |
-| `api-patterns`          | REST, GraphQL, tRPC            |
-| `nestjs-expert`         | NestJS modules, DI, decorators |
-| `nodejs-best-practices` | Node.js async, modules         |
-| `python-patterns`       | Python standards, FastAPI      |
-
-### Database
-
-| Skill             | Description                 |
-| ----------------- | --------------------------- |
-| `database-design` | Schema design, optimization |
-| `prisma-expert`   | Prisma ORM, migrations      |
-
-### TypeScript/JavaScript
-
-| Skill               | Description                         |
-| ------------------- | ----------------------------------- |
-| `typescript-expert` | Type-level programming, performance |
-
-### Cloud & Infrastructure
-
-| Skill                   | Description               |
-| ----------------------- | ------------------------- |
-| `docker-expert`         | Containerization, Compose |
-| `deployment-procedures` | CI/CD, deploy workflows   |
-| `server-management`     | Infrastructure management |
-
-### Testing & Quality
-
-| Skill                   | Description              |
-| ----------------------- | ------------------------ |
-| `testing-patterns`      | Jest, Vitest, strategies |
-| `webapp-testing`        | E2E, Playwright          |
-| `tdd-workflow`          | Test-driven development  |
-| `code-review-checklist` | Code review standards    |
-| `lint-and-validate`     | Linting, validation      |
-
-### Security
-
-| Skill                   | Description              |
-| ----------------------- | ------------------------ |
-| `vulnerability-scanner` | Security auditing, OWASP |
-| `red-team-tactics`      | Offensive security       |
-
-### Architecture & Planning
-
-| Skill           | Description                |
-| --------------- | -------------------------- |
-| `app-builder`   | Full-stack app scaffolding |
-| `architecture`  | System design patterns     |
-| `plan-writing`  | Task planning, breakdown   |
-| `brainstorming` | Socratic questioning       |
+### Owner admin
 
-### Mobile
+- Authenticates through Supabase Auth
+- Reads and updates owner-scoped restaurant records through Supabase
+- Uses Stripe customer and subscription ids stored on `restaurants`
 
-| Skill           | Description           |
-| --------------- | --------------------- |
-| `mobile-design` | Mobile UI/UX patterns |
+## Data Ownership
 
-### Game Development
+### Source of truth
 
-| Skill              | Description           |
-| ------------------ | --------------------- |
-| `game-development` | Game logic, mechanics |
+Operational product data lives in Supabase tables and SQL migrations under `docs/reference/supabase-owner-auth-migration.sql`.
 
-### SEO & Growth
+### Key tables
 
-| Skill              | Description                   |
-| ------------------ | ----------------------------- |
-| `seo-fundamentals` | SEO, E-E-A-T, Core Web Vitals |
-| `geo-fundamentals` | GenAI optimization            |
+- `owners`
+- `restaurants`
+- `conversations`
+- `conversation_analytics`
+- `restaurant_owner_invites`
+- `audit_logs`
+- `stripe_webhook_events`
+- `billing_ledger`
 
-### Shell/CLI
+### Public-safe projection
 
-| Skill                | Description               |
-| -------------------- | ------------------------- |
-| `bash-linux`         | Linux commands, scripting |
-| `powershell-windows` | Windows PowerShell        |
+- `restaurant_public_profiles` is the public projection for guest onboarding and guest chat bootstrap
+- Internal prompt fields stay on `restaurants` and are fetched only server-side
 
-### Other
+## Auth Model
 
-| Skill                     | Description               |
-| ------------------------- | ------------------------- |
-| `clean-code`              | Coding standards (Global) |
-| `behavioral-modes`        | Agent personas            |
-| `parallel-agents`         | Multi-agent patterns      |
-| `mcp-builder`             | Model Context Protocol    |
-| `documentation-templates` | Doc formats               |
-| `i18n-localization`       | Internationalization      |
-| `performance-profiling`   | Web Vitals, optimization  |
-| `systematic-debugging`    | Troubleshooting           |
+### Owner lifecycle
 
----
+1. Owner signs up with Supabase Auth
+2. Email verification or OAuth callback completes
+3. `ensureOwnerAccountForUser()` syncs the owner record
+4. Restaurant claiming is invite-based, not email-based
+5. If there is no valid invite, a fresh owner-scoped restaurant can be created
 
-## 🔄 Workflows (11)
+### Legacy auth
 
-Slash command procedures. Invoke with `/command`.
+- `app/api/auth/[...nextauth]` and related Prisma/NextAuth code are legacy starter surfaces
+- They should not be extended for Gustia feature work without an explicit migration plan
 
-| Command          | Description              |
-| ---------------- | ------------------------ |
-| `/brainstorm`    | Socratic discovery       |
-| `/create`        | Create new features      |
-| `/debug`         | Debug issues             |
-| `/deploy`        | Deploy application       |
-| `/enhance`       | Improve existing code    |
-| `/orchestrate`   | Multi-agent coordination |
-| `/plan`          | Task breakdown           |
-| `/preview`       | Preview changes          |
-| `/status`        | Check project status     |
-| `/test`          | Run tests                |
-| `/ui-ux-pro-max` | Design with 50 styles    |
+## Billing Model
 
----
+- Checkout creates activation + subscription sessions in Stripe
+- Webhooks persist idempotent event records in `stripe_webhook_events`
+- Restaurant billing state is synced onto `restaurants`
+- Every persisted billing mutation writes an append-only row to `billing_ledger`
+- Admin billing UI reads current Stripe state plus stored restaurant billing fields
 
-## 🎯 Skill Loading Protocol
+## Sensitive Routes
 
-```plaintext
-User Request → Skill Description Match → Load SKILL.md
-                                            ↓
-                                    Read references/
-                                            ↓
-                                    Read scripts/
-```
+- `/api/chat`
+- `/api/tts`
+- `/api/menu/parse`
+- `/api/auth/signup`
+- `/api/auth/login`
+- `/api/auth/logout`
+- `/api/stripe/checkout`
+- `/api/admin/billing/portal`
 
-### Skill Structure
+These routes should keep rate limiting, trusted-origin checks, payload caps, and audit logging.
 
-```plaintext
-skill-name/
-├── SKILL.md           # (Required) Metadata & instructions
-├── scripts/           # (Optional) Python/Bash scripts
-├── references/        # (Optional) Templates, docs
-└── assets/            # (Optional) Images, logos
-```
+## Important Directories
 
-### Enhanced Skills (with scripts/references)
+- `app/`: routes, pages, API handlers, loading and error surfaces
+- `components/`: owner admin UI, auth UI, shared UI atoms
+- `lib/admin/`: owner auth/session/account orchestration
+- `lib/billing/`: Stripe customer and subscription persistence
+- `lib/security/`: request guards and rate limiting
+- `lib/audit/`: audit log persistence
+- `lib/supabase/`: server/browser client helpers
+- `docs/`: operational truth and handoff docs
+- `.agent/`: local agent workflows, skills, and repo guidance
 
-| Skill               | Files | Coverage                            |
-| ------------------- | ----- | ----------------------------------- |
-| `ui-ux-pro-max`     | 27    | 50 styles, 21 palettes, 50 fonts    |
-| `app-builder`       | 20    | Full-stack scaffolding              |
+## Verification Baseline
 
----
+Use these as the minimum local gates after risky changes:
 
-## � Scripts (2)
+- `npm run lint`
+- `npm run type-check`
+- `npm run test -- --run`
+- `npm run build`
 
-Master validation scripts that orchestrate skill-level scripts.
+Then run browser smoke checks against:
 
-### Master Scripts
+- `/`
+- `/auth/login`
+- `/chat/demo`
+- `/api/health`
 
-| Script          | Purpose                                 | When to Use              |
-| --------------- | --------------------------------------- | ------------------------ |
-| `checklist.py`  | Priority-based validation (Core checks) | Development, pre-commit  |
-| `verify_all.py` | Comprehensive verification (All checks) | Pre-deployment, releases |
+## Current Risks To Watch
 
-### Usage
-
-```bash
-# Quick validation during development
-python .agent/scripts/checklist.py .
-
-# Full verification before deployment
-python .agent/scripts/verify_all.py . --url http://localhost:3000
-```
-
-### What They Check
-
-**checklist.py** (Core checks):
-
-- Security (vulnerabilities, secrets)
-- Code Quality (lint, types)
-- Schema Validation
-- Test Suite
-- UX Audit
-- SEO Check
-
-**verify_all.py** (Full suite):
-
-- Everything in checklist.py PLUS:
-- Lighthouse (Core Web Vitals)
-- Playwright E2E
-- Bundle Analysis
-- Mobile Audit
-- i18n Check
-
-For details, see [scripts/README.md](scripts/README.md)
-
----
-
-## 📊 Statistics
-
-| Metric              | Value                         |
-| ------------------- | ----------------------------- |
-| **Total Agents**    | 20                            |
-| **Total Skills**    | 36                            |
-| **Total Workflows** | 11                            |
-| **Total Scripts**   | 2 (master) + 18 (skill-level) |
-| **Coverage**        | ~90% web/mobile development   |
-
----
-
-## 🔗 Quick Reference
-
-| Need     | Agent                 | Skills                                |
-| -------- | --------------------- | ------------------------------------- |
-| Web App  | `frontend-specialist` | react-best-practices, frontend-design |
-| API      | `backend-specialist`  | api-patterns, nodejs-best-practices   |
-| Mobile   | `mobile-developer`    | mobile-design                         |
-| Database | `database-architect`  | database-design, prisma-expert        |
-| Security | `security-auditor`    | vulnerability-scanner                 |
-| Testing  | `test-engineer`       | testing-patterns, webapp-testing      |
-| Debug    | `debugger`            | systematic-debugging                  |
-| Plan     | `project-planner`     | brainstorming, plan-writing           |
+- Legacy NextAuth starter code is still present
+- Stripe and audit tables require the Supabase SQL to be applied in the target project
+- Invite issuance UI is not yet productized, so invite records may need to be created operationally until an admin flow exists

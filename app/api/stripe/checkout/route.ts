@@ -9,6 +9,8 @@ import {
 } from '@/lib/billing/plans'
 import { ensureStripeCustomer } from '@/lib/billing/customer'
 import { getPublicEnv } from '@/lib/env'
+import { guardApiRoute } from '@/lib/security/api-protection'
+import { RequestGuardError } from '@/lib/security/request-guards'
 import { getServerEnv } from '@/lib/server-env'
 import { getStripeServerClient } from '@/lib/stripe'
 import { getSupabaseServerComponentClient } from '@/lib/supabase/server'
@@ -50,6 +52,13 @@ function normalizeReturnPath(path: string | undefined, fallbackPath: string) {
 
 export async function POST(request: Request) {
   try {
+    const protection = guardApiRoute(request, {
+      bucket: 'stripe-checkout',
+      limit: 8,
+      maxBodyBytes: 8 * 1024,
+      rateLimitSource: 'api.stripe.checkout',
+      windowMs: 10 * 60 * 1000,
+    })
     const requestUrl = new URL(request.url)
     const plan = getCheckoutPlan(requestUrl.searchParams.get('plan'))
 
@@ -169,7 +178,12 @@ export async function POST(request: Request) {
       throw new Error('Stripe did not return a Checkout URL.')
     }
 
-    return NextResponse.json({ url: session.url })
+    return NextResponse.json(
+      { url: session.url },
+      {
+        headers: protection.headers,
+      }
+    )
   } catch (error) {
     return NextResponse.json(
       {
@@ -178,7 +192,9 @@ export async function POST(request: Request) {
             ? error.message
             : 'Unable to create the Stripe Checkout session.',
       },
-      { status: 400 }
+      {
+        status: error instanceof RequestGuardError ? error.status : 400,
+      }
     )
   }
 }

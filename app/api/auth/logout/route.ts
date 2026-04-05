@@ -1,9 +1,23 @@
 import { NextResponse } from 'next/server'
 import { getSupabaseAuthRouteClient } from '@/lib/admin/auth-session'
+import { guardApiRoute } from '@/lib/security/api-protection'
+import { RequestGuardError } from '@/lib/security/request-guards'
 
-export async function POST() {
+export async function POST(request: Request) {
   try {
-    const response = NextResponse.json({ success: true })
+    const protection = guardApiRoute(request, {
+      bucket: 'auth-logout',
+      limit: 20,
+      maxBodyBytes: 1024,
+      rateLimitSource: 'api.auth.logout',
+      windowMs: 5 * 60 * 1000,
+    })
+    const response = NextResponse.json(
+      { success: true },
+      {
+        headers: protection.headers,
+      }
+    )
     const client = await getSupabaseAuthRouteClient(response)
 
     if (!client) {
@@ -25,7 +39,9 @@ export async function POST() {
             ? error.message
             : 'Unable to sign out right now.',
       },
-      { status: 400 }
+      {
+        status: error instanceof RequestGuardError ? error.status : 400,
+      }
     )
   }
 }

@@ -36,7 +36,7 @@ const securityHeaders = [
   },
   {
     key: 'Permissions-Policy',
-    value: 'camera=(), geolocation=(), microphone=()',
+    value: 'camera=(), geolocation=(), microphone=(self)',
   },
 ]
 

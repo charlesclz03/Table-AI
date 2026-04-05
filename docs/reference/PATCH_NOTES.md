@@ -19,7 +19,7 @@ Source of truth scope:
 
 Last updated:
 
-- 2026-04-04
+- 2026-04-05
 
 Related docs:
 
@@ -34,6 +34,15 @@ Related docs:
 - keep entries concise and outcome-focused
 - use this file for release history, `docs/progress-log.md` for durable baseline truth, and `docs/session-log.md` for session chronology
 - until formal semantic versioning starts, date-keyed entries are acceptable
+
+## 2026-04-05 - Enterprise Audit Hardening Sprint
+
+- **SECURITY**: Hardened `/api/chat` so the browser now sends only `restaurantId`, moved concierge prompt assembly to the server, introduced invite-based restaurant claiming, and added audit-log hooks for sensitive ownership changes and abuse blocks.
+- **BILLING**: Replaced the Stripe webhook stub with idempotent event persistence, restaurant billing-state sync, and append-only billing ledger writes for checkout, subscription, and invoice events.
+- **API**: Added shared request guards for trusted-origin checks, payload caps, and in-memory rate limits across auth, chat, TTS, menu parsing, checkout, and billing portal endpoints.
+- **UX**: Added app-wide error boundaries, route loading states, honest pilot-program marketing copy, microphone policy support, and fixed the visible billing/docs encoding issues.
+- **DOCS**: Refreshed `.agent/ARCHITECTURE.md`, `.agent/mcp_config.json`, `playwright.config.ts`, `e2e/example.spec.ts`, and `scripts/prod-launch-audit.mjs` to match real Gustia flows.
+- **VERIFY**: Re-ran `npm run lint`, `npm run type-check`, `npm run test -- --run`, and `npm run build`. Browser smoke confirmed `/auth/login`, while `/chat/demo` still needs follow-up because the local server served `400` for `_next/static` assets during hydration.
 
 ## 2026-04-04 - Google Maps Concierge Training
 

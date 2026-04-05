@@ -8,6 +8,8 @@ import {
   parsedMenuPayloadSchema,
 } from '@/lib/admin/menu-import'
 import { getAdminRestaurantForRequest } from '@/lib/admin/server'
+import { guardApiRoute } from '@/lib/security/api-protection'
+import { RequestGuardError } from '@/lib/security/request-guards'
 import { getServerEnv } from '@/lib/server-env'
 
 const MAX_FILES = 8
@@ -60,46 +62,50 @@ async function parseMenuFile(client: OpenAI, file: File) {
     purpose: 'user_data',
   })
 
-  await client.files.waitForProcessing(uploadedFile.id, {
-    pollInterval: 500,
-    maxWait: 15000,
-  })
+  try {
+    await client.files.waitForProcessing(uploadedFile.id, {
+      pollInterval: 500,
+      maxWait: 15000,
+    })
 
-  const response = await client.responses.parse(
-    {
-      model: 'gpt-4o',
-      instructions: MENU_PARSE_PROMPT,
-      input: [
-        {
-          role: 'user',
-          content: [
-            {
-              type: 'input_text',
-              text: `Extract all menu items from ${file.name}.`,
-            },
-            isPdfFile(file)
-              ? {
-                  type: 'input_file',
-                  file_id: uploadedFile.id,
-                }
-              : {
-                  type: 'input_image',
-                  file_id: uploadedFile.id,
-                  detail: 'high',
-                },
-          ],
+    const response = await client.responses.parse(
+      {
+        model: 'gpt-4o',
+        instructions: MENU_PARSE_PROMPT,
+        input: [
+          {
+            role: 'user',
+            content: [
+              {
+                type: 'input_text',
+                text: `Extract all menu items from ${file.name}.`,
+              },
+              isPdfFile(file)
+                ? {
+                    type: 'input_file',
+                    file_id: uploadedFile.id,
+                  }
+                : {
+                    type: 'input_image',
+                    file_id: uploadedFile.id,
+                    detail: 'high',
+                  },
+            ],
+          },
+        ],
+        text: {
+          format: zodTextFormat(parsedMenuPayloadSchema, 'menu_photo_parse'),
         },
-      ],
-      text: {
-        format: zodTextFormat(parsedMenuPayloadSchema, 'menu_photo_parse'),
       },
-    },
-    {
-      signal: AbortSignal.timeout(45000),
-    }
-  )
+      {
+        signal: AbortSignal.timeout(45000),
+      }
+    )
 
-  return response.output_parsed
+    return response.output_parsed
+  } finally {
+    await client.files.delete(uploadedFile.id).catch(() => undefined)
+  }
 }
 
 function toFriendlyError(error: unknown) {
@@ -138,6 +144,13 @@ function toFriendlyError(error: unknown) {
 
 export async function POST(request: Request) {
   try {
+    const protection = guardApiRoute(request, {
+      bucket: 'menu-parse',
+      limit: 8,
+      maxBodyBytes: MAX_FILES * MAX_FILE_SIZE_BYTES + 1024 * 512,
+      rateLimitSource: 'api.menu.parse',
+      windowMs: 15 * 60 * 1000,
+    })
     await getAdminRestaurantForRequest()
 
     const { openAiApiKey } = getServerEnv()
@@ -210,17 +223,25 @@ export async function POST(request: Request) {
       (result.parsed?.notes || []).map((note) => `${result.fileName}: ${note}`)
     )
 
-    return NextResponse.json({
-      items: allItems,
-      notes,
-      fileCount: files.length,
-    })
+    return NextResponse.json(
+      {
+        items: allItems,
+        notes,
+        fileCount: files.length,
+      },
+      {
+        headers: protection.headers,
+      }
+    )
   } catch (error) {
     const friendly = toFriendlyError(error)
 
     return NextResponse.json(
       { error: friendly.message },
-      { status: friendly.status }
+      {
+        status:
+          error instanceof RequestGuardError ? error.status : friendly.status,
+      }
     )
   }
 }
