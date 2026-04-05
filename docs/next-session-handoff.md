@@ -78,7 +78,7 @@ Related docs:
 - local `/chat/demo` hydration is no longer blocked by the earlier `_next/static` `400` issue when the app is started on a clean port after clearing `.next`; the earlier failure came from stale local `next start` processes and bundle drift, not from a broken route
 - the repo now skips `/api/chat` entirely in demo mode for non-UUID demo restaurants, and that fix is now live in production
 - live production Google OAuth is still blocked: Supabase returns `Unsupported provider: provider is not enabled` because no Google OAuth client credentials are configured
-- the latest production deployment is now `dpl_9PbhyKrTZXhTt7XE33nXCvYbUsTf`, aliased to `https://www.gustia.wine`
+- the latest production deployment is now `dpl_6EKkbAgV4uMFgsMpqNihbvKQxVFZ`, aliased to `https://www.gustia.wine`
 - live email signup now reaches `/auth/checkout`, and production Stripe Checkout opens again after the Vercel `STRIPE_SECRET_KEY` repair
 - live `/admin/menu` parsing has now been verified with an authenticated owner upload, and live `/chat/demo` onboarding plus reply were re-verified after deploy
 - `/deploy` should now run the fast release path: update the canonical session docs, push `main`, then immediately run the Vercel production deploy

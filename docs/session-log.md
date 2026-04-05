@@ -163,7 +163,7 @@ Related docs:
 - applied the canonical owner-auth SQL migration to live Supabase, then followed it with an additive `restaurants` schema patch so owner bootstrap, billing fields, and invite-era admin reads match the current app contract
 - repaired live Supabase Auth configuration by setting the production `site_url` to `https://www.gustia.wine` and adding the production callback URLs to the redirect allow-list, which fixed the broken localhost email confirmation handoff
 - confirmed the repaired email flow with a fresh Mailinator signup, then verified the confirmation link now lands on `/auth/checkout?plan=monthly` and creates the owner plus restaurant records in production
-- found that the production Vercel `STRIPE_SECRET_KEY` was invalid, replaced it with the working local project key, and redeployed production as `dpl_9PbhyKrTZXhTt7XE33nXCvYbUsTf`
+- found that the production Vercel `STRIPE_SECRET_KEY` was invalid, replaced it with the working local project key, and redeployed production as `dpl_6EKkbAgV4uMFgsMpqNihbvKQxVFZ`
 - verified the new production deploy opens live Stripe Checkout in sandbox mode, deploys the `/admin/invite` and `/invite/[code]` routes, removes the old `/chat/demo` `POST /api/chat` `404`, and keeps `/api/tts` healthy
 - smoke-tested `/admin/menu` with an authenticated owner session and a generated menu image; the live parser returned seven extracted items for review before save
 - remaining external blocker: Google OAuth is still disabled in Supabase because there is no Google client ID or client secret available in the repo, local env, or Vercel envs
