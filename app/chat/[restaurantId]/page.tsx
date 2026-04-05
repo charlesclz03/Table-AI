@@ -78,6 +78,8 @@ declare global {
 }
 
 const HEADPHONE_DISCLAIMER_KEY = 'gustia-headphone-disclaimer-dismissed'
+const UUID_PATTERN =
+  /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i
 
 const CHAT_COPY: Record<
   LanguageCode,
@@ -593,6 +595,10 @@ export default function RestaurantChatPage() {
       userInput: string,
       activeRestaurant: RestaurantProfile
     ) {
+      if (isDemoMode || !UUID_PATTERN.test(activeRestaurant.id)) {
+        return buildDemoResponse(userInput, activeRestaurant, language ?? 'en')
+      }
+
       if (!language || !theme) {
         return buildDemoResponse(userInput, activeRestaurant, language ?? 'en')
       }
@@ -642,7 +648,7 @@ export default function RestaurantChatPage() {
         return buildDemoResponse(userInput, activeRestaurant, language ?? 'en')
       }
     },
-    [language, tableNumber, theme]
+    [isDemoMode, language, tableNumber, theme]
   )
 
   const submitMessage = useCallback(
@@ -1212,6 +1218,7 @@ export default function RestaurantChatPage() {
               <label className="min-w-0 flex-1">
                 <span className="sr-only">Type your message</span>
                 <textarea
+                  name="message"
                   value={inputValue}
                   onChange={(event) => setInputValue(event.target.value)}
                   rows={1}

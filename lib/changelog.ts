@@ -15,6 +15,24 @@ export interface ChangelogEntry {
 
 export const changelog: ChangelogEntry[] = [
   {
+    version: '1.1.3',
+    date: '2026-04-05',
+    changes: [
+      {
+        type: 'feature',
+        text: 'Owners can now create invite links from the admin area and send guests directly into a claim flow for restaurant ownership',
+      },
+      {
+        type: 'improvement',
+        text: 'Email confirmation and billing handoff are now production-ready again, with live signup returning to Gustia and Stripe Checkout opening from the authenticated owner flow',
+      },
+      {
+        type: 'fix',
+        text: 'Demo chat no longer pings the live chat API in demo mode, which removes the old console 404 before the fallback reply appears',
+      },
+    ],
+  },
+  {
     version: '1.1.2',
     date: '2026-04-05',
     changes: [

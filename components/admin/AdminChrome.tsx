@@ -5,6 +5,7 @@ import { usePathname } from 'next/navigation'
 import {
   BarChart3,
   ClipboardList,
+  Link2,
   LayoutDashboard,
   MapPinned,
   MenuSquare,
@@ -35,6 +36,11 @@ const navigation = [
     href: '/admin/menu',
     label: 'Menu',
     icon: MenuSquare,
+  },
+  {
+    href: '/admin/invite',
+    label: 'Invites',
+    icon: Link2,
   },
   {
     href: '/admin/quiz',

@@ -216,6 +216,7 @@ export function PricingAuthForm({
             <span className="mb-2 block text-sm text-white/70">Name</span>
             <input
               type="text"
+              name="name"
               value={name}
               onChange={(event) => setName(event.target.value)}
               className="h-12 w-full rounded-[18px] border border-white/10 bg-black/20 px-4 text-white outline-none transition placeholder:text-white/30 focus:border-amber-300/40"
@@ -229,6 +230,7 @@ export function PricingAuthForm({
           <span className="mb-2 block text-sm text-white/70">Email</span>
           <input
             type="email"
+            name="email"
             value={email}
             onChange={(event) => setEmail(event.target.value)}
             className="h-12 w-full rounded-[18px] border border-white/10 bg-black/20 px-4 text-white outline-none transition placeholder:text-white/30 focus:border-amber-300/40"
@@ -242,6 +244,7 @@ export function PricingAuthForm({
           <span className="mb-2 block text-sm text-white/70">Password</span>
           <input
             type="password"
+            name="password"
             value={password}
             onChange={(event) => setPassword(event.target.value)}
             className="h-12 w-full rounded-[18px] border border-white/10 bg-black/20 px-4 text-white outline-none transition placeholder:text-white/30 focus:border-amber-300/40"

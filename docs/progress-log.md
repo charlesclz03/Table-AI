@@ -49,9 +49,11 @@ Related docs:
 - Gustia owner admin now includes a dedicated analytics page with live conversation counts, top questions, peak usage windows, language mix, and recommendation tracking powered by anonymized chat metadata
 - Gustia owner admin now includes `/admin/onboarding`, a Google Maps-powered concierge training flow that imports place details, scans available photos for menu clues, and generates editable `soul.md` plus `rules.md` drafts before save
 - Gustia owner admin auth now uses Supabase Auth for email/password and Google OAuth, with owner bootstrap tied to `owners.id = auth.users.id` and `restaurants.owner_id`
+- Gustia owner access now includes admin-generated invite links on `/admin/invite` and public ownership claiming on `/invite/[code]`
 - Gustia public pricing now requires owner auth before Stripe Checkout, using plan-aware `/auth/login` and `/auth/checkout` routes for the monthly and annual paths
 - Gustia owner-facing admin reads and writes now target owner-scoped Supabase access, while guest restaurant profile reads are served through an app route so strict restaurant RLS can stay in place
 - Gustia is now live on the public production domain `https://www.gustia.wine`
+- live production email confirmation now returns to Gustia instead of localhost, live Stripe Checkout opens again from the authenticated owner flow, `/admin/menu` parsing has been smoke-tested with a real upload, and `/chat/demo` no longer throws the older demo-mode `404`
 - Gustia now includes a direct Supabase SQL schema document and a Vercel deploy checklist covering env vars and Stripe webhook setup
 - Gustia deploy guidance now requires explicit synchronization of patch notes, handoff, progress/session logs, and other affected canonical docs before release
 - Gustia `/deploy` now explicitly reviews the release diff and requires every impacted doc, including `README.md` and `docs/README.md` when relevant, to be updated or confirmed current before release

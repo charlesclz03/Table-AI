@@ -28,7 +28,13 @@ set
   name = coalesce(excluded.name, public.owners.name);
 
 alter table public.restaurants
-  add column if not exists owner_id uuid;
+  add column if not exists owner_id uuid,
+  add column if not exists logo_url text,
+  add column if not exists stripe_subscription_id text,
+  add column if not exists plan_name text default 'Founding Restaurant',
+  add column if not exists setup_paid_at timestamp with time zone,
+  add column if not exists billing_starts_at timestamp with time zone,
+  add column if not exists qr_code_url text;
 
 do $$
 begin
@@ -46,6 +52,9 @@ $$;
 
 create index if not exists restaurants_owner_id_idx
   on public.restaurants (owner_id);
+
+create index if not exists restaurants_stripe_subscription_id_idx
+  on public.restaurants (stripe_subscription_id);
 
 create index if not exists conversations_restaurant_id_idx
   on public.conversations (restaurant_id);
@@ -168,6 +177,10 @@ from public.owners as owners
 where restaurants.owner_id is null
   and restaurants.email is not null
   and lower(restaurants.email) = owners.email;
+
+update public.restaurants
+set plan_name = coalesce(nullif(plan_name, ''), 'Founding Restaurant')
+where plan_name is null or plan_name = '';
 
 alter table public.owners enable row level security;
 alter table public.restaurants enable row level security;

@@ -37,6 +37,16 @@ Related docs:
 
 ## Entries
 
+### 2026-04-05 - Launch Readiness Verification
+
+- applied `docs/reference/supabase-owner-auth-migration.sql` to the live Supabase project `cgdrgjsigggqfoghbciz` and re-verified the owner-auth tables, the `restaurant_public_profiles` view, and the owner-facing RLS policies
+- added an owner invite management page at `/admin/invite`, a public claim page at `/invite/[code]`, and admin auth `next` handling so invite links can round-trip through sign-in and return to the claim screen
+- fixed local `/chat/demo` verification by clearing `.next`, rebuilding, and confirming the route works on clean production and dev ports after stale `next start` processes on `3000` and `3001` had been masking the result
+- patched the chat demo flow so demo mode no longer calls `/api/chat` for non-UUID demo restaurants, which removes the avoidable `404` console error after deployment; also added form `name` attributes to the owner auth and chat forms to eliminate browser form-field issues
+- verified `npm run type-check`, `npm run lint`, and `npm run build` all pass after the invite and demo-flow changes
+- live production checks found two remaining launch blockers: Google OAuth currently fails because the Supabase provider is not enabled, and Supabase confirmation emails are redirecting to `http://localhost:3000` instead of the production callback path
+- live `/chat/demo` still completes and returns a demo response on production, but the current deployed build still logs `POST /api/chat` `404` before fallback; billing and menu-upload verification remain blocked until auth configuration is fixed
+
 ### 2026-04-05 - Enterprise Audit Remediation
 
 - removed the client-trusted restaurant payload from `/api/chat`, switched public restaurant reads to a public-safe projection, and tightened the owner-account flow so restaurant claiming now depends on invite records instead of email matching
@@ -147,6 +157,16 @@ Related docs:
 - replaced the chat page's primary Web Speech reply path with streamed MP3 playback plus cleanup for cancellation, replay interruption, and audio URL revocation
 - kept a silent browser speech fallback for reply playback if the TTS request or audio playback fails, and updated the product docs to describe the new voice path
 - verified `npm run type-check`, `npm run lint`, and `npm run build` all pass; runtime smoke on `/api/tts` reached the route but the current OpenAI account returned a quota `429`, so natural-audio playback still needs live confirmation once billing/quota is restored
+
+### 2026-04-05 - Launch Readiness Repairs and Production Redeploy
+
+- applied the canonical owner-auth SQL migration to live Supabase, then followed it with an additive `restaurants` schema patch so owner bootstrap, billing fields, and invite-era admin reads match the current app contract
+- repaired live Supabase Auth configuration by setting the production `site_url` to `https://www.gustia.wine` and adding the production callback URLs to the redirect allow-list, which fixed the broken localhost email confirmation handoff
+- confirmed the repaired email flow with a fresh Mailinator signup, then verified the confirmation link now lands on `/auth/checkout?plan=monthly` and creates the owner plus restaurant records in production
+- found that the production Vercel `STRIPE_SECRET_KEY` was invalid, replaced it with the working local project key, and redeployed production as `dpl_9PbhyKrTZXhTt7XE33nXCvYbUsTf`
+- verified the new production deploy opens live Stripe Checkout in sandbox mode, deploys the `/admin/invite` and `/invite/[code]` routes, removes the old `/chat/demo` `POST /api/chat` `404`, and keeps `/api/tts` healthy
+- smoke-tested `/admin/menu` with an authenticated owner session and a generated menu image; the live parser returned seven extracted items for review before save
+- remaining external blocker: Google OAuth is still disabled in Supabase because there is no Google client ID or client secret available in the repo, local env, or Vercel envs
 
 ### 2026-04-04 - Gustia Domain Go-Live Deploy Prep
 

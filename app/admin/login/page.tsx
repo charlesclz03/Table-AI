@@ -1,5 +1,6 @@
 import { redirect } from 'next/navigation'
 import { AdminAuthForm } from '@/components/admin/AdminAuthForm'
+import { normalizeNextPath } from '@/lib/admin/auth-session'
 import { getSupabaseServerComponentClient } from '@/lib/supabase/server'
 
 interface AdminLoginPageProps {
@@ -7,6 +8,8 @@ interface AdminLoginPageProps {
     checkEmail?: string
     error?: string
     missing?: string
+    mode?: 'login' | 'signup'
+    next?: string
   }>
 }
 
@@ -14,13 +17,14 @@ export default async function AdminLoginPage({
   searchParams,
 }: AdminLoginPageProps) {
   const resolvedSearchParams = searchParams ? await searchParams : undefined
+  const nextPath = normalizeNextPath(resolvedSearchParams?.next)
   const client = await getSupabaseServerComponentClient()
   const {
     data: { user },
   } = client ? await client.auth.getUser() : { data: { user: null } }
 
   if (user?.email) {
-    redirect('/admin')
+    redirect(nextPath)
   }
 
   const noticeMessage =
@@ -60,6 +64,10 @@ export default async function AdminLoginPage({
         <div className="mt-8">
           <AdminAuthForm
             errorMessage={errorMessage}
+            initialMode={
+              resolvedSearchParams?.mode === 'signup' ? 'signup' : 'login'
+            }
+            nextPath={nextPath}
             noticeMessage={noticeMessage}
           />
         </div>

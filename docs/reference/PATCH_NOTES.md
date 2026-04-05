@@ -128,6 +128,15 @@ Related docs:
 - **DATA**: Added owner bootstrap logic that mirrors Supabase Auth users into `public.owners`, claims legacy restaurant rows by email, and links restaurants through `restaurants.owner_id`.
 - **SECURITY**: Moved guest restaurant profile reads behind an internal app route and added a canonical Supabase SQL migration for `owners`, `restaurants.owner_id`, and owner-scoped RLS policies.
 
+## 2026-04-05 - Invite Claiming, Production Auth Repair, and Checkout Recovery
+
+- **FEATURE**: Added owner invite management on `/admin/invite` plus public claim links on `/invite/[code]`, and kept `next` routing intact so invitees can return to the claim step after sign-in.
+- **FIX**: Repaired live Supabase production auth by correcting the hosted `site_url`, adding the production callback allow-list, and patching the missing `restaurants` billing columns that had been breaking owner bootstrap after email confirmation.
+- **FIX**: Replaced the invalid production Vercel `STRIPE_SECRET_KEY`, then redeployed so authenticated owners can reach live Stripe Checkout again.
+- **FIX**: Deployed the `/chat/demo` demo-mode guard so production no longer throws the old `POST /api/chat` `404` before its local fallback response.
+- **VERIFY**: Re-verified live email signup into `/auth/checkout`, Stripe Checkout load, `/chat/demo` onboarding plus reply, and `/admin/menu` image upload with parsed menu results on `https://www.gustia.wine`.
+- **BLOCKER**: Google OAuth is still disabled in Supabase Auth because no Google client ID or secret exists in the repo, local env, or Vercel production env.
+
 ## 2026-04-04 - OpenAI Voice Output for Concierge Replies
 
 - **CHAT**: Replaced the primary browser speech-synthesis reply path with an OpenAI-backed `/api/tts` route so concierge voice replies sound smoother and more natural.

@@ -24,6 +24,7 @@ The repo now contains:
 - billing overview with Stripe portal entry
 - owner changelog feed in the admin dashboard
 - owner analytics dashboard in the admin area
+- owner invite management on `/admin/invite` with public claim links on `/invite/[code]`
 - server-fetched guest chat context so concierge prompts are no longer client-controlled
 - invite-based owner restaurant claiming with audit-log support for sensitive account changes
 - shared API abuse protection for auth, chat, TTS, menu parsing, and billing routes
@@ -187,16 +188,15 @@ If commands, env requirements, verification steps, product behavior, or workflow
 
 ## Current Known Gaps
 
-- the updated Supabase SQL migration must be applied in production before invite-based claiming, public restaurant projection reads, audit logs, and billing ledger persistence are fully live
+- Google OAuth is still disabled in live Supabase Auth because production does not yet have a Google client ID and client secret configured
+- the Stripe checkout flow now opens again in production, but one full test-card payment and redirect-to-success pass still needs to be completed
 - live production verification of the orbital onboarding swipe flow still needs a real-device pass
-- live owner analytics still depend on the production `conversation_analytics` SQL changes being applied
-- live verification for the new owner auth flow still depends on the Supabase owner SQL migration being applied plus valid Supabase Auth provider settings
-- local browser smoke for `/chat/demo` exposed a `_next/static` hydration issue that still needs investigation before relying on local browser verification alone
+- live owner analytics and Google Maps onboarding still need broader authenticated production smoke coverage beyond the focused launch checks
 
 ## Recommended Next Steps
 
-1. Apply `docs/reference/supabase-owner-auth-migration.sql` in the live Supabase project and verify the owner RLS policies, invite tables, public profile view, audit logs, and billing ledger against real accounts.
-2. Investigate the local `/chat/demo` hydration issue so browser verification can cover the full guest flow again.
+1. Add the missing Google OAuth credentials to live Supabase Auth and re-test the Google owner login flow end to end.
+2. Complete one full live test-card payment in Stripe Checkout and confirm the redirect to the admin success state.
 3. Live-smoke the guest onboarding theme selector and voice previews on a real mobile device.
-4. Expand analytics and owner insight surfaces after the production SQL update.
+4. Live-smoke the owner onboarding and analytics routes with a real restaurant account in production.
 5. Remove or downgrade any leftover NextAuth-only starter references once the broader starter no longer needs them.

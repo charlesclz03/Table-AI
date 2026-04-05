@@ -71,14 +71,22 @@ Related docs:
 - the current release passed `npm run type-check`, `npm run lint`, `npm run build`, and `npm run test` before production deploy
 - production smoke verified `200` responses on `/`, `/chat/demo`, `/admin/login`, `/admin/billing/success`, `/admin/billing/canceled`, and `/api/health`, with `/admin` redirecting correctly to `/admin/login`
 - production `/api/tts` was re-verified after the billing update and now responds successfully with `audio/mpeg`
-- the AI menu import flow is deployed, but live parsing still needs an authenticated owner session and a real menu upload test in production
+- the canonical owner-auth SQL migration has now been applied to the live Supabase project `cgdrgjsigggqfoghbciz`, and the owner tables plus `restaurant_public_profiles` view were re-verified after the apply
+- the live Supabase auth redirect configuration is now repaired: production signup emails return to `https://www.gustia.wine/auth/callback` instead of `http://localhost:3000`
+- the live Supabase `restaurants` table now includes the missing billing and owner-facing columns (`logo_url`, `stripe_subscription_id`, `plan_name`, `setup_paid_at`, `billing_starts_at`, `qr_code_url`) that the current owner flow expects
+- the repo now includes an owner invite management page at `/admin/invite` plus a public claim page at `/invite/[code]`, and admin login now preserves `next` so invite links can return to the claim flow after sign-in
+- local `/chat/demo` hydration is no longer blocked by the earlier `_next/static` `400` issue when the app is started on a clean port after clearing `.next`; the earlier failure came from stale local `next start` processes and bundle drift, not from a broken route
+- the repo now skips `/api/chat` entirely in demo mode for non-UUID demo restaurants, and that fix is now live in production
+- live production Google OAuth is still blocked: Supabase returns `Unsupported provider: provider is not enabled` because no Google OAuth client credentials are configured
+- the latest production deployment is now `dpl_9PbhyKrTZXhTt7XE33nXCvYbUsTf`, aliased to `https://www.gustia.wine`
+- live email signup now reaches `/auth/checkout`, and production Stripe Checkout opens again after the Vercel `STRIPE_SECRET_KEY` repair
+- live `/admin/menu` parsing has now been verified with an authenticated owner upload, and live `/chat/demo` onboarding plus reply were re-verified after deploy
 - `/deploy` should now run the fast release path: update the canonical session docs, push `main`, then immediately run the Vercel production deploy
 - `/deploy` now also requires an explicit changed-files documentation review so every impacted doc is updated or consciously confirmed current before push or deploy
 - do not wait on GitHub-connected Vercel auto-deploy as part of the normal release path unless a future session intentionally changes that contract
 - Gustia now has a repo-local `.agent/workflows/deploy.md` adapted from Freestyla for GitHub + Vercel releases; use it instead of the older generic deploy workflow
 - Gustia now includes `docs/session-log.md` for chronological session notes alongside the baseline-focused `docs/progress-log.md`, and `/deploy` should treat those plus patch notes as a release gate
 - normal final answers should summarize the work and verification without enumerating edited files unless the user explicitly asks for paths
-- local browser smoke on `/auth/login` succeeded after the hardening sprint, but `/chat/demo` hydration still needs investigation because `_next/static` asset requests returned `400` during the local smoke even though `npm run build` passed
 
 ## Exact Next Slice
 
@@ -88,14 +96,11 @@ Related docs:
 - document any new integration or workflow change in the patch notes, progress log, session log, handoff, commands, env reference, and deploy docs when relevant
 - treat `README.md` and `docs/README.md` as part of the default release doc review whenever product scope, setup, commands, or operating guidance changed
 - keep `/deploy` and `docs/DEPLOY_CHECKLIST.md` aligned with the current reporting contract so deploy summaries stay concise and non-redundant
-- live-smoke the new `/admin/menu` photo import with a real owner account and a real menu PDF in production
+- add the missing Google OAuth client ID and secret to Supabase Auth, then re-test the real Google owner login path end to end
+- complete a full test-card payment inside the live Stripe Checkout flow and confirm the redirect to the admin success state
 - live-smoke `/admin/onboarding` with a real Google Maps restaurant URL in production and confirm that place details, editable fields, and generated markdown save correctly
 - live-smoke the onboarding theme voice previews and new orbital swipe selector on a real mobile device, and confirm the per-theme voice mapping feels distinct enough in production
-- apply the `conversation_analytics` SQL changes from `docs/reference/supabase-owner-auth-migration.sql` in the live Supabase project before expecting language and recommendation analytics in production
-- live-smoke `/admin/analytics` with a real owner account after the SQL update so the dashboard is validated against real concierge traffic
+- live-smoke `/admin/analytics` with a real owner account now that the SQL migration is applied so the dashboard is validated against real concierge traffic
 - verify `/api/chat` end-to-end against the live OpenAI account now that API billing is working again
-- apply `docs/reference/supabase-owner-auth-migration.sql` in the live Supabase project before treating the new owner auth path as production-ready
-- verify Supabase dashboard auth settings still allow both email/password and Google OAuth, with `/auth/callback` added to the allowed redirect URLs
-- live-smoke the full monthly and annual pricing paths with a real owner account, including Google OAuth and Stripe Checkout, because the local browser smoke only verified page routing and unauthenticated redirects
+- live-smoke the annual pricing path after the Stripe repair so both billing options are verified against production
 - if admin reads fail after deploy, check that `owners`, `restaurants.owner_id`, and the RLS policies from the migration are present before debugging the app code
-- investigate why local `/chat/demo` hydration requested `_next/static` assets that returned `400` during browser smoke, even after a successful production build and updated audit scripts
