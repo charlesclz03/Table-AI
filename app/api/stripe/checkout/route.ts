@@ -1,12 +1,7 @@
 import { NextResponse } from 'next/server'
 import { getAdminRestaurantForRequest } from '@/lib/admin/server'
 import type { AdminRestaurantRecord } from '@/lib/admin/types'
-import {
-  ACTIVATION_FEE_AMOUNT,
-  BILLING_DELAY_DAYS,
-  formatEuroAmount,
-  getCheckoutPlan,
-} from '@/lib/billing/plans'
+import { getCheckoutPlan } from '@/lib/billing/plans'
 import { ensureStripeCustomer } from '@/lib/billing/customer'
 import { getPublicEnv } from '@/lib/env'
 import { guardApiRoute } from '@/lib/security/api-protection'
@@ -14,13 +9,6 @@ import { RequestGuardError } from '@/lib/security/request-guards'
 import { getServerEnv } from '@/lib/server-env'
 import { getStripeServerClient } from '@/lib/stripe'
 import { getSupabaseServerComponentClient } from '@/lib/supabase/server'
-
-interface CheckoutRequestBody {
-  cancelPath?: string
-  restaurantId?: string
-  restaurantName?: string
-  successPath?: string
-}
 
 async function persistStripeCustomerId(
   restaurant: AdminRestaurantRecord,
@@ -46,10 +34,6 @@ async function persistStripeCustomerId(
   }
 }
 
-function normalizeReturnPath(path: string | undefined, fallbackPath: string) {
-  return typeof path === 'string' && path.startsWith('/') ? path : fallbackPath
-}
-
 export async function POST(request: Request) {
   try {
     const protection = guardApiRoute(request, {
@@ -59,6 +43,7 @@ export async function POST(request: Request) {
       rateLimitSource: 'api.stripe.checkout',
       windowMs: 10 * 60 * 1000,
     })
+
     const requestUrl = new URL(request.url)
     const plan = getCheckoutPlan(requestUrl.searchParams.get('plan'))
 
@@ -66,19 +51,7 @@ export async function POST(request: Request) {
       throw new Error('A valid plan query is required: monthly or annual.')
     }
 
-    const body = (await request.json()) as CheckoutRequestBody
     const restaurant = await getAdminRestaurantForRequest()
-    const restaurantId = body.restaurantId?.trim() || restaurant.id
-    const restaurantName = body.restaurantName?.trim() || restaurant.name
-
-    if (body.restaurantId?.trim() && restaurant.id !== restaurantId) {
-      return NextResponse.json(
-        {
-          error: 'The checkout request does not match this admin account.',
-        },
-        { status: 403 }
-      )
-    }
 
     const stripe = getStripeServerClient()
 
@@ -100,78 +73,39 @@ export async function POST(request: Request) {
     await persistStripeCustomerId(restaurant, customerId)
 
     const { siteUrl } = getPublicEnv()
-    const successPath = normalizeReturnPath(
-      body.successPath,
-      `/admin/dashboard?checkout=success&plan=${plan.id}`
-    )
-    const cancelPath = normalizeReturnPath(
-      body.cancelPath,
-      `/auth/login?plan=${plan.id}&canceled=true`
-    )
-    const recurringPriceId =
+    const priceId =
       plan.id === 'monthly'
         ? serverEnv.stripePriceIdMonthly
         : serverEnv.stripePriceIdYearly
 
-    const session = await stripe.checkout.sessions.create({
-      mode: 'subscription',
-      customer: customerId,
-      client_reference_id: restaurantId,
-      line_items: [
-        {
+    const lineItem = priceId
+      ? { price: priceId, quantity: 1 }
+      : {
           price_data: {
             currency: 'eur',
             product_data: {
-              name: `Gustia activation for ${restaurantName}`,
-              description:
-                'One-time activation covering onboarding, customization, and launch preparation.',
+              name: `Gustia ${plan.name} subscription`,
+              description: plan.billingLabel,
             },
-            unit_amount: ACTIVATION_FEE_AMOUNT,
+            recurring: { interval: plan.interval },
+            unit_amount: plan.recurringAmount,
           },
           quantity: 1,
-        },
-        recurringPriceId
-          ? {
-              price: recurringPriceId,
-              quantity: 1,
-            }
-          : {
-              price_data: {
-                currency: 'eur',
-                product_data: {
-                  name: `Gustia ${plan.name.toLowerCase()} subscription for ${restaurantName}`,
-                  description: `${plan.billingLabel} after the activation period.`,
-                },
-                recurring: {
-                  interval: plan.interval,
-                },
-                unit_amount: plan.recurringAmount,
-              },
-              quantity: 1,
-            },
-      ],
+        }
+
+    const session = await stripe.checkout.sessions.create({
+      mode: 'subscription',
+      customer: customerId as string,
+      client_reference_id: restaurant.id,
+      line_items: [lineItem],
       metadata: {
-        billingLabel: plan.billingLabel,
         plan: plan.id,
-        restaurantId,
-        type: 'activation-plus-subscription',
+        restaurantId: restaurant.id,
+        userId: restaurant.owner_id ?? '',
       },
-      subscription_data: {
-        trial_period_days: BILLING_DELAY_DAYS,
-        metadata: {
-          billingLabel: plan.billingLabel,
-          plan: plan.id,
-          restaurantId,
-          type: 'activation-plus-subscription',
-        },
-      },
-      success_url: `${siteUrl}${successPath}`,
-      cancel_url: `${siteUrl}${cancelPath}`,
-      custom_text: {
-        submit: {
-          message: `Today you pay ${formatEuroAmount(ACTIVATION_FEE_AMOUNT)} for activation. Your ${plan.name.toLowerCase()} subscription starts after ${BILLING_DELAY_DAYS} days.`,
-        },
-      },
+      customer_email: restaurant.email,
+      success_url: `${siteUrl}/admin/dashboard?session_id={CHECKOUT_SESSION_ID}`,
+      cancel_url: `${siteUrl}/admin/billing?cancelled=true`,
     })
 
     if (!session.url) {
@@ -179,7 +113,7 @@ export async function POST(request: Request) {
     }
 
     return NextResponse.json(
-      { url: session.url },
+      { sessionId: session.id, url: session.url },
       {
         headers: protection.headers,
       }

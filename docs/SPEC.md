@@ -21,7 +21,7 @@ Source of truth scope:
 
 Last updated:
 
-- 2026-04-05
+- 2026-04-08
 
 Related docs:
 
@@ -63,6 +63,26 @@ Expected fields in `restaurants`:
 - `billing_starts_at`
 - `qr_code_url`
 - `created_at`
+
+## Subscriptions Table
+
+The `public.subscriptions` table tracks Stripe subscription state per restaurant:
+
+- `id` (uuid, PK)
+- `restaurant_id` (uuid, FK → restaurants)
+- `user_id` (uuid, FK → owners)
+- `stripe_customer_id` (text)
+- `stripe_subscription_id` (text, unique)
+- `plan` (text check: 'monthly' | 'annual' | 'free')
+- `status` (text check: 'active' | 'past_due' | 'cancelled' | 'trialing' | 'incomplete')
+- `current_period_start` (timestamptz)
+- `current_period_end` (timestamptz)
+- `cancel_at_period_end` (boolean)
+- `created_at` / `updated_at` (timestamptz)
+
+RLS: owners can select/update their own subscriptions; service_role has full access.
+
+Webhook handlers in `lib/billing/subscriptions.ts` keep this table in sync with Stripe events.
 
 ## Admin Pages
 
