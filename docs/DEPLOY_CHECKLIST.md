@@ -19,7 +19,7 @@ Source of truth scope:
 
 Last updated:
 
-- 2026-04-04
+- 2026-04-08
 
 Related docs:
 
@@ -29,13 +29,14 @@ Related docs:
 - `docs/reference/commands.md`
 - `docs/runbooks/release.md`
 - `docs/runbooks/verification.md`
+- `docs/VERCEL_GITHUB_SECRETS.md`
 
 ## Start Here
 
 1. Read `AGENTS.md`
 2. Follow `.agent/workflows/deploy.md`
 3. Run the verification commands in `docs/runbooks/verification.md`
-4. Push `main` to GitHub after all required checks pass, then run the Vercel production deploy immediately from the same clean workspace
+4. Push `main` to GitHub after all required checks pass, then monitor the GitHub Actions production deploy for that commit
 
 ## Required Verification
 
@@ -130,18 +131,12 @@ git commit -m "chore(release): <summary>"
 git push origin main
 ```
 
-Immediately after the push, deploy production:
-
-```powershell
-& "C:/Program Files/nodejs/npx.cmd" vercel pull --yes --environment=production
-& "C:/Program Files/nodejs/npx.cmd" vercel --prod --yes
-```
-
-Do not wait on GitHub-connected auto-deploy before running the Vercel deploy.
+GitHub Actions now deploys production automatically for pushes to `main` through `.github/workflows/ci.yml`.
+Do not trigger a second manual production deploy unless the workflow failed or the user explicitly requests the fallback path.
 
 ## Direct Vercel CLI Path
 
-Use this path for `/deploy vercel` or when production needs a manual redeploy from a release-ready workspace:
+Use this path for `/deploy vercel` or when production needs a manual redeploy because the GitHub Actions deploy path is unavailable:
 
 ```powershell
 & "C:/Program Files/nodejs/npx.cmd" vercel pull --yes --environment=production
@@ -178,7 +173,7 @@ When closing a deploy session, report:
 - which verification commands were run
 - whether the required documentation sync was completed
 - which docs were reviewed and which were updated
-- whether GitHub push and Vercel deploy happened
+- whether GitHub push happened and whether the GitHub Actions Vercel deploy completed
 - the resulting production or preview URL
 - any blocker or rollback note that matters operationally
 

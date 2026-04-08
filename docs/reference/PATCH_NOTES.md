@@ -35,11 +35,25 @@ Related docs:
 - use this file for release history, `docs/progress-log.md` for durable baseline truth, and `docs/session-log.md` for session chronology
 - until formal semantic versioning starts, date-keyed entries are acceptable
 
+## 2026-04-08 - GitHub Actions Vercel Production Deploy
+
+- **CI/CD**: Updated GitHub Actions so pushes to `main` still run the existing CI checks and then deploy Vercel production through `vercel pull`, `vercel build --prod`, and `vercel deploy --prebuilt --prod`.
+- **DOCS**: Added `docs/VERCEL_GITHUB_SECRETS.md` with the required `VERCEL_TOKEN`, `VERCEL_ORG_ID`, and `VERCEL_PROJECT_ID` setup details for GitHub Actions.
+- **CONFIG**: Confirmed this repo's `vercel.json` does not expose the linked IDs, so the docs now point at `.vercel/project.json`, which currently maps to `team_aaxLR8LLPAh101Gkjq1O6jG3` and `prj_zktD8bTE8xHfM1e3MvUd4beFD8JY`.
+- **WORKFLOW**: Re-aligned the canonical deploy docs so GitHub Actions on `main` is now the normal production path and direct Vercel CLI deploy is the fallback path.
+
 ## 2026-04-08 - Internal QR Code API
 
 - **ADMIN**: Added a new dynamic QR image route at `/api/qr/[restaurantId]` so admin QR posters no longer depend on the external qrserver.com image endpoint.
 - **QR**: QR generation now uses the `qrcode` package server-side, with table-aware deep links to `/chat/[restaurantId]?table=T{n}` and size control for preview versus download output.
 - **VERIFY**: Wired the QR studio preview, print, and PNG download actions to the internal route; local package install and build verification still depend on installing the new `qrcode` dependency in this environment.
+
+## 2026-04-08 - Usage Cap Enforcement
+
+- **BILLING**: Added `usage_logs`-backed monthly chat tracking so each restaurant now gets `50` free guest queries per calendar month.
+- **CHAT**: `/api/chat` now warns at `80%` usage through `X-Gustia-Usage-Warning` plus JSON metadata, and blocks over-cap restaurants with `429`, `blocked: true`, and `upgradeUrl: '/admin/billing'`.
+- **ADMIN**: Authenticated owner-admin sessions for the same restaurant, plus configured superadmins, now bypass the cap so internal testing does not consume the free allocation.
+- **DOCS**: Recorded the new cap in the pricing docs and added `usage_logs` to the canonical Supabase SQL reference.
 
 ## 2026-04-05 - Documentation Reconciliation Sprint
 

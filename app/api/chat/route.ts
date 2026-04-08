@@ -2,6 +2,14 @@ import { NextResponse } from 'next/server'
 import OpenAI from 'openai'
 import { persistConversationAnalytics } from '@/lib/analytics'
 import type { ConversationMessage } from '@/lib/admin/types'
+import {
+  GUSTIA_USAGE_UPGRADE_URL,
+  GUSTIA_USAGE_WARNING_HEADER,
+  getRestaurantUsageSnapshot,
+  getRestaurantUsageWarning,
+  incrementRestaurantUsage,
+  shouldBypassRestaurantUsageCap,
+} from '@/lib/billing/usage'
 import { guardApiRoute } from '@/lib/security/api-protection'
 import { RequestGuardError } from '@/lib/security/request-guards'
 import { getServerEnv } from '@/lib/server-env'
@@ -127,6 +135,19 @@ function sanitizeMessages(messages: ChatMessageInput[] = []) {
   return sanitizedMessages
 }
 
+function buildResponseHeaders(
+  protectionHeaders: Record<string, string>,
+  usageWarningMessage?: string
+) {
+  const headers = new Headers(protectionHeaders)
+
+  if (usageWarningMessage) {
+    headers.set(GUSTIA_USAGE_WARNING_HEADER, usageWarningMessage)
+  }
+
+  return headers
+}
+
 export async function POST(request: Request) {
   try {
     const protection = guardApiRoute(request, {
@@ -173,6 +194,27 @@ export async function POST(request: Request) {
       )
     }
 
+    const shouldBypassUsageCap = await shouldBypassRestaurantUsageCap(
+      restaurant.id
+    )
+
+    if (!shouldBypassUsageCap) {
+      const usage = await getRestaurantUsageSnapshot(restaurant.id)
+
+      if (usage.blocked) {
+        return NextResponse.json(
+          {
+            blocked: true,
+            upgradeUrl: GUSTIA_USAGE_UPGRADE_URL,
+          },
+          {
+            status: 429,
+            headers: protection.headers,
+          }
+        )
+      }
+    }
+
     const client = new OpenAI({
       apiKey: openAiApiKey,
     })
@@ -200,6 +242,11 @@ export async function POST(request: Request) {
     if (!reply) {
       throw new Error('Empty assistant response')
     }
+
+    const usage = shouldBypassUsageCap
+      ? null
+      : await incrementRestaurantUsage(restaurant.id)
+    const usageWarning = usage ? getRestaurantUsageWarning(usage) : null
 
     const lastUserMessage = [...messages]
       .reverse()
@@ -233,9 +280,17 @@ export async function POST(request: Request) {
     }
 
     return NextResponse.json(
-      { conversationId, reply },
       {
-        headers: protection.headers,
+        conversationId,
+        reply,
+        usage,
+        usageWarning,
+      },
+      {
+        headers: buildResponseHeaders(
+          protection.headers,
+          usageWarning?.message
+        ),
       }
     )
   } catch (error) {

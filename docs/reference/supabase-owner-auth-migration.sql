@@ -171,6 +171,21 @@ create index if not exists conversation_analytics_conversation_id_idx
 create index if not exists conversation_analytics_created_at_idx
   on public.conversation_analytics (created_at desc);
 
+create table if not exists public.usage_logs (
+  id uuid primary key default gen_random_uuid(),
+  restaurant_id uuid not null references public.restaurants (id) on delete cascade,
+  query_count integer not null default 0,
+  period_start date not null,
+  period_end date not null,
+  created_at timestamp with time zone not null default now()
+);
+
+create unique index if not exists usage_logs_restaurant_period_idx
+  on public.usage_logs (restaurant_id, period_start);
+
+create index if not exists usage_logs_created_at_idx
+  on public.usage_logs (created_at desc);
+
 update public.restaurants as restaurants
 set owner_id = owners.id
 from public.owners as owners
@@ -190,6 +205,7 @@ alter table public.billing_ledger enable row level security;
 alter table public.audit_logs enable row level security;
 alter table public.restaurant_owner_invites enable row level security;
 alter table public.stripe_webhook_events enable row level security;
+alter table public.usage_logs enable row level security;
 
 drop policy if exists owners_own on public.owners;
 create policy owners_own
@@ -280,6 +296,18 @@ with check (
 drop policy if exists billing_ledger_owner_select on public.billing_ledger;
 create policy billing_ledger_owner_select
 on public.billing_ledger
+for select
+using (
+  restaurant_id in (
+    select id
+    from public.restaurants
+    where owner_id = auth.uid()
+  )
+);
+
+drop policy if exists usage_logs_owner_select on public.usage_logs;
+create policy usage_logs_owner_select
+on public.usage_logs
 for select
 using (
   restaurant_id in (

@@ -20,7 +20,7 @@ Source of truth scope:
 
 Last updated:
 
-- 2026-04-04
+- 2026-04-08
 
 ## Current Pricing
 
@@ -44,3 +44,11 @@ Last updated:
 - activation is charged today
 - the selected subscription starts after the `30-day` activation period
 - the Stripe Checkout session carries the selected plan in metadata for future billing reconciliation
+
+## Free Tier Usage Cap
+
+- guest chat usage is capped at `50` queries per restaurant per calendar month
+- usage is tracked in the Supabase `usage_logs` table
+- once a restaurant reaches `80%` of the cap, `/api/chat` returns an `X-Gustia-Usage-Warning` header plus a warning payload in the JSON response
+- once a restaurant has used the full monthly allocation, `/api/chat` returns `429` with `blocked: true` and `upgradeUrl: '/admin/billing'`
+- authenticated admin sessions for the same restaurant, plus configured superadmins, bypass the cap so internal testing does not consume the free allocation

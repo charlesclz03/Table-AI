@@ -15,6 +15,24 @@ export interface ChangelogEntry {
 
 export const changelog: ChangelogEntry[] = [
   {
+    version: '1.1.4',
+    date: '2026-04-08',
+    changes: [
+      {
+        type: 'feature',
+        text: 'Guest chat now includes a free monthly usage cap of 50 queries per restaurant, with upgrade guidance when the limit is reached',
+      },
+      {
+        type: 'improvement',
+        text: 'Restaurants now receive warning metadata once guest chat usage crosses 80 percent of the free monthly allowance',
+      },
+      {
+        type: 'fix',
+        text: 'The guest chat no longer hides real usage-cap blocks behind the older demo fallback response',
+      },
+    ],
+  },
+  {
     version: '1.1.3',
     date: '2026-04-05',
     changes: [

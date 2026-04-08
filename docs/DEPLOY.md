@@ -19,13 +19,14 @@ Source of truth scope:
 
 Last updated:
 
-- 2026-04-05
+- 2026-04-08
 
 Related docs:
 
 - `docs/DEPLOY_CHECKLIST.md`
 - `docs/runbooks/release.md`
 - `docs/runbooks/verification.md`
+- `docs/VERCEL_GITHUB_SECRETS.md`
 
 ## Canonical Deploy Docs
 
@@ -40,6 +41,6 @@ For real release work, use:
 
 - keep docs synchronized before release
 - push the intended Git state first
-- run the Vercel production deploy from the same clean workspace
+- let GitHub Actions deploy Vercel production automatically on pushes to `main`
+- use a direct Vercel CLI production deploy only as the fallback path
 - verify the affected live flows immediately after deploy
-

@@ -19,7 +19,7 @@ Source of truth scope:
 
 Last updated:
 
-- 2026-04-05
+- 2026-04-08
 
 Related docs:
 
@@ -52,6 +52,7 @@ Related docs:
 - Gustia owner admin auth now uses Supabase Auth for email/password and Google OAuth, with owner bootstrap tied to `owners.id = auth.users.id` and `restaurants.owner_id`
 - Gustia owner access now includes admin-generated invite links on `/admin/invite` and public ownership claiming on `/invite/[code]`
 - Gustia public pricing now requires owner auth before Stripe Checkout, using plan-aware `/auth/login` and `/auth/checkout` routes for the monthly and annual paths
+- Gustia guest chat now enforces a free-tier cap of `50` queries per restaurant per calendar month through `usage_logs`, warning at `80%` and blocking at the cap with an upgrade route to `/admin/billing`
 - Gustia owner-facing admin reads and writes now target owner-scoped Supabase access, while guest restaurant profile reads are served through an app route so strict restaurant RLS can stay in place
 - Gustia is now live on the public production domain `https://www.gustia.wine`
 - live production email confirmation now returns to Gustia instead of localhost, live Stripe Checkout opens again from the authenticated owner flow, `/admin/menu` parsing has been smoke-tested with a real upload, and `/chat/demo` no longer throws the older demo-mode `404`
@@ -61,7 +62,7 @@ Related docs:
 - Gustia no longer requires repo-level reply-memory logging before final responses; sessions now end with a direct completion report
 - Gustia final reports are now summary-first by default, and `/deploy` reports documentation-sync status instead of a file-by-file artifact list
 - Gustia now includes a repo-specific `/deploy` workflow adapted from the Freestyla release process for GitHub push, Vercel deploy, rollback, and verification discipline
-- Gustia `/deploy` now favors a fast release path: update the session docs, push `main`, and immediately run the Vercel production deploy instead of waiting on GitHub auto-trigger timing
+- Gustia `/deploy` now favors a fast release path: update the session docs, push `main`, and let GitHub Actions perform the Vercel production deploy for that commit, with manual Vercel CLI deploy kept as fallback only
 - Gustia security hardening now includes server-only chat prompt context, invite-based restaurant claiming, shared API abuse protection, audit logging hooks, and persisted Stripe webhook plus billing-ledger state
 - Gustia now includes app-level `error.tsx` and `global-error.tsx` boundaries plus route-level loading states for admin, auth, chat, and chat onboarding flows
 - Gustia verification assets now target real product routes instead of the older starter copy, including refreshed Playwright smoke coverage and a refreshed production launch audit script

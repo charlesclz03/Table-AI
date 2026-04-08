@@ -19,7 +19,7 @@ Source of truth scope:
 
 Last updated:
 
-- 2026-04-05
+- 2026-04-08
 
 Related docs:
 
@@ -48,6 +48,7 @@ Related docs:
 - the activation amount is charged immediately
 - the subscription starts after the activation delay window
 - monthly and annual paths are both supported
+- free-tier guest chat is capped at `50` queries per restaurant per calendar month, with warnings starting at `80%` usage and an upgrade prompt at `100%`
 - Stripe stores the customer against the owner restaurant record
 - webhook events update:
   - `stripe_customer_id`
@@ -68,4 +69,3 @@ Related docs:
 - payment method preview when available
 - invoice history
 - Stripe billing portal entry
-

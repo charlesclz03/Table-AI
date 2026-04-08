@@ -19,7 +19,7 @@ Source of truth scope:
 
 Last updated:
 
-- 2026-04-05
+- 2026-04-08
 
 Related docs:
 
@@ -47,6 +47,7 @@ Related docs:
 - owner release feed mirror: `docs/CHANGELOG.md`
 - release runbook: `docs/runbooks/release.md`
 - deploy shorthand: `docs/DEPLOY.md`
+- Vercel GitHub Actions secrets: `docs/VERCEL_GITHUB_SECRETS.md`
 - documentation audit: `docs/DOCUMENTATION_AUDIT.md`
 - session history: `docs/session-log.md`
 - shipped history: `docs/progress-log.md`

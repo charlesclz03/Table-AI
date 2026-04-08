@@ -19,7 +19,7 @@ Source of truth scope:
 
 Last updated:
 
-- 2026-04-05
+- 2026-04-08
 
 Related docs:
 
@@ -57,6 +57,7 @@ Related docs:
 - the guest chat now uses OpenAI TTS for concierge voice replies through `/api/tts`, with browser speech fallback if API synthesis or playback fails
 - the guest chat message list now uses cached PreText measurement through the live npm package `@chenglou/pretext`, plus a lightweight windowed renderer for bubble heights and scroll positioning
 - the guest chat API no longer trusts restaurant prompt context from the browser; clients send only `restaurantId` and the server fetches `soul_md`, `rules_md`, and `menu_json` itself
+- the guest chat free tier is now capped at `50` queries per restaurant per calendar month through `usage_logs`, with warning metadata at `80%`, a `429` upgrade block at the cap, and owner-admin or configured superadmin bypass for internal testing
 - public restaurant bootstrap data now comes from the `restaurant_public_profiles` projection instead of a service-role read of the full `restaurants` row
 - owner restaurant claiming is now invite-based through `restaurant_owner_invites`; direct email-based claiming should be considered retired
 - shared request hardening now covers signup, login, logout, checkout, billing portal, chat, TTS, and menu parse with trusted-origin checks, payload caps, rate limits, and audit-log hooks
@@ -84,9 +85,9 @@ Related docs:
 - the latest production deployment is now `dpl_6EKkbAgV4uMFgsMpqNihbvKQxVFZ`, aliased to `https://www.gustia.wine`
 - live email signup now reaches `/auth/checkout`, and production Stripe Checkout opens again after the Vercel `STRIPE_SECRET_KEY` repair
 - live `/admin/menu` parsing has now been verified with an authenticated owner upload, and live `/chat/demo` onboarding plus reply were re-verified after deploy
-- `/deploy` should now run the fast release path: update the canonical session docs, push `main`, then immediately run the Vercel production deploy
+- `/deploy` should now run the fast release path: update the canonical session docs, push `main`, then monitor the GitHub Actions production deploy for that commit
 - `/deploy` now also requires an explicit changed-files documentation review so every impacted doc is updated or consciously confirmed current before push or deploy
-- do not wait on GitHub-connected Vercel auto-deploy as part of the normal release path unless a future session intentionally changes that contract
+- GitHub Actions on pushes to `main` now owns the normal Vercel production deploy path; use a direct Vercel CLI production deploy only when the workflow fails or a manual fallback is explicitly needed
 - Gustia now has a repo-local `.agent/workflows/deploy.md` adapted from Freestyla for GitHub + Vercel releases; use it instead of the older generic deploy workflow
 - Gustia now includes `docs/session-log.md` for chronological session notes alongside the baseline-focused `docs/progress-log.md`, and `/deploy` should treat those plus patch notes as a release gate
 - normal final answers should summarize the work and verification without enumerating edited files unless the user explicitly asks for paths

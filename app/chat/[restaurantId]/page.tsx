@@ -51,6 +51,33 @@ interface ChatMessage {
   content: string
 }
 
+interface ChatApiUsageWarning {
+  message?: string
+}
+
+interface ChatApiResponse {
+  blocked?: boolean
+  conversationId?: string
+  reply?: string
+  upgradeUrl?: string
+  usageWarning?: ChatApiUsageWarning | null
+}
+
+interface AssistantResponseResult {
+  text: string
+  warningMessage?: string
+}
+
+class ChatUsageBlockedError extends Error {
+  upgradeUrl: string
+
+  constructor(message: string, upgradeUrl: string) {
+    super(message)
+    this.name = 'ChatUsageBlockedError'
+    this.upgradeUrl = upgradeUrl
+  }
+}
+
 interface SpeechRecognitionAlternativeLike {
   transcript: string
 }
@@ -638,13 +665,17 @@ export default function RestaurantChatPage() {
     async function getAssistantResponse(
       userInput: string,
       activeRestaurant: RestaurantProfile
-    ) {
+    ): Promise<AssistantResponseResult> {
       if (isDemoMode || !UUID_PATTERN.test(activeRestaurant.id)) {
-        return buildDemoResponse(userInput, activeRestaurant, language ?? 'en')
+        return {
+          text: buildDemoResponse(userInput, activeRestaurant, language ?? 'en'),
+        }
       }
 
       if (!language || !theme) {
-        return buildDemoResponse(userInput, activeRestaurant, language ?? 'en')
+        return {
+          text: buildDemoResponse(userInput, activeRestaurant, language ?? 'en'),
+        }
       }
 
       try {
@@ -668,13 +699,17 @@ export default function RestaurantChatPage() {
           signal: AbortSignal.timeout(12000),
         })
 
-        if (!response.ok) {
-          throw new Error(`Chat request failed with ${response.status}`)
-        }
+        const data = (await response.json()) as ChatApiResponse
 
-        const data = (await response.json()) as {
-          conversationId?: string
-          reply?: string
+        if (!response.ok) {
+          if (response.status === 429 && data.blocked) {
+            throw new ChatUsageBlockedError(
+              'This restaurant has reached its free monthly chat limit.',
+              data.upgradeUrl?.trim() || '/admin/billing'
+            )
+          }
+
+          throw new Error(`Chat request failed with ${response.status}`)
         }
 
         const content = data.reply?.trim()
@@ -687,9 +722,21 @@ export default function RestaurantChatPage() {
           conversationIdRef.current = data.conversationId
         }
 
-        return content
-      } catch {
-        return buildDemoResponse(userInput, activeRestaurant, language ?? 'en')
+        return {
+          text: content,
+          warningMessage:
+            data.usageWarning?.message?.trim() ||
+            response.headers.get('X-Gustia-Usage-Warning')?.trim() ||
+            undefined,
+        }
+      } catch (error) {
+        if (error instanceof ChatUsageBlockedError) {
+          throw error
+        }
+
+        return {
+          text: buildDemoResponse(userInput, activeRestaurant, language ?? 'en'),
+        }
       }
     },
     [isDemoMode, language, tableNumber, theme]
@@ -706,23 +753,25 @@ export default function RestaurantChatPage() {
       setErrorMessage('')
       setIsSending(true)
 
+      const previousMessages = [...latestMessageRef.current]
       const userMessage: ChatMessage = {
         id: createMessageId(),
         role: 'user',
         content: trimmedMessage,
       }
 
-      const nextMessages = [...latestMessageRef.current, userMessage]
+      const nextMessages = [...previousMessages, userMessage]
       latestMessageRef.current = nextMessages
       setMessages(nextMessages)
       setInputValue('')
       setInterimTranscript('')
 
       try {
-        const assistantText = await getAssistantResponse(
+        const assistantResponse = await getAssistantResponse(
           trimmedMessage,
           restaurant
         )
+        const assistantText = assistantResponse.text
 
         const assistantMessage: ChatMessage = {
           id: createMessageId(),
@@ -734,8 +783,19 @@ export default function RestaurantChatPage() {
         setMessages(latestMessageRef.current)
         setLatestSubtitle(assistantText)
         setUserMessageCount((current) => current + 1)
+        setErrorMessage(assistantResponse.warningMessage || '')
         void speakAssistantReply(assistantText)
-      } catch {
+      } catch (error) {
+        if (error instanceof ChatUsageBlockedError) {
+          latestMessageRef.current = previousMessages
+          setMessages(previousMessages)
+          setInputValue(trimmedMessage)
+          setErrorMessage(
+            `${error.message} Upgrade in ${error.upgradeUrl} to continue.`
+          )
+          return
+        }
+
         const fallbackText = 'Let me check with the staff.'
         const assistantMessage: ChatMessage = {
           id: createMessageId(),

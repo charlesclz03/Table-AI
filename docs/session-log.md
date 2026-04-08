@@ -37,6 +37,13 @@ Related docs:
 
 ## Entries
 
+### 2026-04-08 - Usage Cap Enforcement
+
+- added `lib/billing/usage.ts` to centralize monthly period math, `usage_logs` reads and increments, warning payload generation, and authenticated owner or superadmin bypass checks for guest chat usage enforcement
+- updated `/api/chat` so it checks the current monthly count before OpenAI work, blocks over-cap restaurants with `429` plus `/admin/billing`, and returns warning headers and JSON metadata once usage reaches the `80%` threshold
+- updated the guest chat client so a real usage-cap block is shown to the guest instead of being swallowed by the older demo fallback path
+- documented the new usage cap in the pricing docs and added the `usage_logs` table plus owner-read RLS policy to the canonical Supabase SQL reference
+
 ### 2026-04-08 - Internal QR Route
 
 - added `GET /api/qr/[restaurantId]`, which validates the restaurant id, normalizes table and size query params, and returns a PNG QR code generated with the `qrcode` package

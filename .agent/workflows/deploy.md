@@ -1,5 +1,5 @@
 ---
-description: Prepare Gustia for a fast GitHub + Vercel release with repo-specific checks, docs sync, and immediate production deploy.
+description: Prepare Gustia for a fast GitHub + Vercel release with repo-specific checks, docs sync, and GitHub Actions production deploy on main.
 ---
 
 # /deploy - Gustia Release Workflow
@@ -27,7 +27,7 @@ This workflow is adapted from the stricter Freestyla release discipline, but onl
 /deploy rollback
 ```
 
-- `/deploy` or `/deploy production`: run the full release checklist, update the canonical docs for the session, push `main`, then deploy production immediately through Vercel
+- `/deploy` or `/deploy production`: run the full release checklist, update the canonical docs for the session, push `main`, then confirm the GitHub Actions production deploy completes
 - `/deploy check`: verification only, no push or deploy
 - `/deploy github`: verify, then push `main`
 - `/deploy vercel`: verify, then deploy through Vercel
@@ -164,12 +164,8 @@ git commit -m "chore(release): <summary>"
 git push origin main
 ```
 
-Then deploy production immediately from the same clean workspace:
-
-```powershell
-& "C:/Program Files/nodejs/npx.cmd" vercel pull --yes --environment=production
-& "C:/Program Files/nodejs/npx.cmd" vercel --prod --yes
-```
+GitHub Actions now handles the production Vercel deploy automatically for pushes to `main` through `.github/workflows/ci.yml`.
+Monitor that workflow run instead of triggering a second production deploy from the same workspace.
 
 ### Vercel CLI Path
 
@@ -182,11 +178,11 @@ Use this when `/deploy vercel` is requested or when production needs to be redep
 
 ### Selection Rule
 
-- Default to: verify, update the release docs, push GitHub, then run the Vercel CLI production deploy immediately
-- Do not wait around for GitHub-connected Vercel auto-deploy to trigger
+- Default to: verify, update the release docs, push GitHub, then confirm the GitHub Actions production deploy succeeds
+- Do not launch a second manual Vercel production deploy unless the workflow fails or the user explicitly asks for the fallback path
 - Do not poll Vercel for long periods before deploying unless the user explicitly asks for that slower path
-- Treat GitHub auto-deploy as a bonus, not as a required gate for `/deploy`
-- Keep the local workspace clean before the Vercel deploy so production matches the pushed GitHub state
+- Treat the GitHub Actions deploy on `main` as the primary production path for `/deploy`
+- Keep the local workspace clean before the push so the GitHub-triggered production deploy matches the intended GitHub state
 
 ---
 
@@ -245,6 +241,6 @@ When reporting a completed `/deploy`, include:
 - whether the required documentation sync was completed
 - which docs were reviewed and which docs were updated
 - whether GitHub was pushed
-- whether Vercel was deployed
+- whether the GitHub Actions Vercel deploy completed
 - production or preview URL
 - any blockers or rollback notes
