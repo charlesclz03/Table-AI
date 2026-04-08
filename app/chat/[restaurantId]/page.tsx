@@ -668,13 +668,21 @@ export default function RestaurantChatPage() {
     ): Promise<AssistantResponseResult> {
       if (isDemoMode || !UUID_PATTERN.test(activeRestaurant.id)) {
         return {
-          text: buildDemoResponse(userInput, activeRestaurant, language ?? 'en'),
+          text: buildDemoResponse(
+            userInput,
+            activeRestaurant,
+            language ?? 'en'
+          ),
         }
       }
 
       if (!language || !theme) {
         return {
-          text: buildDemoResponse(userInput, activeRestaurant, language ?? 'en'),
+          text: buildDemoResponse(
+            userInput,
+            activeRestaurant,
+            language ?? 'en'
+          ),
         }
       }
 
@@ -735,7 +743,11 @@ export default function RestaurantChatPage() {
         }
 
         return {
-          text: buildDemoResponse(userInput, activeRestaurant, language ?? 'en'),
+          text: buildDemoResponse(
+            userInput,
+            activeRestaurant,
+            language ?? 'en'
+          ),
         }
       }
     },

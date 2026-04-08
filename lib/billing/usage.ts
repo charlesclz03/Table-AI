@@ -70,8 +70,7 @@ function buildUsageSnapshot({
 }): RestaurantUsageSnapshot {
   const cap = FREE_TIER_MONTHLY_QUERY_CAP
   const remaining = Math.max(cap - used, 0)
-  const percentUsed =
-    cap > 0 ? Number(((used / cap) * 100).toFixed(1)) : 0
+  const percentUsed = cap > 0 ? Number(((used / cap) * 100).toFixed(1)) : 0
   const warningThreshold = Math.ceil(cap * USAGE_WARNING_THRESHOLD_RATIO)
 
   return {
