@@ -3,6 +3,7 @@ import { AdminPageShell } from '@/components/admin/AdminPageShell'
 import { BillingCheckoutButton } from '@/components/admin/BillingCheckoutButton'
 import { BillingPortalButton } from '@/components/admin/BillingPortalButton'
 import { EmptyRestaurantState } from '@/components/admin/EmptyRestaurantState'
+import { RefundInvoiceButton } from '@/components/admin/RefundInvoiceButton'
 import { getBillingOverview, requireAdminContext } from '@/lib/admin/server'
 
 function formatDateLabel(value?: string | null) {
@@ -150,6 +151,11 @@ export default async function AdminBillingPage({
                   <span className="rounded-full border border-white/10 bg-white/5 px-4 py-2 text-xs uppercase tracking-[0.2em] text-white/70">
                     {invoice.status}
                   </span>
+                  {invoice.status.toLowerCase() === 'paid' ? (
+                    <RefundInvoiceButton
+                      refundTargetId={invoice.paymentIntentId || invoice.id}
+                    />
+                  ) : null}
                   {invoice.hostedInvoiceUrl ? (
                     <a
                       href={invoice.hostedInvoiceUrl}

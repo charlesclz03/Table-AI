@@ -111,6 +111,7 @@ declare global {
 }
 
 const HEADPHONE_DISCLAIMER_KEY = 'gustia-headphone-disclaimer-dismissed'
+const MIC_MUTED_STORAGE_KEY = 'gustia-mic-muted'
 const UUID_PATTERN =
   /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i
 
@@ -327,6 +328,7 @@ export default function RestaurantChatPage() {
   const [isSpeechSupported, setIsSpeechSupported] = useState(false)
   const [isListening, setIsListening] = useState(false)
   const [isLoadingRestaurant, setIsLoadingRestaurant] = useState(true)
+  const [isMuted, setIsMuted] = useState(false)
   const [isSending, setIsSending] = useState(false)
   const [isSpeaking, setIsSpeaking] = useState(false)
   const [isHoldingToTalk, setIsHoldingToTalk] = useState(false)
@@ -403,6 +405,7 @@ export default function RestaurantChatPage() {
     const storedTheme = window.sessionStorage.getItem(THEME_STORAGE_KEY)
 
     setIsSpeechSupported(Boolean(window.webkitSpeechRecognition))
+    setIsMuted(window.sessionStorage.getItem(MIC_MUTED_STORAGE_KEY) === 'true')
     setShowHeadphoneDisclaimer(
       window.sessionStorage.getItem(HEADPHONE_DISCLAIMER_KEY) !== 'true'
     )
@@ -423,6 +426,17 @@ export default function RestaurantChatPage() {
     setHasResolvedDisclaimer(true)
     setIsPreferenceGateReady(true)
   }, [restaurantId, router, tableNumber])
+
+  useEffect(() => {
+    if (typeof window === 'undefined' || !isPreferenceGateReady) {
+      return
+    }
+
+    window.sessionStorage.setItem(
+      MIC_MUTED_STORAGE_KEY,
+      isMuted ? 'true' : 'false'
+    )
+  }, [isMuted, isPreferenceGateReady])
 
   useEffect(() => {
     if (!voiceOutputEnabled) {
@@ -961,7 +975,12 @@ export default function RestaurantChatPage() {
 
   const startVoiceInput = useCallback(
     function startVoiceInput(event: ReactPointerEvent<HTMLButtonElement>) {
-      if (!isSpeechSupported || !recognitionRef.current || isSending) {
+      if (
+        isMuted ||
+        !isSpeechSupported ||
+        !recognitionRef.current ||
+        isSending
+      ) {
         return
       }
 
@@ -985,7 +1004,7 @@ export default function RestaurantChatPage() {
         isHoldingToTalkRef.current = false
       }
     },
-    [isSending, isSpeechSupported, stopVoicePlayback]
+    [isMuted, isSending, isSpeechSupported, stopVoicePlayback]
   )
 
   const stopVoiceInput = useCallback(
@@ -1029,6 +1048,12 @@ export default function RestaurantChatPage() {
 
     recognitionRef.current?.stop()
   }, [])
+
+  useEffect(() => {
+    if (isMuted) {
+      cancelVoiceInput()
+    }
+  }, [cancelVoiceInput, isMuted])
 
   useEffect(() => {
     if (typeof window === 'undefined') {
@@ -1217,11 +1242,31 @@ export default function RestaurantChatPage() {
               >
                 <Paintbrush className="h-4 w-4" />
               </Link>
+              <button
+                type="button"
+                onClick={() => setIsMuted((current) => !current)}
+                className={cn(
+                  'glass-chip flex h-11 w-11 items-center justify-center rounded-full transition hover:bg-white/12',
+                  isMuted ? 'text-rose-200' : 'text-white/75 hover:text-white'
+                )}
+                aria-label={isMuted ? 'Unmute microphone' : 'Mute microphone'}
+                aria-pressed={isMuted}
+              >
+                {isMuted ? (
+                  <MicOff className="h-4 w-4" />
+                ) : (
+                  <Mic className="h-4 w-4" />
+                )}
+              </button>
               <div className="glass-chip flex min-h-11 w-full items-center justify-center gap-2 rounded-full px-3 py-2 text-center text-xs text-white/70 sm:w-auto">
                 <Volume2 className="h-3.5 w-3.5" />
                 <span>
                   {activeLanguage.flag}{' '}
-                  {isSpeechSupported ? 'Voice ready' : 'Text fallback'}
+                  {isMuted
+                    ? 'Mic muted'
+                    : isSpeechSupported
+                      ? 'Voice ready'
+                      : 'Text fallback'}
                 </span>
               </div>
             </div>
@@ -1300,11 +1345,13 @@ export default function RestaurantChatPage() {
                         ? 'Concierge is thinking'
                         : isSpeaking
                           ? `${activeTheme.label} sphere is speaking`
-                          : isHoldingToTalk || isListening
-                            ? 'Listening while held'
-                            : isDemoMode
-                              ? 'Demo mode'
-                              : 'Live mode'}
+                          : isMuted
+                            ? 'Microphone muted'
+                            : isHoldingToTalk || isListening
+                              ? 'Listening while held'
+                              : isDemoMode
+                                ? 'Demo mode'
+                                : 'Live mode'}
                   </span>
                 </div>
               </div>
@@ -1400,24 +1447,34 @@ export default function RestaurantChatPage() {
                   }
                 }}
                 disabled={
-                  !isSpeechSupported || isLoadingRestaurant || isSending
+                  isMuted ||
+                  !isSpeechSupported ||
+                  isLoadingRestaurant ||
+                  isSending
                 }
                 className={cn(
                   'flex h-14 w-14 shrink-0 items-center justify-center rounded-full border transition-all duration-300',
-                  isHoldingToTalk || isListening
-                    ? 'border-rose-300/50 bg-rose-400/20 text-rose-50 shadow-[0_0_24px_rgba(251,113,133,0.25)] backdrop-blur-xl'
-                    : 'glass-chip text-white',
-                  (!isSpeechSupported || isLoadingRestaurant || isSending) &&
+                  isMuted
+                    ? 'border-rose-300/30 bg-rose-400/10 text-rose-100/80 backdrop-blur-xl'
+                    : isHoldingToTalk || isListening
+                      ? 'border-rose-300/50 bg-rose-400/20 text-rose-50 shadow-[0_0_24px_rgba(251,113,133,0.25)] backdrop-blur-xl'
+                      : 'glass-chip text-white',
+                  (isMuted ||
+                    !isSpeechSupported ||
+                    isLoadingRestaurant ||
+                    isSending) &&
                     'cursor-not-allowed opacity-45'
                 )}
                 aria-pressed={isHoldingToTalk || isListening}
                 aria-label={
-                  isHoldingToTalk || isListening
-                    ? 'Release to send voice input'
-                    : 'Press and hold to talk'
+                  isMuted
+                    ? 'Microphone is muted'
+                    : isHoldingToTalk || isListening
+                      ? 'Release to send voice input'
+                      : 'Press and hold to talk'
                 }
               >
-                {isHoldingToTalk || isListening ? (
+                {isMuted || isHoldingToTalk || isListening ? (
                   <MicOff className="h-5 w-5" />
                 ) : (
                   <Mic className="h-5 w-5" />
@@ -1453,7 +1510,10 @@ export default function RestaurantChatPage() {
             </form>
 
             <p className="mt-3 px-1 text-xs leading-5 text-white/45">
-              Hold the mic to talk, then release to send. {localizedCopy.helper}
+              {isMuted
+                ? 'Microphone muted. Unmute in the header to use hold-to-talk.'
+                : 'Hold the mic to talk, then release to send.'}{' '}
+              {localizedCopy.helper}
             </p>
           </div>
         </footer>

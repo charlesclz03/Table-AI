@@ -214,6 +214,7 @@ export interface BillingInvoiceSummary {
   amountPaid: number
   currency: string
   status: string
+  paymentIntentId?: string | null
   hostedInvoiceUrl?: string | null
   invoicePdf?: string | null
 }

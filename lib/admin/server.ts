@@ -567,6 +567,15 @@ function formatBillingDate(dateValue?: string | null) {
 function mapInvoices(invoices: unknown[]): BillingInvoiceSummary[] {
   return invoices.map((invoice) => {
     const safeInvoice = invoice as Record<string, unknown>
+    const paymentIntent =
+      typeof safeInvoice.payment_intent === 'string'
+        ? safeInvoice.payment_intent
+        : safeInvoice.payment_intent &&
+            typeof safeInvoice.payment_intent === 'object' &&
+            'id' in safeInvoice.payment_intent &&
+            typeof safeInvoice.payment_intent.id === 'string'
+          ? safeInvoice.payment_intent.id
+          : null
 
     return {
       id: String(safeInvoice.id),
@@ -574,6 +583,7 @@ function mapInvoices(invoices: unknown[]): BillingInvoiceSummary[] {
       amountPaid: Number(safeInvoice.amount_paid || 0),
       currency: String(safeInvoice.currency || 'eur'),
       status: String(safeInvoice.status || 'draft'),
+      paymentIntentId: paymentIntent,
       hostedInvoiceUrl:
         typeof safeInvoice.hosted_invoice_url === 'string'
           ? safeInvoice.hosted_invoice_url
