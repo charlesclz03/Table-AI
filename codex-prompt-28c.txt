@@ -1,0 +1,38 @@
+Build the Waitlist Page and Zapier Integration for Gustia (restaurant AI concierge).
+
+Read these files first (max 2 min reading):
+- app/landing/page.tsx (lines 1-80 only) to see the landing page style
+- app/api/notify/route.ts (full file) to see existing webhook pattern
+- docs/PRICING.md (lines 1-40 only)
+
+Then do ALL of the following in ONE run:
+
+1. WAITLIST PAGE: Create app/waitlist/page.tsx
+   - Public page at /waitlist
+   - Simple form: name, email, restaurant name, notes (why they are interested)
+   - On submit: save lead to Supabase table 'waitlist_leads' (id, name, email, restaurant_name, notes, created_at)
+   - Success message: "You are on the list! We will reach out when your spot opens."
+   - Style: match Gustia glass design system (azulejos background, glass-panel, amber accents)
+   - Mobile-first, single column layout
+
+2. SUPABASE TABLE: Create supabase/migrations/0027_waitlist_leads.sql
+   - Table: waitlist_leads
+   - Columns: id (uuid, primary key), name (text), email (text), restaurant_name (text), notes (text), created_at (timestamptz default now())
+   - RLS: allow public insert, allow owner read all
+
+3. ZAPIER WEBHOOK SUPPORT: In app/api/notify/route.ts:
+   - Add eventType 'waitlist_submitted' to the notify schema
+   - After saving to waitlist_leads table, POST to ZAPIER_WEBHOOK_URL env var if configured (fire and forget, non-blocking)
+   - Add to lib/env.ts and lib/server-env.ts: ZAPIER_WEBHOOK_URL as optional string
+
+4. ADMIN WAITLIST VIEW: Create app/admin/waitlist/page.tsx
+   - List all waitlist leads (newest first)
+   - Show: name, email, restaurant_name, notes, created_at
+   - Auth: require admin login (reuse requireAdminContext)
+   - Export to CSV button (download all leads as CSV file)
+
+Rules:
+- Do NOT touch app/chat/[restaurantId]/page.tsx or existing auth flows
+- After writing: npm run lint --fix && npm run build
+- Keep styling consistent with existing Gustia glass design tokens
+- Start writing immediately after reading, do not re-read files

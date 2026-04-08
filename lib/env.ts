@@ -62,6 +62,7 @@ function createValidatedEnv(runtimeEnv: NodeJS.ProcessEnv = process.env) {
       NOTIFY_TO_EMAIL: optionalTrimmedString,
       RESEND_API_KEY: optionalTrimmedString,
       SENDGRID_API_KEY: optionalTrimmedString,
+      ZAPIER_WEBHOOK_URL: optionalTrimmedString,
     },
     client: {
       NEXT_PUBLIC_SITE_URL: optionalUrl,
@@ -92,6 +93,7 @@ function createValidatedEnv(runtimeEnv: NodeJS.ProcessEnv = process.env) {
       NOTIFY_TO_EMAIL: runtimeEnv.NOTIFY_TO_EMAIL,
       RESEND_API_KEY: runtimeEnv.RESEND_API_KEY,
       SENDGRID_API_KEY: runtimeEnv.SENDGRID_API_KEY,
+      ZAPIER_WEBHOOK_URL: runtimeEnv.ZAPIER_WEBHOOK_URL,
       NEXT_PUBLIC_SITE_URL: runtimeEnv.NEXT_PUBLIC_SITE_URL,
       NEXT_PUBLIC_SUPABASE_URL: runtimeEnv.NEXT_PUBLIC_SUPABASE_URL,
       NEXT_PUBLIC_SUPABASE_ANON_KEY: runtimeEnv.NEXT_PUBLIC_SUPABASE_ANON_KEY,

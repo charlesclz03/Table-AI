@@ -27,6 +27,7 @@ export interface ServerEnv {
   superadminEmails: string[]
   notifyToEmail?: string
   emailFrom?: string
+  zapierWebhookUrl?: string
   resendApiKey?: string
   sendGridApiKey?: string
   public: PublicEnv
@@ -76,6 +77,7 @@ export function getServerEnv(): ServerEnv {
     superadminEmails: normalizeEmails(env.SUPERADMIN_EMAILS),
     notifyToEmail: env.NOTIFY_TO_EMAIL,
     emailFrom: 'Gustia <noreply@gustia.wine>',
+    zapierWebhookUrl: env.ZAPIER_WEBHOOK_URL,
     resendApiKey: env.RESEND_API_KEY,
     sendGridApiKey: env.SENDGRID_API_KEY,
     public: getPublicEnv(),
