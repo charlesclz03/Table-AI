@@ -21,7 +21,7 @@ export function CheckoutRedirectPanel({ plan }: CheckoutRedirectPanelProps) {
 
     async function startCheckout() {
       try {
-        const response = await fetch(`/api/stripe/checkout?plan=${plan}`, {
+        const response = await fetch(`/api/stripe/subscribe?plan=${plan}`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',

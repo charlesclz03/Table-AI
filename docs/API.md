@@ -200,7 +200,7 @@ Related docs:
 
 ## Billing Routes
 
-### `POST /api/stripe/checkout?plan=monthly|annual`
+### `POST /api/stripe/subscribe?plan=monthly|annual`
 
 - purpose: create the authenticated owner Stripe Checkout session
 - behavior:
@@ -212,6 +212,10 @@ Related docs:
   - trusted-origin check
   - payload cap
   - per-IP rate limit
+
+### `POST /api/stripe/checkout?plan=monthly|annual`
+
+- purpose: compatibility alias for the authenticated owner Stripe Checkout session
 
 ### `POST /api/stripe/webhook`
 
@@ -230,4 +234,3 @@ Related docs:
 - behavior:
   - uses heuristics first
   - enriches with InsForge when configured
-

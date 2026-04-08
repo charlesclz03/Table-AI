@@ -24,7 +24,7 @@ export function BillingCheckoutButton({
     setStatus('')
 
     try {
-      const response = await fetch(`/api/stripe/checkout?plan=${plan}`, {
+      const response = await fetch(`/api/stripe/subscribe?plan=${plan}`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
