@@ -7,11 +7,13 @@ import {
   formatEuroAmount,
   getCheckoutPlan,
 } from '@/lib/billing/plans'
+import { REFERRAL_BONUS_DAYS } from '@/lib/referrals'
 import { getSupabaseServerComponentClient } from '@/lib/supabase/server'
 
 interface AuthCheckoutPageProps {
   searchParams?: Promise<{
     plan?: string
+    ref?: string
   }>
 }
 
@@ -21,6 +23,10 @@ export default async function AuthCheckoutPage({
   const resolvedSearchParams = searchParams ? await searchParams : undefined
   const plan =
     getCheckoutPlan(resolvedSearchParams?.plan) || getCheckoutPlan('monthly')
+  const referralCode =
+    typeof resolvedSearchParams?.ref === 'string'
+      ? resolvedSearchParams.ref.trim().toUpperCase()
+      : null
 
   if (!plan) {
     redirect('/#start')
@@ -32,8 +38,15 @@ export default async function AuthCheckoutPage({
   } = client ? await client.auth.getUser() : { data: { user: null } }
 
   if (!user?.email) {
-    redirect(`/auth/login?plan=${plan.id}`)
+    const referralQuery = referralCode
+      ? `&ref=${encodeURIComponent(referralCode)}`
+      : ''
+    redirect(`/auth/login?plan=${plan.id}${referralQuery}`)
   }
+
+  const subscriptionStartLabel = referralCode
+    ? `After ${BILLING_DELAY_DAYS + REFERRAL_BONUS_DAYS} days`
+    : `After ${BILLING_DELAY_DAYS} days`
 
   return (
     <div className="mx-auto flex min-h-screen w-full max-w-4xl items-center px-4 py-12 sm:px-6 lg:px-8">
@@ -71,7 +84,7 @@ export default async function AuthCheckoutPage({
               <div className="flex items-center justify-between gap-4">
                 <span className="text-white/72">Subscription start</span>
                 <span className="font-medium text-white">
-                  After {BILLING_DELAY_DAYS} days
+                  {subscriptionStartLabel}
                 </span>
               </div>
             </div>
@@ -86,16 +99,22 @@ export default async function AuthCheckoutPage({
               launch Gustia.
             </p>
             <Link
-              href="/#start"
+              href={
+                referralCode
+                  ? `/auth/login?plan=${plan.id}&ref=${encodeURIComponent(referralCode)}`
+                  : '/#start'
+              }
               className="mt-5 inline-flex text-sm text-amber-100 transition hover:text-white"
             >
-              Return to pricing
+              {referralCode
+                ? 'Return to referral sign-in'
+                : 'Return to pricing'}
             </Link>
           </div>
         </div>
 
         <div className="mt-8">
-          <CheckoutRedirectPanel plan={plan.id} />
+          <CheckoutRedirectPanel plan={plan.id} referralCode={referralCode} />
         </div>
       </div>
     </div>

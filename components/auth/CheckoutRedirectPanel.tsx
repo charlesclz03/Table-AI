@@ -6,9 +6,13 @@ import type { CheckoutPlanId } from '@/lib/billing/plans'
 
 interface CheckoutRedirectPanelProps {
   plan: CheckoutPlanId
+  referralCode?: string | null
 }
 
-export function CheckoutRedirectPanel({ plan }: CheckoutRedirectPanelProps) {
+export function CheckoutRedirectPanel({
+  plan,
+  referralCode,
+}: CheckoutRedirectPanelProps) {
   const startedRef = useRef(false)
   const [errorMessage, setErrorMessage] = useState<string | null>(null)
 
@@ -21,7 +25,29 @@ export function CheckoutRedirectPanel({ plan }: CheckoutRedirectPanelProps) {
 
     async function startCheckout() {
       try {
-        const response = await fetch(`/api/stripe/subscribe?plan=${plan}`, {
+        if (referralCode) {
+          const referralResponse = await fetch('/api/referral/apply', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              code: referralCode,
+            }),
+          })
+
+          const referralPayload = (await referralResponse.json()) as {
+            error?: string
+          }
+
+          if (!referralResponse.ok) {
+            throw new Error(
+              referralPayload.error || 'Unable to apply the referral code.'
+            )
+          }
+        }
+
+        const response = await fetch(`/api/stripe/checkout?plan=${plan}`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -52,7 +78,7 @@ export function CheckoutRedirectPanel({ plan }: CheckoutRedirectPanelProps) {
     }
 
     void startCheckout()
-  }, [plan])
+  }, [plan, referralCode])
 
   return (
     <div className="rounded-[28px] border border-white/10 bg-black/20 p-6 text-white">
@@ -73,7 +99,9 @@ export function CheckoutRedirectPanel({ plan }: CheckoutRedirectPanelProps) {
           <p className="mt-1 text-sm text-white/65">
             {errorMessage
               ? 'Stay on this page and try again once the issue is resolved.'
-              : 'We are sending your authenticated account details to Stripe now.'}
+              : referralCode
+                ? 'We are applying your referral month first, then sending your authenticated account details to Stripe.'
+                : 'We are sending your authenticated account details to Stripe now.'}
           </p>
         </div>
       </div>

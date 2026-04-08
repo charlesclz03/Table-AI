@@ -1,6 +1,7 @@
 import { formatDistanceToNow } from 'date-fns'
 import {
   ArrowRight,
+  Gift,
   MessageSquare,
   MapPinned,
   QrCode,
@@ -24,6 +25,12 @@ const quickActions = [
     label: 'Edit Menu',
     description: 'Update dishes, allergens, and sort order.',
     icon: MessageSquare,
+  },
+  {
+    href: '/admin/referral',
+    label: 'Referral Rewards',
+    description: 'Share your code and track free-month rewards.',
+    icon: Gift,
   },
   {
     href: '/admin/quiz',

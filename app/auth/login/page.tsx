@@ -6,6 +6,7 @@ import {
   formatEuroAmount,
   getCheckoutPlan,
 } from '@/lib/billing/plans'
+import { REFERRAL_BONUS_DAYS } from '@/lib/referrals'
 import { getSupabaseServerComponentClient } from '@/lib/supabase/server'
 
 interface PricingLoginPageProps {
@@ -13,6 +14,7 @@ interface PricingLoginPageProps {
     canceled?: string
     error?: string
     plan?: string
+    ref?: string
   }>
 }
 
@@ -31,9 +33,16 @@ export default async function PricingLoginPage({
   const {
     data: { user },
   } = client ? await client.auth.getUser() : { data: { user: null } }
+  const referralCode =
+    typeof resolvedSearchParams?.ref === 'string'
+      ? resolvedSearchParams.ref.trim().toUpperCase()
+      : null
 
   if (user?.email) {
-    redirect(`/auth/checkout?plan=${plan.id}`)
+    const referralQuery = referralCode
+      ? `&ref=${encodeURIComponent(referralCode)}`
+      : ''
+    redirect(`/auth/checkout?plan=${plan.id}${referralQuery}`)
   }
 
   const noticeMessage =
@@ -44,6 +53,9 @@ export default async function PricingLoginPage({
     typeof resolvedSearchParams?.error === 'string'
       ? resolvedSearchParams.error
       : null
+  const billingDelayLabel = referralCode
+    ? `${BILLING_DELAY_DAYS + REFERRAL_BONUS_DAYS} days with the referral bonus`
+    : `${BILLING_DELAY_DAYS}-day activation period`
 
   return (
     <div className="mx-auto flex min-h-screen w-full max-w-6xl items-center px-4 py-12 sm:px-6 lg:px-8">
@@ -95,7 +107,7 @@ export default async function PricingLoginPage({
             </div>
             <div className="rounded-[24px] border border-white/10 bg-black/20 p-4">
               The {plan.name.toLowerCase()} subscription begins after the{' '}
-              {BILLING_DELAY_DAYS}-day activation period.
+              {billingDelayLabel}.
             </div>
           </div>
 
@@ -111,6 +123,7 @@ export default async function PricingLoginPage({
             plan={plan.id}
             errorMessage={errorMessage}
             noticeMessage={noticeMessage}
+            referralCode={referralCode}
           />
         </div>
       </div>

@@ -8,6 +8,7 @@ import {
 } from '@/lib/billing/plans'
 import { ensureStripeCustomer } from '@/lib/billing/customer'
 import { getPublicEnv } from '@/lib/env'
+import { getReferralTrialBonusDaysForRestaurant } from '@/lib/referrals'
 import { guardApiRoute } from '@/lib/security/api-protection'
 import { RequestGuardError } from '@/lib/security/request-guards'
 import { ensureServerOnly } from '@/lib/server-only'
@@ -124,11 +125,16 @@ export async function createStripeSubscriptionCheckoutResponse(
     }
 
     await persistStripeCustomerId(restaurant, customerId)
+    const referralBonusDays = await getReferralTrialBonusDaysForRestaurant(
+      restaurant.id
+    )
+    const totalTrialDays = BILLING_DELAY_DAYS + referralBonusDays
 
     const metadata: Record<string, string> = {
       activationFeeAmount: String(ACTIVATION_FEE_AMOUNT),
       billingDelayDays: String(BILLING_DELAY_DAYS),
       plan: plan.id,
+      referralBonusDays: String(referralBonusDays),
       restaurantId: restaurant.id,
       type: 'activation_plus_subscription',
     }
@@ -179,7 +185,7 @@ export async function createStripeSubscriptionCheckoutResponse(
       metadata,
       subscription_data: {
         metadata,
-        trial_period_days: BILLING_DELAY_DAYS,
+        trial_period_days: totalTrialDays,
       },
       success_url: `${siteUrl}${appendSessionId(successPath)}`,
       cancel_url: `${siteUrl}${cancelPath}`,

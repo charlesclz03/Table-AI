@@ -205,6 +205,29 @@ export interface BillingOverview {
   hasPortalAccess: boolean
 }
 
+export interface AdminReferralCode {
+  id: string
+  restaurant_id: string
+  code: string
+  created_at?: string | null
+}
+
+export interface AdminReferralRecord {
+  id: string
+  referral_code_id?: string | null
+  referrer_restaurant_id: string
+  referred_restaurant_id: string
+  code: string
+  status: 'pending' | 'completed' | 'rewarded'
+  reward_months: number
+  referred_bonus_months: number
+  applied_at?: string | null
+  completed_at?: string | null
+  rewarded_at?: string | null
+  created_at?: string | null
+  referred_restaurant_name?: string
+}
+
 export const EMPTY_QUIZ_ANSWERS: AdminQuizAnswers = {
   signature_dish: '',
   recommendation: '',

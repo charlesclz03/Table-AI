@@ -12,6 +12,7 @@ try {
 const DEFAULT_CANONICAL_ORIGIN = 'https://example.com'
 const canonicalOrigin = canonicalSiteOrigin || DEFAULT_CANONICAL_ORIGIN
 const canonicalHost = new URL(canonicalOrigin).hostname
+const disableBuildChecks = process.env.NEXT_DISABLE_BUILD_CHECKS === '1'
 
 const securityHeaders = [
   {
@@ -48,6 +49,12 @@ const knownHosts = (process.env.NEXT_PUBLIC_KNOWN_HOSTS || '')
 
 const nextConfig = {
   reactStrictMode: true,
+  experimental: {
+    webpackBuildWorker: false,
+  },
+  eslint: {
+    ignoreDuringBuilds: disableBuildChecks,
+  },
   images: {
     remotePatterns: [
       {
@@ -75,6 +82,9 @@ const nextConfig = {
       destination: `${canonicalOrigin}/:path`,
       permanent: true,
     }))
+  },
+  typescript: {
+    ignoreBuildErrors: disableBuildChecks,
   },
 }
 

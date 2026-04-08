@@ -13,6 +13,7 @@ interface PricingAuthFormProps {
   plan: CheckoutPlanId
   errorMessage?: string | null
   noticeMessage?: string | null
+  referralCode?: string | null
 }
 
 interface AuthResponse {
@@ -25,6 +26,7 @@ export function PricingAuthForm({
   plan,
   errorMessage,
   noticeMessage,
+  referralCode,
 }: PricingAuthFormProps) {
   const router = useRouter()
   const [mode, setMode] = useState<AuthMode>('signup')
@@ -38,7 +40,15 @@ export function PricingAuthForm({
   const [inlineNotice, setInlineNotice] = useState<string | null>(
     noticeMessage || null
   )
-  const nextPath = useMemo(() => `/auth/checkout?plan=${plan}`, [plan])
+  const nextPath = useMemo(() => {
+    const params = new URLSearchParams({ plan })
+
+    if (referralCode) {
+      params.set('ref', referralCode)
+    }
+
+    return `/auth/checkout?${params.toString()}`
+  }, [plan, referralCode])
 
   async function submitJson(url: string, payload: Record<string, unknown>) {
     const response = await fetch(url, {
@@ -141,6 +151,13 @@ export function PricingAuthForm({
       {inlineNotice ? (
         <div className="rounded-[24px] border border-emerald-300/20 bg-emerald-400/10 px-4 py-3 text-sm text-emerald-50">
           {inlineNotice}
+        </div>
+      ) : null}
+
+      {referralCode ? (
+        <div className="rounded-[24px] border border-amber-300/20 bg-amber-300/10 px-4 py-3 text-sm text-amber-50">
+          Referral unlocked: this signup will carry a one-month bonus into
+          checkout when the code is valid.
         </div>
       ) : null}
 

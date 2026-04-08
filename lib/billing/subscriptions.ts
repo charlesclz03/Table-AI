@@ -1,5 +1,6 @@
 import type Stripe from 'stripe'
 import type { AdminRestaurantRecord } from '@/lib/admin/types'
+import { rewardReferralForPaidRestaurant } from '@/lib/referrals'
 import { getSupabaseServerClient } from '@/lib/supabase/server'
 import { getStripeServerClient } from '@/lib/stripe'
 import { ensureServerOnly } from '@/lib/server-only'
@@ -318,6 +319,10 @@ export async function persistCheckoutSessionBilling(
     stripeEventId: eventId,
     stripeSubscriptionId: getStripeReferenceId(session.subscription),
   })
+
+  if (session.payment_status === 'paid') {
+    await rewardReferralForPaidRestaurant(restaurantId)
+  }
 
   return {
     detail: 'Checkout session billing state persisted.',
