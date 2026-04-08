@@ -25,6 +25,10 @@ export interface ServerEnv {
   insForgeApiKey?: string
   insForgeTimeoutMs: number
   superadminEmails: string[]
+  notifyToEmail?: string
+  emailFrom?: string
+  resendApiKey?: string
+  sendGridApiKey?: string
   public: PublicEnv
 }
 
@@ -70,6 +74,10 @@ export function getServerEnv(): ServerEnv {
     insForgeApiKey: env.INSFORGE_API_KEY,
     insForgeTimeoutMs: env.INSFORGE_TIMEOUT_MS || 5000,
     superadminEmails: normalizeEmails(env.SUPERADMIN_EMAILS),
+    notifyToEmail: env.NOTIFY_TO_EMAIL,
+    emailFrom: 'Gustia <noreply@gustia.wine>',
+    resendApiKey: env.RESEND_API_KEY,
+    sendGridApiKey: env.SENDGRID_API_KEY,
     public: getPublicEnv(),
   }
 }

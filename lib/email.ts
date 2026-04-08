@@ -297,10 +297,13 @@ export async function sendNotificationEvent(event: NotificationEvent) {
     } as const
   }
 
-  console.info('Notification skipped because no email provider is configured.', {
-    eventType: event.eventType,
-    to: message.to,
-  })
+  console.info(
+    'Notification skipped because no email provider is configured.',
+    {
+      eventType: event.eventType,
+      to: message.to,
+    }
+  )
 
   return {
     delivered: false,

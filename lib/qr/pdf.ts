@@ -4,7 +4,10 @@ const A4_PAGE_WIDTH = 595
 const A4_PAGE_HEIGHT = 842
 
 function escapePdfText(value: string) {
-  return value.replaceAll('\\', '\\\\').replaceAll('(', '\\(').replaceAll(')', '\\)')
+  return value
+    .replaceAll('\\', '\\\\')
+    .replaceAll('(', '\\(')
+    .replaceAll(')', '\\)')
 }
 
 function wrapPdfText(value: string, maxLineLength: number) {
@@ -53,10 +56,7 @@ function buildContentStream(options: {
   const qrFrameSize = qrSize + qrPadding * 2
   const title = escapePdfText(options.restaurantName)
   const tableLabel = escapePdfText(`Table T${options.tableNumber}`)
-  const instructions = wrapPdfText(
-    'Scan to chat with our AI concierge',
-    40
-  )
+  const instructions = wrapPdfText('Scan to chat with our AI concierge', 40)
   const urlLines = wrapPdfText(options.chatUrl, 48)
 
   const operations = [
@@ -72,9 +72,7 @@ function buildContentStream(options: {
     'BT',
     '/F1 13 Tf',
     '0.25 0.25 0.25 rg',
-    `310 716 Td (${escapePdfText(
-      'Scan to chat with our AI concierge'
-    )}) Tj`,
+    `310 716 Td (${escapePdfText('Scan to chat with our AI concierge')}) Tj`,
     'ET',
     'BT',
     '/F1 11 Tf',
@@ -96,8 +94,7 @@ function buildContentStream(options: {
     const row = Math.floor(index / moduleCount)
     const column = index % moduleCount
     const x = qrLeft + qrPadding + column * moduleSize
-    const y =
-      qrBottom + qrPadding + (moduleCount - row - 1) * moduleSize
+    const y = qrBottom + qrPadding + (moduleCount - row - 1) * moduleSize
 
     operations.push(
       `${x.toFixed(2)} ${y.toFixed(2)} ${moduleSize.toFixed(2)} ${moduleSize.toFixed(2)} re f`

@@ -71,7 +71,7 @@ export function getLanguageModelInstruction(
     return null
   }
 
-  return `Always reply in ${getLanguageOption(language).modelLabel} unless the guest explicitly asks to switch languages.`
+  return `Always reply in ${getLanguageOption(language as LanguageCode).modelLabel} unless the guest explicitly asks to switch languages.`
 }
 
 export function readStoredLanguagePreference() {
