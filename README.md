@@ -176,6 +176,13 @@ If commands, env requirements, verification steps, product behavior, or workflow
 ## Important Docs
 
 - `docs/README.md`
+- `docs/ARCHITECTURE.md`
+- `docs/API.md`
+- `docs/ONBOARDING.md`
+- `docs/PRICING.md`
+- `docs/DEPLOY.md`
+- `docs/CHANGELOG.md`
+- `docs/DOCUMENTATION_AUDIT.md`
 - `docs/reference/PATCH_NOTES.md`
 - `docs/next-session-handoff.md`
 - `docs/progress-log.md`

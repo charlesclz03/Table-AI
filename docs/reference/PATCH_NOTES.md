@@ -19,7 +19,7 @@ Source of truth scope:
 
 Last updated:
 
-- 2026-04-05
+- 2026-04-08
 
 Related docs:
 
@@ -34,6 +34,26 @@ Related docs:
 - keep entries concise and outcome-focused
 - use this file for release history, `docs/progress-log.md` for durable baseline truth, and `docs/session-log.md` for session chronology
 - until formal semantic versioning starts, date-keyed entries are acceptable
+
+## 2026-04-08 - Internal QR Code API
+
+- **ADMIN**: Added a new dynamic QR image route at `/api/qr/[restaurantId]` so admin QR posters no longer depend on the external qrserver.com image endpoint.
+- **QR**: QR generation now uses the `qrcode` package server-side, with table-aware deep links to `/chat/[restaurantId]?table=T{n}` and size control for preview versus download output.
+- **VERIFY**: Wired the QR studio preview, print, and PNG download actions to the internal route; local package install and build verification still depend on installing the new `qrcode` dependency in this environment.
+
+## 2026-04-05 - Documentation Reconciliation Sprint
+
+- **DOCS**: Added canonical `docs/API.md`, `docs/ARCHITECTURE.md`, `docs/ONBOARDING.md`, `docs/PRICING.md`, `docs/DEPLOY.md`, and `docs/CHANGELOG.md` so the live Gustia app now has direct references for runtime routes, trust boundaries, onboarding, pricing, and release history.
+- **DOCS**: Rewrote stale setup and status docs to match the real Supabase-first owner auth, invite-based claiming, Stripe activation-plus-subscription flow, four-theme guest onboarding, and owner admin surfaces that already ship.
+- **DOCS**: Archived older root planning notes and prompt packs that still encoded retired pricing and pre-Supabase assumptions, replacing them with safe pointers to the current canonical docs.
+- **VERIFY**: Re-ran repository searches for the main stale claims and confirmed the remaining hits are limited to intentional historical logs or audit history.
+
+## 2026-04-05 - Chat PreText Measurement Pass
+
+- **CHAT**: Added cached PreText-based message measurement in the guest chat so bubble heights are estimated without DOM reflow and reused for scroll math.
+- **PERF**: Replaced the inline bubble markup with a dedicated `ChatBubble` component plus a lightweight windowed message renderer that only mounts the visible chat rows with overscan.
+- **FIX**: Installed the live published package `@chenglou/pretext`; the requested `@tuform/pretext` package is not currently available on npm.
+- **VERIFY**: Re-ran `npm run type-check`, `npm run lint`, and `npm run build`, then browser-smoked `/chat/demo` through onboarding and one message exchange.
 
 ## 2026-04-05 - Enterprise Audit Hardening Sprint
 

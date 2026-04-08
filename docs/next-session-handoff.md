@@ -55,6 +55,7 @@ Related docs:
 - check Vercel for the current production deployment id before debugging a live incident, because `/deploy` can advance production after this handoff was last edited
 - check `origin/main` for the current release commit before debugging release-specific regressions
 - the guest chat now uses OpenAI TTS for concierge voice replies through `/api/tts`, with browser speech fallback if API synthesis or playback fails
+- the guest chat message list now uses cached PreText measurement through the live npm package `@chenglou/pretext`, plus a lightweight windowed renderer for bubble heights and scroll positioning
 - the guest chat API no longer trusts restaurant prompt context from the browser; clients send only `restaurantId` and the server fetches `soul_md`, `rules_md`, and `menu_json` itself
 - public restaurant bootstrap data now comes from the `restaurant_public_profiles` projection instead of a service-role read of the full `restaurants` row
 - owner restaurant claiming is now invite-based through `restaurant_owner_invites`; direct email-based claiming should be considered retired
@@ -77,6 +78,8 @@ Related docs:
 - the repo now includes an owner invite management page at `/admin/invite` plus a public claim page at `/invite/[code]`, and admin login now preserves `next` so invite links can return to the claim flow after sign-in
 - local `/chat/demo` hydration is no longer blocked by the earlier `_next/static` `400` issue when the app is started on a clean port after clearing `.next`; the earlier failure came from stale local `next start` processes and bundle drift, not from a broken route
 - the repo now skips `/api/chat` entirely in demo mode for non-UUID demo restaurants, and that fix is now live in production
+- the documentation set now includes canonical `docs/API.md`, `docs/ARCHITECTURE.md`, `docs/ONBOARDING.md`, `docs/PRICING.md`, `docs/DEPLOY.md`, `docs/CHANGELOG.md`, and `docs/DOCUMENTATION_AUDIT.md`, so future sessions should use those instead of older ad hoc notes
+- older root planning notes such as `BUSINESS_ANALYSIS.md`, `COMMERCIAL_STRATEGY.md`, `CODEX_PROMPTS.md`, and `SESSION_SUMMARY.md` are now historical archive stubs and should not be treated as current operating truth
 - live production Google OAuth is still blocked: Supabase returns `Unsupported provider: provider is not enabled` because no Google OAuth client credentials are configured
 - the latest production deployment is now `dpl_6EKkbAgV4uMFgsMpqNihbvKQxVFZ`, aliased to `https://www.gustia.wine`
 - live email signup now reaches `/auth/checkout`, and production Stripe Checkout opens again after the Vercel `STRIPE_SECRET_KEY` repair

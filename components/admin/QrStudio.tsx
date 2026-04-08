@@ -39,20 +39,20 @@ export function QrStudio({
     [origin, restaurantId, tableNumber]
   )
 
-  const qrSvgUrl = useMemo(
+  const qrPreviewUrl = useMemo(
     () =>
-      `https://api.qrserver.com/v1/create-qr-code/?size=420x420&format=svg&data=${encodeURIComponent(
-        chatUrl
-      )}`,
-    [chatUrl]
+      `${origin}/api/qr/${encodeURIComponent(
+        restaurantId
+      )}?table=${encodeURIComponent(tableNumber || '1')}&size=420`,
+    [origin, restaurantId, tableNumber]
   )
 
   const qrPngUrl = useMemo(
     () =>
-      `https://api.qrserver.com/v1/create-qr-code/?size=900x900&format=png&data=${encodeURIComponent(
-        chatUrl
-      )}`,
-    [chatUrl]
+      `${origin}/api/qr/${encodeURIComponent(
+        restaurantId
+      )}?table=${encodeURIComponent(tableNumber || '1')}&size=900`,
+    [origin, restaurantId, tableNumber]
   )
 
   async function downloadRemoteFile(url: string, filename: string) {
@@ -179,7 +179,7 @@ export function QrStudio({
             <div class="card">
               <p>${heading}</p>
               <h1>${escapeHtml(restaurantName)}</h1>
-              <img class="qr" src="${escapeHtml(qrSvgUrl)}" alt="QR code" />
+              <img class="qr" src="${escapeHtml(qrPngUrl)}" alt="QR code" />
               <div class="table">Table T${escapeHtml(tableNumber || '1')}</div>
               <p>Scan to chat with our AI concierge</p>
               <p class="link">${escapeHtml(chatUrl)}</p>
@@ -299,7 +299,7 @@ export function QrStudio({
 
             <div className="mx-auto mt-6 flex w-full max-w-sm items-center justify-center rounded-[28px] bg-white p-4">
               <Image
-                src={qrSvgUrl}
+                src={qrPreviewUrl}
                 alt="QR code preview"
                 width={320}
                 height={320}

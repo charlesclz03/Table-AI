@@ -36,6 +36,12 @@ import {
   type ThemeKey,
   WineSphere,
 } from './onboarding/_layout'
+import {
+  ChatBubble,
+  getChatBubbleGap,
+  getChatBubbleWidth,
+  measureChatBubble,
+} from './ChatBubble'
 
 type MessageRole = 'assistant' | 'user'
 
@@ -308,6 +314,7 @@ export default function RestaurantChatPage() {
   const recognitionRef = useRef<SpeechRecognitionLike | null>(null)
   const audioRef = useRef<HTMLAudioElement | null>(null)
   const audioUrlRef = useRef<string | null>(null)
+  const messagesViewportRef = useRef<HTMLDivElement | null>(null)
   const latestMessageRef = useRef<ChatMessage[]>([])
   const conversationIdRef = useRef<string | null>(null)
   const greetingSentRef = useRef(false)
@@ -318,10 +325,47 @@ export default function RestaurantChatPage() {
   const shouldSubmitVoiceRef = useRef(false)
   const voiceOutputEnabled = hasResolvedDisclaimer && !showHeadphoneDisclaimer
   const deferredInterimTranscript = useDeferredValue(interimTranscript)
+  const [messageViewportWidth, setMessageViewportWidth] = useState(0)
+  const [messageViewportHeight, setMessageViewportHeight] = useState(0)
+  const [messageScrollTop, setMessageScrollTop] = useState(0)
 
   useEffect(() => {
     latestMessageRef.current = messages
   }, [messages])
+
+  useEffect(() => {
+    if (typeof window === 'undefined') {
+      return
+    }
+
+    if (!isPreferenceGateReady) {
+      return
+    }
+
+    const viewport = messagesViewportRef.current
+
+    if (!viewport) {
+      return
+    }
+
+    const syncViewportMetrics = () => {
+      setMessageViewportWidth(viewport.clientWidth)
+      setMessageViewportHeight(viewport.clientHeight)
+      setMessageScrollTop(viewport.scrollTop)
+    }
+
+    syncViewportMetrics()
+
+    const resizeObserver = new ResizeObserver(() => {
+      syncViewportMetrics()
+    })
+
+    resizeObserver.observe(viewport)
+
+    return () => {
+      resizeObserver.disconnect()
+    }
+  }, [isPreferenceGateReady])
 
   useEffect(() => {
     if (typeof window === 'undefined') {
@@ -959,6 +1003,84 @@ export default function RestaurantChatPage() {
     void submitMessage(inputValue)
   }
 
+  const chatBubbleGap = getChatBubbleGap()
+  const chatBubbleWidth = getChatBubbleWidth(messageViewportWidth)
+  const chatItems: Array<{
+    id: string
+    role: MessageRole
+    content: string
+    top: number
+    height: number
+    pending: boolean
+  }> = []
+  let nextChatItemTop = 0
+
+  for (const message of messages) {
+    const { height } = measureChatBubble(message.content, chatBubbleWidth)
+    chatItems.push({
+      id: message.id,
+      role: message.role,
+      content: message.content,
+      top: nextChatItemTop,
+      height,
+      pending: false,
+    })
+    nextChatItemTop += height + chatBubbleGap
+  }
+
+  if (deferredInterimTranscript) {
+    const { height } = measureChatBubble(
+      deferredInterimTranscript,
+      chatBubbleWidth
+    )
+    chatItems.push({
+      id: 'interim-transcript',
+      role: 'assistant',
+      content: deferredInterimTranscript,
+      top: nextChatItemTop,
+      height,
+      pending: true,
+    })
+    nextChatItemTop += height + chatBubbleGap
+  }
+
+  const totalMeasuredScrollHeight =
+    chatItems.length > 0 ? nextChatItemTop - chatBubbleGap : 0
+  const overscanPixels = 240
+  const visibleTop = Math.max(0, messageScrollTop - overscanPixels)
+  const visibleBottom =
+    messageViewportHeight > 0
+      ? messageScrollTop + messageViewportHeight + overscanPixels
+      : Number.POSITIVE_INFINITY
+  const visibleChatItems =
+    messageViewportHeight > 0
+      ? chatItems.filter((item) => {
+          const itemBottom = item.top + item.height
+          return itemBottom >= visibleTop && item.top <= visibleBottom
+        })
+      : chatItems
+
+  useEffect(() => {
+    const viewport = messagesViewportRef.current
+
+    if (!viewport) {
+      return
+    }
+
+    const targetTop = Math.max(
+      totalMeasuredScrollHeight - viewport.clientHeight,
+      0
+    )
+    const behavior =
+      messages.length <= 1 && !deferredInterimTranscript ? 'auto' : 'smooth'
+
+    viewport.scrollTo({
+      top: targetTop,
+      behavior,
+    })
+    setMessageScrollTop(targetTop)
+  }, [deferredInterimTranscript, messages.length, totalMeasuredScrollHeight])
+
   if (!isPreferenceGateReady || !language || !theme) {
     return (
       <div className="fixed inset-0 overflow-hidden text-white">
@@ -1117,26 +1239,41 @@ export default function RestaurantChatPage() {
             </section>
 
             <section className="glass-panel mt-4 min-h-0 flex-1 overflow-hidden rounded-[28px] p-3">
-              <div className="h-full space-y-3 overflow-y-auto overscroll-contain pr-1">
-                {messages.map((message) => (
-                  <div
-                    key={message.id}
-                    className={cn(
-                      'w-fit max-w-[92%] break-words rounded-[24px] px-4 py-3 text-sm leading-6 sm:max-w-[88%]',
-                      message.role === 'assistant'
-                        ? 'glass-panel-soft text-white'
-                        : 'glass-button-amber ml-auto text-amber-50'
-                    )}
-                  >
-                    {message.content}
-                  </div>
-                ))}
-
-                {deferredInterimTranscript ? (
-                  <div className="glass-panel-soft max-w-[92%] break-words rounded-[24px] border-dashed px-4 py-3 text-sm italic text-white/60 sm:max-w-[88%]">
-                    {deferredInterimTranscript}
-                  </div>
-                ) : null}
+              <div
+                ref={messagesViewportRef}
+                onScroll={(event) =>
+                  setMessageScrollTop(event.currentTarget.scrollTop)
+                }
+                className="h-full overflow-y-auto overscroll-contain pr-1"
+              >
+                <div
+                  className="relative"
+                  style={{
+                    minHeight: totalMeasuredScrollHeight
+                      ? `${totalMeasuredScrollHeight}px`
+                      : undefined,
+                  }}
+                >
+                  {visibleChatItems.map((item) => (
+                    <div
+                      key={item.id}
+                      className={cn(
+                        'absolute left-0 right-0 flex',
+                        item.role === 'user' ? 'justify-end' : 'justify-start'
+                      )}
+                      style={{
+                        top: `${item.top}px`,
+                      }}
+                    >
+                      <ChatBubble
+                        role={item.role}
+                        content={item.content}
+                        estimatedHeight={item.height}
+                        pending={item.pending}
+                      />
+                    </div>
+                  ))}
+                </div>
               </div>
             </section>
 

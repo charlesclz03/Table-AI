@@ -42,6 +42,7 @@ Related docs:
 - Gustia public legal pages now include product-specific privacy and terms copy with shared premium styling, pricing details, and the canonical `contact@gustia.wine` contact path for restaurant owners
 - Gustia billing now includes a hosted Stripe Checkout setup CTA, success/cancel states, and dedicated result pages for the founding-offer flow
 - Gustia customer chat now routes GPT-4o mini calls through a server API with restaurant context and automatic demo fallback on failures
+- Gustia guest chat now uses cached PreText measurement plus a lightweight windowed message list so chat bubbles can reserve height and scroll more smoothly without DOM reflow on every message
 - Gustia concierge voice replies now use an OpenAI TTS server route with browser speech fallback for smoother audio playback on guest devices, and production `/api/tts` has been re-verified successfully after the OpenAI billing update
 - Gustia onboarding theme selection now uses a swipeable orbital selector with rotating theme spheres, localized AI voice previews, separate confirmation, and text-only fallback when preview audio is unavailable
 - Gustia owner menu management now supports AI-assisted menu photo import, including multilingual OpenAI parsing, review-before-save, multi-file upload, and deduped save-back into `restaurants.menu_json`
@@ -64,3 +65,4 @@ Related docs:
 - Gustia security hardening now includes server-only chat prompt context, invite-based restaurant claiming, shared API abuse protection, audit logging hooks, and persisted Stripe webhook plus billing-ledger state
 - Gustia now includes app-level `error.tsx` and `global-error.tsx` boundaries plus route-level loading states for admin, auth, chat, and chat onboarding flows
 - Gustia verification assets now target real product routes instead of the older starter copy, including refreshed Playwright smoke coverage and a refreshed production launch audit script
+- Gustia now has canonical architecture, API, onboarding, pricing, deploy, changelog, and documentation-audit references under `docs/`, and older root planning notes now point back to those sources instead of preserving stale operating assumptions

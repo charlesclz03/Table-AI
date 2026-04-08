@@ -46,7 +46,9 @@ If the release changes owner auth or owner-scoped data access:
 
 1. Verify the live Supabase project already has the required schema and RLS, or apply `docs/reference/supabase-owner-auth-migration.sql` first.
 2. Confirm Supabase Auth redirect URLs include `/auth/callback` for both local and production origins.
-3. Do not push application code that expects `owners` or `restaurants.owner_id` before that database state is live.
+3. If Google login is meant to stay live, confirm Supabase Auth has a real Google client ID and client secret configured before calling the release launch-ready.
+4. Treat `Unsupported provider: provider is not enabled` as a production configuration blocker, not an app-code bug.
+5. Do not push application code that expects `owners` or `restaurants.owner_id` before that database state is live.
 
 ## Notes
 

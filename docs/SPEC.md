@@ -21,7 +21,7 @@ Source of truth scope:
 
 Last updated:
 
-- 2026-04-04
+- 2026-04-05
 
 Related docs:
 
@@ -32,7 +32,7 @@ Related docs:
 
 ## Runtime Shape
 
-- public guest chat reads restaurant data from Supabase `restaurants`
+- public guest chat reads a guest-safe restaurant payload through `/api/restaurants/[restaurantId]`, backed by the `restaurant_public_profiles` projection
 - owner admin pages live under `/admin/*`
 - owner admin auth now uses Supabase Auth sessions, with both email/password and Google OAuth supported
 - public pricing now routes owners through `/auth/login` and `/auth/checkout` before Stripe Checkout opens, so the selected plan and authenticated email stay aligned
@@ -73,11 +73,11 @@ Expected fields in `restaurants`:
 - `/admin/quiz`: edit the 7 onboarding answers stored in `quiz_answers`
 - `/admin/qr`: QR preview and download/share/print tools for `/chat/{restaurantId}?table=T{n}`
 - `/admin/billing`: plan, dates, payment method preview, Stripe portal entry, latest invoices
-- public pricing entry: `/` -> `/auth/login?plan=monthly|annual` -> `/auth/checkout?plan=monthly|annual` -> Stripe Checkout -> `/admin/dashboard`
+- public pricing entry: `/` -> `/auth/login?plan=monthly|annual` -> `/auth/checkout?plan=monthly|annual` -> Stripe Checkout -> `/admin/dashboard` -> `/admin`
 
 ## Current Boundaries
 
 - owner auth protection is implemented with Supabase Auth cookies plus SSR middleware refresh
-- owner data isolation is expected to be enforced through Supabase RLS on `owners`, `restaurants`, `conversations`, and `analytics` where present
+- owner data isolation is expected to be enforced through Supabase RLS on `owners`, `restaurants`, `conversations`, `conversation_analytics`, and related owner tables where present
 - guest-safe restaurant reads are intentionally routed through the app server so restaurant tables do not need public `select` policies
 - guest chat analytics storage should remain anonymized by design and only persist sanitized question text, response preview, language, timestamps, and conversation linkage

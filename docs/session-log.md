@@ -19,7 +19,7 @@ Source of truth scope:
 
 Last updated:
 
-- 2026-04-05
+- 2026-04-08
 
 Related docs:
 
@@ -36,6 +36,27 @@ Related docs:
 - use `docs/progress-log.md` for durable shipped baseline, and this file for session history
 
 ## Entries
+
+### 2026-04-08 - Internal QR Route
+
+- added `GET /api/qr/[restaurantId]`, which validates the restaurant id, normalizes table and size query params, and returns a PNG QR code generated with the `qrcode` package
+- switched the owner QR studio away from the external QR image provider so preview, print, and PNG download now all point at the app-owned API route
+- added `qrcode` plus `@types/qrcode` to the package manifest; full build verification still depends on installing those packages in the current workspace
+
+### 2026-04-05 - Chat PreText Integration
+
+- replaced the inline guest-chat message bubble markup with a dedicated `ChatBubble` component that uses cached PreText preparation and cheap layout calls for text-height estimation
+- added lightweight chat list windowing with measured top offsets, total scroll-height calculation, overscan, and bottom anchoring so the chat viewport does less work while preserving the current message flow
+- installed the live npm package `@chenglou/pretext` after confirming the requested `@tuform/pretext` package does not exist on npm
+- verified `npm run type-check`, `npm run lint`, and `npm run build` all pass, then browser-smoked `/chat/demo` through onboarding into a successful demo reply
+
+### 2026-04-05 - Documentation Reconciliation
+
+- added canonical `docs/API.md`, `docs/ARCHITECTURE.md`, `docs/ONBOARDING.md`, `docs/PRICING.md`, `docs/DEPLOY.md`, and `docs/CHANGELOG.md` so the current Gustia product no longer relies on implied or scattered documentation for core runtime behavior
+- rewrote stale setup and product-state docs so pricing, Supabase auth, invite claiming, Stripe flow, theme selection, and owner admin surfaces now match the shipped app instead of the older pre-launch assumptions
+- replaced outdated root planning documents and prompt packs with archive notes that point to the current docs hub, which removes the lingering retired-price and legacy-auth guidance from normal repo usage
+- refreshed the docs hub, env reference, audit report, and handoff pointers so future sessions start from the current canonical documentation set
+- verification for this session focused on residue searches for stale claims plus `npm run type-check`
 
 ### 2026-04-05 - Launch Readiness Verification
 
