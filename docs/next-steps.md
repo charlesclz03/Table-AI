@@ -13,6 +13,7 @@ All prompts from `CODEX PROMPTS from 23 to 30.md`:
 - **What:** Build working QR code generator with PDF download (`qrcode` + `jspdf`)
 - **File:** `app/api/qr/[restaurantId]/route.ts`
 - **Verification:** `npm run build` passes, QR codes generate, PDF downloads work, mobile scan works
+- **Status:** ✅ DONE (2026-04-08)
 
 ### Prompt 24 — Usage Cap Enforcement
 - **Read:** `app/api/chat/route.ts`, `lib/billing/usage.ts`, `docs/PRICING_DECISION.md`
@@ -51,7 +52,7 @@ All prompts from `CODEX PROMPTS from 23 to 30.md`:
 - **What:** Verify all features done → create `docs/FEATURE_COMPLETION.md`
 - **Verification:** `npm run build` passes, all checklist items ✅
 
-## Done (Prompts 1–22)
+## Done (Prompts 1–22 + 23)
 - ✅ Stripe payment flow
 - ✅ GPT-4o mini chat integration
 - ✅ Supabase schema + Vercel deploy
@@ -59,6 +60,7 @@ All prompts from `CODEX PROMPTS from 23 to 30.md`:
 - ✅ Supabase Auth migration
 - ✅ Menu photo upload + AI parsing
 - ✅ Owner analytics dashboard
+- ✅ Prompt 23: QR Code Generator (2026-04-08)
 
 ## Current Focus
 Prompts 23–30 are the remaining work to reach full feature completion.
