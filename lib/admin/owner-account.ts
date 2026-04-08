@@ -3,6 +3,7 @@ import {
   type AdminOwnerRecord,
   type AdminRestaurantRecord,
 } from '@/lib/admin/types'
+import { syncConvertedWaitlistLead } from '@/lib/admin/leads'
 import { writeAuditLogAsync } from '@/lib/audit/server'
 import { ensureServerOnly } from '@/lib/server-only'
 import { getSupabaseServerClient } from '@/lib/supabase/server'
@@ -67,6 +68,7 @@ function getDefaultRestaurantPayload({
     name: displayName || 'Your Restaurant',
     menu_json: { items: [] },
     quiz_answers: EMPTY_QUIZ_ANSWERS,
+    source: 'direct',
     subscription_status: 'inactive',
     plan_name: 'Founding Restaurant',
   }
@@ -210,6 +212,11 @@ export async function ensureOwnerAccountForUser({
         targetId: invite.id,
       })
 
+      await syncConvertedWaitlistLead({
+        email: normalizedEmail,
+        restaurantId: claimedRestaurant.id,
+      })
+
       return {
         owner: owner as AdminOwnerRecord,
         restaurant: claimedRestaurant as AdminRestaurantRecord,
@@ -264,6 +271,11 @@ export async function ensureOwnerAccountForUser({
     restaurantId: createdRestaurant.id,
     source: 'owner-account.ensure',
     status: 'success',
+  })
+
+  await syncConvertedWaitlistLead({
+    email: normalizedEmail,
+    restaurantId: createdRestaurant.id,
   })
 
   return {

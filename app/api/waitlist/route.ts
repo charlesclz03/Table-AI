@@ -10,6 +10,7 @@ const waitlistSchema = z.object({
   email: z.string().email(),
   restaurantName: z.string().trim().min(1).max(240),
   notes: z.string().trim().max(2000).optional(),
+  source: z.string().trim().max(80).optional(),
 })
 
 async function forwardToZapier(data: Record<string, unknown>): Promise<void> {
@@ -49,9 +50,10 @@ export async function POST(request: Request) {
 
     const { error } = await client.from('waitlist_leads').insert({
       name: body.name,
-      email: body.email,
+      email: body.email.trim().toLowerCase(),
       restaurant_name: body.restaurantName,
       notes: body.notes ?? null,
+      source: body.source?.trim() || 'waitlist',
     })
 
     if (error) {
@@ -64,6 +66,7 @@ export async function POST(request: Request) {
       email: body.email,
       restaurant_name: body.restaurantName,
       notes: body.notes,
+      source: body.source?.trim() || 'waitlist',
       timestamp: new Date().toISOString(),
     })
 

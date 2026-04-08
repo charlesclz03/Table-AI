@@ -13,6 +13,7 @@ import {
   QrCode,
   Receipt,
   Sparkles,
+  Users,
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { AdminSignOutButton } from '@/components/admin/AdminSignOutButton'
@@ -42,6 +43,11 @@ const navigation = [
     href: '/admin/referral',
     label: 'Referral',
     icon: Gift,
+  },
+  {
+    href: '/admin/leads',
+    label: 'Leads',
+    icon: Users,
   },
   {
     href: '/admin/invite',

@@ -70,6 +70,7 @@ export interface AdminRestaurantRecord {
   email: string
   name: string
   owner_id?: string | null
+  source?: string | null
   logo_url?: string | null
   soul_md?: string | null
   rules_md?: string | null

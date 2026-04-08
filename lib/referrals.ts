@@ -37,10 +37,17 @@ export interface ReferralListItem extends ReferralRecord {
 export interface ReferralOverview {
   code: ReferralCodeRecord
   shareUrl: string
+  signupsCount: number
   pendingCount: number
   pendingMonths: number
+  convertedCount: number
   rewardedCount: number
   rewardedMonths: number
+  convertedRestaurants: Array<{
+    id: string
+    name: string
+    convertedAt: string | null
+  }>
   referrals: ReferralListItem[]
 }
 
@@ -233,6 +240,10 @@ export async function getReferralOverview(input: {
   const pendingReferrals = normalizedReferrals.filter(
     (referral) => referral.status === 'pending'
   )
+  const convertedReferrals = normalizedReferrals.filter(
+    (referral) =>
+      referral.status === 'completed' || referral.status === 'rewarded'
+  )
   const rewardedReferrals = normalizedReferrals.filter(
     (referral) => referral.status === 'rewarded'
   )
@@ -240,16 +251,23 @@ export async function getReferralOverview(input: {
   return {
     code,
     shareUrl: `${input.siteUrl.replace(/\/$/, '')}/auth/login?plan=monthly&ref=${encodeURIComponent(code.code)}`,
+    signupsCount: normalizedReferrals.length,
     pendingCount: pendingReferrals.length,
     pendingMonths: pendingReferrals.reduce(
       (sum, referral) => sum + referral.reward_months,
       0
     ),
+    convertedCount: convertedReferrals.length,
     rewardedCount: rewardedReferrals.length,
     rewardedMonths: rewardedReferrals.reduce(
       (sum, referral) => sum + referral.reward_months,
       0
     ),
+    convertedRestaurants: convertedReferrals.map((referral) => ({
+      id: referral.referred_restaurant_id,
+      name: referral.referred_restaurant_name,
+      convertedAt: referral.rewarded_at || referral.completed_at || null,
+    })),
     referrals: normalizedReferrals,
   } satisfies ReferralOverview
 }
@@ -315,6 +333,17 @@ export async function applyReferralCode(input: {
 
   if (error) {
     throw new Error(error.message)
+  }
+
+  const { error: restaurantUpdateError } = await client
+    .from('restaurants')
+    .update({
+      source: `referral:${normalizedCode}`,
+    })
+    .eq('id', input.referredRestaurant.id)
+
+  if (restaurantUpdateError) {
+    throw new Error(restaurantUpdateError.message)
   }
 
   writeAuditLogAsync({
