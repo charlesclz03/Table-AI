@@ -1,9 +1,8 @@
 'use client'
 
-import { useCallback, useState } from 'react'
+import { useState } from 'react'
 import { format } from 'date-fns'
 import {
-  LEAD_PIPELINE_STATUSES,
   LEAD_STATUS_LABELS,
   type LeadPipelineStatus,
 } from '@/lib/admin/lead-pipeline'

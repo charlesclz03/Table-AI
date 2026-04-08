@@ -50,6 +50,11 @@ const navigation = [
     icon: Users,
   },
   {
+    href: '/admin/waitlist',
+    label: 'Waitlist',
+    icon: ClipboardList,
+  },
+  {
     href: '/admin/invite',
     label: 'Invites',
     icon: Link2,
@@ -92,6 +97,14 @@ export function AdminChrome({
   const pathname = usePathname()
   const isLoginPage = pathname === '/admin/login'
 
+  function isActiveRoute(href: string) {
+    if (href === '/admin') {
+      return pathname === '/admin' || pathname === '/admin/dashboard'
+    }
+
+    return pathname === href || pathname.startsWith(`${href}/`)
+  }
+
   if (isLoginPage) {
     return <>{children}</>
   }
@@ -121,7 +134,7 @@ export function AdminChrome({
                   href={item.href}
                   className={cn(
                     'inline-flex items-center gap-2 rounded-full border px-4 py-2 text-sm transition',
-                    pathname === item.href
+                    isActiveRoute(item.href)
                       ? 'border-amber-300/40 bg-amber-300/15 text-amber-100'
                       : 'border-white/10 bg-black/20 text-white/70 hover:bg-white/10 hover:text-white'
                   )}
