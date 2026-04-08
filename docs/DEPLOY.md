@@ -41,6 +41,7 @@ For real release work, use:
 
 - keep docs synchronized before release
 - push the intended Git state first
-- let GitHub Actions deploy Vercel production automatically on pushes to `main`
+- GitHub Actions deploys Vercel production automatically on pushes to `main`
+- **do NOT wait for GitHub Actions in the deploy workflow** — push and move on
 - use a direct Vercel CLI production deploy only as the fallback path
 - verify the affected live flows immediately after deploy

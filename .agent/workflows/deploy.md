@@ -165,7 +165,7 @@ git push origin main
 ```
 
 GitHub Actions now handles the production Vercel deploy automatically for pushes to `main` through `.github/workflows/ci.yml`.
-Monitor that workflow run instead of triggering a second production deploy from the same workspace.
+**Do NOT wait for GitHub Actions to complete as part of this workflow.** Push and move on — GitHub Actions deploys asynchronously.
 
 ### Vercel CLI Path
 
@@ -178,10 +178,11 @@ Use this when `/deploy vercel` is requested or when production needs to be redep
 
 ### Selection Rule
 
-- Default to: verify, update the release docs, push GitHub, then confirm the GitHub Actions production deploy succeeds
+- Default to: verify, update the release docs, push GitHub, then move on
+- Do NOT wait for GitHub Actions to finish — it deploys asynchronously after the push
 - Do not launch a second manual Vercel production deploy unless the workflow fails or the user explicitly asks for the fallback path
-- Do not poll Vercel for long periods before deploying unless the user explicitly asks for that slower path
-- Treat the GitHub Actions deploy on `main` as the primary production path for `/deploy`
+- Do not poll GitHub Actions or Vercel as part of this workflow
+- Treat the GitHub Actions deploy on `main` as the primary production path — fire and forget
 - Keep the local workspace clean before the push so the GitHub-triggered production deploy matches the intended GitHub state
 
 ---
