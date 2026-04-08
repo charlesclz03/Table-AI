@@ -154,6 +154,26 @@ export interface AdminDishStat {
   count: number
 }
 
+export interface AdminMonthlyVolumePoint {
+  month: string
+  label: string
+  count: number
+}
+
+export interface AdminRevenuePoint {
+  month: string
+  label: string
+  amount: number
+  currency: string
+}
+
+export interface AdminPeakHourSlot {
+  hour: number
+  label: string
+  count: number
+  share: number
+}
+
 export interface AdminPeakUsage {
   hourLabel: string
   hour: number | null
@@ -177,10 +197,13 @@ export interface AdminAnalyticsPayload {
   }
   avgMessagesPerConversation: number
   peakUsage: AdminPeakUsage
+  peakHourSlots: AdminPeakHourSlot[]
   languageDistribution: AdminLanguageStat[]
   topQuestions: AdminQuestionStat[]
   usageByDay: AdminUsagePoint[]
-  popularDishes: AdminDishStat[]
+  topDishes: AdminDishStat[]
+  monthlyChatVolume: AdminMonthlyVolumePoint[]
+  monthlyRevenue: AdminRevenuePoint[]
   engagement: AdminEngagementMetrics
   generatedAt: string
 }

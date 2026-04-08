@@ -440,8 +440,8 @@ export function AdminAnalyticsDashboard({
           </p>
 
           <div className="mt-5 space-y-3">
-            {analytics.popularDishes.length > 0 ? (
-              analytics.popularDishes.map((dish, index) => (
+            {analytics.topDishes.length > 0 ? (
+              analytics.topDishes.map((dish, index) => (
                 <div
                   key={dish.name}
                   className="flex items-center justify-between gap-3 rounded-[22px] border border-white/10 bg-black/20 px-4 py-4"

@@ -5,14 +5,18 @@ import type {
   AdminDishStat,
   AdminEngagementMetrics,
   AdminLanguageStat,
+  AdminMonthlyVolumePoint,
   AdminPeakUsage,
+  AdminPeakHourSlot,
   AdminQuestionStat,
+  AdminRevenuePoint,
   AdminRestaurantRecord,
   AdminUsagePoint,
   ConversationMessage,
   ConversationRecord,
 } from '@/lib/admin/types'
 import { ensureServerOnly } from '@/lib/server-only'
+import { getStripeServerClient } from '@/lib/stripe'
 import { getSupabaseServerClient } from '@/lib/supabase/server'
 
 ensureServerOnly('lib/analytics')
@@ -24,6 +28,13 @@ const QUESTION_RECOMMENDATION_PATTERN =
 function createEmptyAnalyticsPayload(
   range: AdminAnalyticsRange
 ): AdminAnalyticsPayload {
+  const emptyMonthlyRevenue = createMonthSeries().map((point) => ({
+    month: point.month,
+    label: point.label,
+    amount: 0,
+    currency: 'eur',
+  }))
+
   return {
     range,
     totals: {
@@ -39,10 +50,17 @@ function createEmptyAnalyticsPayload(
       dayLabel: 'No traffic yet',
       day: null,
     },
+    peakHourSlots: buildPeakHourSlots([]),
     languageDistribution: [],
     topQuestions: [],
     usageByDay: [],
-    popularDishes: [],
+    topDishes: [],
+    monthlyChatVolume: createMonthSeries().map((point) => ({
+      month: point.month,
+      label: point.label,
+      count: 0,
+    })),
+    monthlyRevenue: emptyMonthlyRevenue,
     engagement: {
       followUpRate: 0,
       recommendationRate: 0,
@@ -64,14 +82,31 @@ function createUtcDayKey(date: Date) {
   return date.toISOString().slice(0, 10)
 }
 
+function createUtcMonthKey(date: Date) {
+  return date.toISOString().slice(0, 7)
+}
+
 function shiftDateByDays(date: Date, days: number) {
   const nextDate = new Date(date)
   nextDate.setUTCDate(nextDate.getUTCDate() + days)
   return nextDate
 }
 
+function shiftDateByMonths(date: Date, months: number) {
+  const nextDate = new Date(date)
+  nextDate.setUTCMonth(nextDate.getUTCMonth() + months)
+  return nextDate
+}
+
 function startOfUtcDay(date: Date) {
   const nextDate = new Date(date)
+  nextDate.setUTCHours(0, 0, 0, 0)
+  return nextDate
+}
+
+function startOfUtcMonth(date: Date) {
+  const nextDate = new Date(date)
+  nextDate.setUTCDate(1)
   nextDate.setUTCHours(0, 0, 0, 0)
   return nextDate
 }
@@ -96,6 +131,27 @@ function formatShortDate(date: Date) {
     day: 'numeric',
     timeZone: 'UTC',
   }).format(date)
+}
+
+function formatMonthLabel(date: Date) {
+  return new Intl.DateTimeFormat('en-US', {
+    month: 'short',
+    timeZone: 'UTC',
+  }).format(date)
+}
+
+function createMonthSeries(monthCount = 6) {
+  const currentMonth = startOfUtcMonth(new Date())
+  const firstMonth = shiftDateByMonths(currentMonth, -(monthCount - 1))
+
+  return Array.from({ length: monthCount }, (_, index) => {
+    const monthDate = shiftDateByMonths(firstMonth, index)
+
+    return {
+      month: createUtcMonthKey(monthDate),
+      label: formatMonthLabel(monthDate),
+    }
+  })
 }
 
 export function normalizeConversationMessages(
@@ -236,6 +292,34 @@ function buildUsageSeries(
   }))
 }
 
+function buildMonthlyChatVolume(
+  conversations: ConversationRecord[]
+): AdminMonthlyVolumePoint[] {
+  const monthSeries = createMonthSeries()
+  const firstMonthKey = monthSeries[0]?.month || createUtcMonthKey(new Date())
+  const counts = new Map(monthSeries.map((point) => [point.month, 0]))
+
+  for (const conversation of conversations) {
+    if (!isValidDate(conversation.created_at)) {
+      continue
+    }
+
+    const monthKey = createUtcMonthKey(new Date(conversation.created_at!))
+
+    if (monthKey < firstMonthKey || !counts.has(monthKey)) {
+      continue
+    }
+
+    counts.set(monthKey, (counts.get(monthKey) || 0) + 1)
+  }
+
+  return monthSeries.map((point) => ({
+    month: point.month,
+    label: point.label,
+    count: counts.get(point.month) || 0,
+  }))
+}
+
 function getAverageMessagesPerConversation(
   conversations: ConversationRecord[]
 ) {
@@ -370,9 +454,26 @@ function getLanguageDistribution(
     }))
 }
 
-function getPopularDishes(
+export function trackDishMention(input: {
+  counts: Map<string, number>
+  dishName: string
+  content: string
+}) {
+  const normalizedDish = normalizeQuestionText(input.dishName)
+  const normalizedContent = normalizeQuestionText(input.content)
+
+  if (!normalizedDish || !normalizedContent.includes(normalizedDish)) {
+    return false
+  }
+
+  input.counts.set(input.dishName, (input.counts.get(input.dishName) || 0) + 1)
+  return true
+}
+
+export function getTopDishes(
   analyticsRows: AdminAnalyticsRecord[],
-  restaurant: AdminRestaurantRecord
+  restaurant: AdminRestaurantRecord,
+  limit = 5
 ): AdminDishStat[] {
   const menuItems = getMenuItems(restaurant.menu_json)
   const menuNames = menuItems
@@ -381,32 +482,116 @@ function getPopularDishes(
   const counts = new Map<string, number>()
 
   for (const row of analyticsRows) {
-    const questionText = row.question_text?.trim() || ''
-
-    if (!QUESTION_RECOMMENDATION_PATTERN.test(questionText)) {
-      continue
-    }
-
-    const responsePreview = normalizeQuestionText(row.response_preview || '')
+    const combinedContent = [
+      row.question_text?.trim() || '',
+      row.response_preview?.trim() || '',
+    ]
+      .filter(Boolean)
+      .join(' ')
 
     for (const dishName of menuNames) {
-      const normalizedDish = normalizeQuestionText(dishName)
-
-      if (!normalizedDish || !responsePreview.includes(normalizedDish)) {
-        continue
-      }
-
-      counts.set(dishName, (counts.get(dishName) || 0) + 1)
+      void trackDishMention({
+        counts,
+        dishName,
+        content: combinedContent,
+      })
     }
   }
 
   return [...counts.entries()]
     .sort((left, right) => right[1] - left[1])
-    .slice(0, 8)
+    .slice(0, limit)
     .map(([name, count]) => ({
       name,
       count,
     }))
+}
+
+function buildPeakHourSlots(
+  conversations: ConversationRecord[]
+): AdminPeakHourSlot[] {
+  const slots = [12, 14, 19, 21]
+  const counts = new Map(slots.map((hour) => [hour, 0]))
+
+  for (const conversation of conversations) {
+    if (!isValidDate(conversation.created_at)) {
+      continue
+    }
+
+    const hour = new Date(conversation.created_at!).getUTCHours()
+
+    if (!counts.has(hour)) {
+      continue
+    }
+
+    counts.set(hour, (counts.get(hour) || 0) + 1)
+  }
+
+  const total = [...counts.values()].reduce((sum, count) => sum + count, 0) || 1
+
+  return slots.map((hour) => {
+    const count = counts.get(hour) || 0
+
+    return {
+      hour,
+      label: formatHourLabel(hour),
+      count,
+      share: Number(((count / total) * 100).toFixed(1)),
+    }
+  })
+}
+
+async function getMonthlyRevenue(
+  restaurant: AdminRestaurantRecord
+): Promise<AdminRevenuePoint[]> {
+  const monthSeries = createMonthSeries()
+  const revenueByMonth = new Map(
+    monthSeries.map((point) => [
+      point.month,
+      {
+        month: point.month,
+        label: point.label,
+        amount: 0,
+        currency: 'eur',
+      },
+    ])
+  )
+  const stripe = getStripeServerClient()
+
+  if (!stripe || !restaurant.stripe_customer_id) {
+    return [...revenueByMonth.values()]
+  }
+
+  const firstMonth = startOfUtcMonth(
+    shiftDateByMonths(new Date(), -(monthSeries.length - 1))
+  )
+  const invoices = await stripe.invoices.list({
+    customer: restaurant.stripe_customer_id,
+    created: {
+      gte: Math.floor(firstMonth.getTime() / 1000),
+    },
+    limit: 100,
+  })
+
+  for (const invoice of invoices.data) {
+    if (invoice.status !== 'paid' || !invoice.created) {
+      continue
+    }
+
+    const monthKey = createUtcMonthKey(new Date(invoice.created * 1000))
+    const current = revenueByMonth.get(monthKey)
+
+    if (!current) {
+      continue
+    }
+
+    current.amount = Number(
+      (current.amount + (invoice.amount_paid || 0) / 100).toFixed(2)
+    )
+    current.currency = invoice.currency || current.currency
+  }
+
+  return [...revenueByMonth.values()]
 }
 
 function getEngagementMetrics(
@@ -547,6 +732,7 @@ export async function getRestaurantAnalytics(
   const [
     { data: conversationRows, error: conversationsError },
     { data: analyticsRows, error: analyticsError },
+    monthlyRevenue,
   ] = await Promise.all([
     client
       .from('conversations')
@@ -560,6 +746,7 @@ export async function getRestaurantAnalytics(
       )
       .eq('restaurant_id', restaurant.id)
       .order('created_at', { ascending: false }),
+    getMonthlyRevenue(restaurant),
   ])
 
   if (conversationsError) {
@@ -630,13 +817,16 @@ export async function getRestaurantAnalytics(
       selectedConversations
     ),
     peakUsage: getPeakUsage(selectedConversations),
+    peakHourSlots: buildPeakHourSlots(selectedConversations),
     languageDistribution: getLanguageDistribution(
       selectedAnalytics,
       selectedConversations.length
     ),
     topQuestions: getTopQuestions(selectedConversations),
     usageByDay: buildUsageSeries(conversations),
-    popularDishes: getPopularDishes(selectedAnalytics, restaurant),
+    topDishes: getTopDishes(selectedAnalytics, restaurant),
+    monthlyChatVolume: buildMonthlyChatVolume(conversations),
+    monthlyRevenue,
     engagement: getEngagementMetrics(selectedConversations, selectedAnalytics),
     generatedAt: new Date().toISOString(),
   }
