@@ -41,6 +41,7 @@ export function MenuEditor({ initialItems }: MenuEditorProps) {
   const [dragIndex, setDragIndex] = useState<number | null>(null)
   const [isSaving, setIsSaving] = useState(false)
   const [status, setStatus] = useState('')
+  const isError = Boolean(status && /(?:error|failed)/i.test(status))
 
   const groupedCount = useMemo(
     () =>
@@ -214,7 +215,13 @@ export function MenuEditor({ initialItems }: MenuEditorProps) {
                   Save menu
                 </Button>
                 {status ? (
-                  <p className="rounded-full border border-white/10 bg-black/20 px-4 py-3 text-sm text-white/75">
+                  <p
+                    className={
+                      isError
+                        ? 'rounded-full border border-rose-200/30 bg-rose-400/10 px-4 py-3 text-sm text-rose-100'
+                        : 'rounded-full border border-emerald-200/30 bg-emerald-400/10 px-4 py-3 text-sm text-emerald-100'
+                    }
+                  >
                     {status}
                   </p>
                 ) : null}
@@ -228,7 +235,13 @@ export function MenuEditor({ initialItems }: MenuEditorProps) {
                 <li>Review the draft, then save to replace the live menu.</li>
               </ul>
               {status ? (
-                <p className="mt-6 rounded-[20px] border border-white/10 bg-black/20 px-4 py-3 text-sm text-white/75">
+                <p
+                  className={
+                    isError
+                      ? 'mt-6 rounded-[20px] border border-rose-200/30 bg-rose-400/10 px-4 py-3 text-sm text-rose-100'
+                      : 'mt-6 rounded-[20px] border border-emerald-200/30 bg-emerald-400/10 px-4 py-3 text-sm text-emerald-100'
+                  }
+                >
                   {status}
                 </p>
               ) : null}
