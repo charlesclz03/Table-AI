@@ -965,7 +965,7 @@ export default function RestaurantChatPage() {
       recognitionRef.current?.abort?.()
       recognitionRef.current = null
     }
-  }, [finalizeVoiceInput, language])
+  }, [finalizeVoiceInput, language, showHeadphoneDisclaimer, stopVoicePlayback])
 
   useEffect(() => {
     return () => {
