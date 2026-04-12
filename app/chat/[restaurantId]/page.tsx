@@ -1217,8 +1217,13 @@ export default function RestaurantChatPage() {
               <p className="text-[11px] uppercase tracking-[0.32em] text-amber-200/70">
                 Gustia Concierge
               </p>
-              <h1 className="mt-1 break-words text-xl font-semibold text-white">
+              <h1 className="mt-1 flex items-center gap-2 break-words text-xl font-semibold text-white">
                 {restaurant?.name ?? 'Loading restaurant...'}
+                {isDemoMode && (
+                  <span className="rounded-full bg-amber-500/20 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-amber-300 ring-1 ring-amber-400/30">
+                    Demo
+                  </span>
+                )}
               </h1>
               <p className="mt-1 text-sm text-white/65">Table {tableNumber}</p>
             </div>
