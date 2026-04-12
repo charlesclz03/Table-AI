@@ -160,14 +160,19 @@ function LanguageSelectionScreen() {
                   delay: index * 0.07,
                 }}
               >
-                <span className="text-[2.4rem] leading-none" style={{ filter: 'drop-shadow(0 4px 12px rgba(0,0,0,0.4))' }}>
+                <span
+                  className="text-[2.4rem] leading-none"
+                  style={{ filter: 'drop-shadow(0 4px 12px rgba(0,0,0,0.4))' }}
+                >
                   {language.flag}
                 </span>
                 <div className="mt-3">
                   <p className="text-[1.05rem] font-semibold tracking-wide text-white">
                     {language.nativeLabel}
                   </p>
-                  <p className="mt-0.5 text-xs text-white/44">{language.label}</p>
+                  <p className="mt-0.5 text-xs text-white/44">
+                    {language.label}
+                  </p>
                 </div>
               </motion.button>
             ))}

@@ -571,9 +571,7 @@ function OnboardingProgress({ current }: { current: OnboardingProgressStep }) {
               <div
                 className={cn(
                   'h-1 rounded-full transition-colors duration-500',
-                  isCompleted || isActive
-                    ? 'bg-amber-300/80'
-                    : 'bg-white/18'
+                  isCompleted || isActive ? 'bg-amber-300/80' : 'bg-white/18'
                 )}
               />
             </motion.div>

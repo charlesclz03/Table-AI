@@ -103,7 +103,9 @@ export function ThemePreview({
             Validated
           </span>
         </div>
-        <p className="mt-3 text-sm leading-relaxed text-white/82">{personality}</p>
+        <p className="mt-3 text-sm leading-relaxed text-white/82">
+          {personality}
+        </p>
         <div className="mt-5 border-t border-white/[0.07]" />
         <p className="mt-4 text-[11px] uppercase tracking-[0.3em] text-amber-200/70">
           Voice sample
@@ -130,8 +132,10 @@ export function ThemePreview({
           onClick={onConfirm}
           className="flex flex-[1] items-center justify-center gap-2 rounded-full px-6 py-3 text-sm font-semibold text-[#0d1a12] transition hover:brightness-110 active:scale-[0.98]"
           style={{
-            background: 'linear-gradient(135deg, #6ee7a0 0%, #34d399 50%, #10b981 100%)',
-            boxShadow: '0 4px 20px rgba(52,211,153,0.35), inset 0 1px 0 rgba(255,255,255,0.2)',
+            background:
+              'linear-gradient(135deg, #6ee7a0 0%, #34d399 50%, #10b981 100%)',
+            boxShadow:
+              '0 4px 20px rgba(52,211,153,0.35), inset 0 1px 0 rgba(255,255,255,0.2)',
           }}
         >
           <Check className="h-4 w-4" />
