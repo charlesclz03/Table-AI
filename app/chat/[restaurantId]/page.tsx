@@ -1411,7 +1411,7 @@ export default function RestaurantChatPage() {
                 <div className="mt-4 flex flex-col gap-3 sm:flex-row">
                   <a
                     href={`mailto:contact@gustia.wine?subject=${encodeURIComponent(
-                      `I want Gustia for ${restaurant?.name ?? 'my restaurant'}`
+                      `I want Gustia for ${encodeURIComponent(restaurant?.name ?? 'my restaurant')}`
                     )}`}
                     className="glass-button-emerald flex min-h-11 flex-1 items-center justify-center rounded-full px-4 py-3 text-center text-sm font-semibold text-emerald-50 transition hover:bg-emerald-300/24"
                   >
@@ -1474,7 +1474,7 @@ export default function RestaurantChatPage() {
                       : 'Press and hold to talk'
                 }
               >
-                {isMuted || isHoldingToTalk || isListening ? (
+                {isMuted ? (
                   <MicOff className="h-5 w-5" />
                 ) : (
                   <Mic className="h-5 w-5" />

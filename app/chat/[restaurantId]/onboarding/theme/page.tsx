@@ -433,6 +433,7 @@ function ThemeSelectionScreen({
 
   useEffect(() => {
     onProgressChange(stage === 'enter' ? 2 : 1)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [onProgressChange, stage])
 
   useEffect(() => {
@@ -578,7 +579,7 @@ function ThemeSelectionScreen({
       const direction = getNavigationDirection(previewTheme, nextTheme)
       triggerSelectionChange(nextTheme, direction)
     },
-    [previewTheme, triggerSelectionChange]
+    [previewTheme, triggerSelectionChange] // eslint-disable-line react-hooks/exhaustive-deps
   )
 
   const handlePreviousTheme = useCallback(

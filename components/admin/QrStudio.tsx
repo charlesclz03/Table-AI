@@ -247,15 +247,21 @@ export function QrStudio({
           </Button>
           <Button
             variant="glass"
-            onClick={() =>
-              window.open(
-                `https://wa.me/?text=${encodeURIComponent(
-                  `Scan our AI concierge for table T${tableNumber || '1'}: ${chatUrl}`
-                )}`,
+            onClick={() => {
+              const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(
+                `Scan our AI concierge for table T${tableNumber || '1'}: ${chatUrl}`
+              )}`
+              const popup = window.open(
+                whatsappUrl,
                 '_blank',
                 'noopener,noreferrer'
               )
-            }
+              if (!popup || popup.closed || popup.closed === undefined) {
+                setStatus(
+                  'Your browser blocked WhatsApp. Copy the deep link above instead.'
+                )
+              }
+            }}
           >
             <Share2 className="mr-2 h-4 w-4" />
             Share on WhatsApp
