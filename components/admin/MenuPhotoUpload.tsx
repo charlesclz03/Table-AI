@@ -553,9 +553,18 @@ export function MenuPhotoUpload({ onSaved }: MenuPhotoUploadProps) {
                             : null,
                         })
                       }
-                      className="mt-2 w-full rounded-2xl border border-white/10 bg-black/20 px-4 py-3 text-white outline-none transition placeholder:text-white/30 focus:border-amber-300/40"
+                      className={cn(
+                        'mt-2 w-full rounded-2xl border border-white/10 bg-black/20 px-4 py-3 text-white outline-none transition placeholder:text-white/30 focus:border-amber-300/40',
+                        item.price === null &&
+                          'border-rose-300 focus:border-rose-300'
+                      )}
                       placeholder="12.50"
                     />
+                    {item.price === null && (
+                      <span className="mt-1.5 inline-block rounded-full border border-rose-300/40 bg-rose-400/10 px-2.5 py-0.5 text-xs text-rose-200">
+                        Price required
+                      </span>
+                    )}
                   </label>
 
                   <label className="text-sm text-white/70">
