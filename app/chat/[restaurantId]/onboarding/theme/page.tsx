@@ -187,7 +187,7 @@ function OrbitalThemeSelector({
       </div>
 
       <div
-        className="relative mt-6 h-[24.5rem] touch-pan-y select-none outline-none"
+        className="relative mt-5 h-[26rem] touch-pan-y select-none outline-none"
         onTouchStart={handleTouchStart}
         onTouchEnd={handleTouchEnd}
         onTouchCancel={() => {
@@ -197,13 +197,8 @@ function OrbitalThemeSelector({
         tabIndex={0}
         aria-label="Theme selector orbit"
       >
-        <motion.div
-          className="absolute inset-0 rounded-[34px]"
-          animate={{
-            background: `radial-gradient(circle at 50% 42%, ${activeTheme.glowColor}2f 0%, rgba(255,255,255,0.04) 36%, rgba(5,5,8,0.18) 58%, transparent 100%)`,
-          }}
-          transition={ORBITAL_SELECTOR_TRANSITION}
-        />
+        {/* Static dark background — no theme-color banners */}
+        <div className="absolute inset-0 rounded-[34px] bg-[rgba(255,255,255,0.03)]" />
 
         <div className="pointer-events-none absolute inset-x-6 top-1/2 h-[16rem] -translate-y-1/2 rounded-full border border-white/8" />
         <div className="pointer-events-none absolute left-1/2 top-1/2 h-[11.75rem] w-[11.75rem] -translate-x-1/2 -translate-y-1/2 rounded-full border border-white/10" />
@@ -312,13 +307,7 @@ function OrbitalThemeSelector({
               Current atmosphere
             </p>
             <p className="mt-2 text-xl font-medium text-white">
-              {activeTheme.key === 'red'
-                ? 'Classic Red'
-                : activeTheme.key === 'rose'
-                  ? 'Rose'
-                  : activeTheme.key === 'green'
-                    ? 'Green Wine'
-                    : activeTheme.label}
+              {activeTheme.label}
             </p>
             <p className="mt-1 text-sm text-white/55">{activeTheme.subtitle}</p>
           </motion.div>

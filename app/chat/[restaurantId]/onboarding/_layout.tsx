@@ -653,13 +653,19 @@ export function OnboardingShell({
   return (
     <OnboardingContext.Provider value={value}>
       <div className="min-h-screen overflow-hidden text-white">
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(247,197,122,0.18),_transparent_28%),radial-gradient(circle_at_20%_80%,_rgba(114,47,55,0.3),_transparent_34%),radial-gradient(circle_at_80%_20%,_rgba(240,180,130,0.12),_transparent_26%),linear-gradient(180deg,_#130d0b_0%,_#09080b_52%,_#040406_100%)]" />
+        {/* Clean dark atmosphere — single subtle top glow, no sepia banners */}
         <div
-          className="pointer-events-none absolute inset-x-[-15%] top-[18%] h-[28rem] rounded-full blur-3xl"
+          className="absolute inset-0"
           style={{
             background:
-              'radial-gradient(circle, rgba(255, 231, 204, 0.08) 0%, transparent 72%)',
-            animation: 'onboardingGlow 6s ease-in-out infinite',
+              'linear-gradient(180deg, #0d0a09 0%, #09080b 48%, #040406 100%)',
+          }}
+        />
+        <div
+          className="pointer-events-none absolute inset-x-0 top-0 h-96"
+          style={{
+            background:
+              'radial-gradient(ellipse 80% 60% at 50% 0%, rgba(180,120,60,0.08) 0%, transparent 70%)',
           }}
         />
 
