@@ -53,6 +53,7 @@ model User {
   sessions      Session[]
   subscriptions Subscription[]
   preferences   UserPreferences?
+  referrals     Referral[]
 }
 
 model VerificationToken {
@@ -98,6 +99,34 @@ model Subscription {
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
+// ── Restaurant (managed via Supabase; minimal Prisma model for relation targets) ──
+
+model Restaurant {
+  id                   String   @id @default(cuid())
+  email                String
+  name                 String
+  ownerId              String?  @map("owner_id")
+  source               String?  @db.Text
+  logoUrl              String?  @map("logo_url")
+  soulMd               String?  @map("soul_md") @db.Text
+  rulesMd              String?  @map("rules_md") @db.Text
+  menuJson             Json?    @map("menu_json")
+  quizAnswers          Json?    @map("quiz_answers")
+  stripeCustomerId     String?  @map("stripe_customer_id")
+  stripeSubscriptionId String?  @map("stripe_subscription_id")
+  subscriptionStatus   String?  @map("subscription_status")
+  planName             String?  @map("plan_name")
+  setupPaidAt          DateTime? @map("setup_paid_at")
+  billingStartsAt      DateTime? @map("billing_starts_at")
+  qrCodeUrl            String?  @map("qr_code_url")
+  createdAt            DateTime @default(now()) @map("created_at")
+  updatedAt            DateTime @updatedAt @map("updated_at")
+
+  referralCodes        ReferralCode[]
+  referrerReferrals    Referral[]   @relation("Referrer")
+  refereeReferrals     Referral[]   @relation("Referee")
+}
+
 // ── Referral System ──────────────────────────────────────────────────────────
 
 /// One referral code per restaurant. Created when restaurant enables referrals.
@@ -117,21 +146,21 @@ model ReferralCode {
 /// Tracks referral relationships and reward status.
 /// When a referred restaurant applies a code, a record is created here.
 model Referral {
-  id                  String    @id @default(cuid())
-  referrerRestaurantId String   @map(name: "referrer_restaurant_id") // restaurant that gave the code
-  refereeUserId       String    @map(name: "referee_user_id")       // user who used the code
-  refereeRestaurantId String?   @map(name: "referee_restaurant_id") // their restaurant (set on signup)
-  referredAt          DateTime  @default(now()) @map(name: "referred_at")
+  id                   String    @id @default(cuid())
+  referrerRestaurantId String    @map(name: "referrer_restaurant_id")
+  refereeUserId        String    @map(name: "referee_user_id")
+  refereeRestaurantId  String?   @map(name: "referee_restaurant_id")
+  referredAt           DateTime  @default(now()) @map(name: "referred_at")
 
   // Rewards
-  referrerFreeMonthGranted  Boolean @default(false) @map(name: "referrer_free_month_granted")
-  refereeFreeMonthGranted   Boolean @default(false) @map(name: "referee_free_month_granted")
+  referrerFreeMonthGranted Boolean @default(false) @map(name: "referrer_free_month_granted")
+  refereeFreeMonthGranted  Boolean @default(false) @map(name: "referee_free_month_granted")
   referrerGrantedAt        DateTime? @map(name: "referrer_granted_at")
   refereeGrantedAt         DateTime? @map(name: "referee_granted_at")
 
   referrerRestaurant Restaurant @relation("Referrer", fields: [referrerRestaurantId], references: [id], onDelete: Cascade)
   refereeUser        User       @relation(fields: [refereeUserId], references: [id], onDelete: Cascade)
-  refereeRestaurant Restaurant? @relation("Referee", fields: [refereeRestaurantId], references: [id], onDelete: SetNull)
+  refereeRestaurant  Restaurant? @relation("Referee", fields: [refereeRestaurantId], references: [id], onDelete: SetNull)
 
   @@unique([referrerRestaurantId, refereeUserId])
   @@map(name: "referrals")
