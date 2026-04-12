@@ -141,28 +141,33 @@ function LanguageSelectionScreen() {
             </p>
           </div>
 
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid grid-cols-2 gap-4 px-1">
             {LANGUAGE_OPTIONS.map((language, index) => (
               <motion.button
                 key={language.code}
                 type="button"
                 onClick={() => handleSelectLanguage(language.code)}
-                whileTap={{ scale: 0.98 }}
+                whileTap={{ scale: 0.97 }}
+                whileHover={{ scale: 1.02 }}
                 disabled={isRouting}
-                className="glass-panel-soft flex min-h-[110px] min-w-[60px] flex-col justify-between rounded-[28px] px-4 py-4 text-left transition hover:border-amber-200/35 hover:bg-white/[0.1] disabled:pointer-events-none"
-                initial={{ y: 28 }}
-                animate={{ y: 0 }}
+                className="glass-panel relative flex min-h-[128px] flex-col justify-between rounded-[24px] px-5 py-5 text-left transition-all hover:border-amber-200/40 hover:bg-white/[0.09] disabled:pointer-events-none"
+                initial={{ opacity: 0, y: 24, scale: 0.96 }}
+                animate={{ opacity: 1, y: 0, scale: 1 }}
                 transition={{
-                  ...ONBOARDING_SLIDE_TRANSITION,
-                  delay: index * 0.04,
+                  type: 'spring',
+                  stiffness: 300,
+                  damping: 26,
+                  delay: index * 0.07,
                 }}
               >
-                <span className="text-4xl leading-none">{language.flag}</span>
-                <div className="mt-4">
-                  <p className="text-base font-medium text-white">
+                <span className="text-[2.4rem] leading-none" style={{ filter: 'drop-shadow(0 4px 12px rgba(0,0,0,0.4))' }}>
+                  {language.flag}
+                </span>
+                <div className="mt-3">
+                  <p className="text-[1.05rem] font-semibold tracking-wide text-white">
                     {language.nativeLabel}
                   </p>
-                  <p className="mt-1 text-sm text-white/48">{language.label}</p>
+                  <p className="mt-0.5 text-xs text-white/44">{language.label}</p>
                 </div>
               </motion.button>
             ))}

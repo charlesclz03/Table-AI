@@ -8,6 +8,7 @@ import {
   useMemo,
   useState,
 } from 'react'
+import { motion } from 'framer-motion'
 import { useParams, useRouter, useSearchParams } from 'next/navigation'
 import { Sparkles } from 'lucide-react'
 import {
@@ -67,14 +68,15 @@ export { THEME_OPTIONS, getThemeOption }
 export type { ThemeKey, ThemeOption }
 
 export const ONBOARDING_SLIDE_TRANSITION = {
-  duration: 0.4,
-  ease: 'easeOut',
+  type: 'spring',
+  stiffness: 260,
+  damping: 28,
 } as const
 
 export const ONBOARDING_SLIDE_STATES = {
-  initial: { y: 100 },
-  animate: { y: 0 },
-  exit: { y: -100 },
+  initial: { opacity: 0, y: 32 },
+  animate: { opacity: 1, y: 0 },
+  exit: { opacity: 0, y: -32 },
 } as const
 
 export interface MenuItem {
@@ -549,25 +551,38 @@ export function WineSphere({
 }
 
 function OnboardingProgress({ current }: { current: OnboardingProgressStep }) {
-  return (
-    <div
-      className="flex items-center justify-center gap-3"
-      aria-label="Progress"
-    >
-      {[0, 1, 2].map((index) => {
-        const isActive = current === index
+  const STEP_LABELS = ['Language', 'Theme', 'Enter']
 
-        return (
-          <span
-            key={index}
-            className={cn(
-              'block h-2.5 rounded-full transition-all duration-300',
-              isActive ? 'w-8 bg-amber-200' : 'w-2.5 bg-white/22'
-            )}
-            aria-hidden="true"
-          />
-        )
-      })}
+  return (
+    <div className="flex flex-col items-center gap-3" aria-label="Progress">
+      <div className="flex w-full max-w-48 items-center gap-2">
+        {[0, 1, 2].map((index) => {
+          const isActive = current === index
+          const isCompleted = current > index
+
+          return (
+            <motion.div
+              key={index}
+              className="relative flex-1"
+              initial={false}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.3 }}
+            >
+              <div
+                className={cn(
+                  'h-1 rounded-full transition-colors duration-500',
+                  isCompleted || isActive
+                    ? 'bg-amber-300/80'
+                    : 'bg-white/18'
+                )}
+              />
+            </motion.div>
+          )
+        })}
+      </div>
+      <p className="text-[11px] uppercase tracking-[0.28em] text-amber-100/55">
+        {STEP_LABELS[current]} selected
+      </p>
     </div>
   )
 }

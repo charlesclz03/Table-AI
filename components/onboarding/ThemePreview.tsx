@@ -93,7 +93,7 @@ export function ThemePreview({
       </p>
       <p className="mt-2 text-sm leading-6 text-white/55">{theme.subtitle}</p>
 
-      <div className="glass-panel-soft mt-5 rounded-[24px] px-4 py-4 text-left">
+      <div className="glass-panel-soft mt-5 rounded-[24px] px-5 py-5 text-left">
         <div className="flex items-center justify-between gap-3">
           <p className="text-[11px] uppercase tracking-[0.3em] text-amber-200/70">
             Personality
@@ -103,11 +103,12 @@ export function ThemePreview({
             Validated
           </span>
         </div>
-        <p className="mt-3 text-sm leading-6 text-white/82">{personality}</p>
+        <p className="mt-3 text-sm leading-relaxed text-white/82">{personality}</p>
+        <div className="mt-5 border-t border-white/[0.07]" />
         <p className="mt-4 text-[11px] uppercase tracking-[0.3em] text-amber-200/70">
           Voice sample
         </p>
-        <p className="mt-3 text-sm leading-6 text-white/72">{greeting}</p>
+        <p className="mt-3 text-sm leading-relaxed text-white/72">{greeting}</p>
       </div>
 
       <div className="mt-5 flex gap-3">
@@ -115,7 +116,7 @@ export function ThemePreview({
           type="button"
           onClick={onReplay}
           disabled={isLoading}
-          className="glass-button flex min-h-12 flex-1 items-center justify-center gap-2 rounded-full px-4 py-3 text-sm font-medium text-white transition hover:bg-white/12 disabled:cursor-wait disabled:opacity-60"
+          className="glass-button flex min-h-[3.25rem] flex-[0.65] items-center justify-center gap-2 rounded-full px-5 py-3 text-sm font-medium text-white/72 transition hover:bg-white/[0.10] hover:text-white disabled:cursor-wait disabled:opacity-50"
         >
           {isLoading ? (
             <span className="h-4 w-4 rounded-full border-2 border-white/25 border-t-white/80 animate-spin" />
@@ -127,7 +128,11 @@ export function ThemePreview({
         <button
           type="button"
           onClick={onConfirm}
-          className="glass-button-emerald flex min-h-12 flex-1 items-center justify-center gap-2 rounded-full px-4 py-3 text-sm font-semibold text-emerald-50 transition hover:bg-emerald-300/24"
+          className="flex flex-[1] items-center justify-center gap-2 rounded-full px-6 py-3 text-sm font-semibold text-[#0d1a12] transition hover:brightness-110 active:scale-[0.98]"
+          style={{
+            background: 'linear-gradient(135deg, #6ee7a0 0%, #34d399 50%, #10b981 100%)',
+            boxShadow: '0 4px 20px rgba(52,211,153,0.35), inset 0 1px 0 rgba(255,255,255,0.2)',
+          }}
         >
           <Check className="h-4 w-4" />
           Select theme

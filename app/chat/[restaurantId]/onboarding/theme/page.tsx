@@ -187,7 +187,7 @@ function OrbitalThemeSelector({
       </div>
 
       <div
-        className="relative mt-5 h-[26rem] touch-pan-y select-none outline-none"
+        className="relative mt-6 h-[24rem] touch-pan-y select-none outline-none"
         onTouchStart={handleTouchStart}
         onTouchEnd={handleTouchEnd}
         onTouchCancel={() => {
@@ -315,7 +315,7 @@ function OrbitalThemeSelector({
       </div>
 
       <div
-        className="mt-1 flex items-center justify-center gap-2"
+        className="mt-4 flex items-center justify-center gap-2"
         aria-label="Theme position"
       >
         {SELECTABLE_THEME_KEYS.map((themeKey) => {
